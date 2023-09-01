@@ -6,3 +6,20 @@ A computer program consists of instructions executing one at a time. Basic instr
 - Output: A program puts that data somewhere, such as to a file, screen, network, etc.
 
 Programs use variables to refer to data, like x, y, and z below. The name is due to a variable's value varying as a program assigns a variable like x with new values.
+
+```C
+#include <iostream>
+using namespace std;
+
+int main() {
+  int wage;
+
+  wage = 20;
+
+  cout << "Salary is ";
+  cout << wage * 40 * 52;
+  cout << endl;
+
+  return 0;
+}
+```
