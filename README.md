@@ -11,15 +11,15 @@ Programs use variables to refer to data, like x, y, and z below. The name is due
 #include <iostream>
 using namespace std;
 
-int main() {
-  int wage;
+int main() { // A program begins executing statements in main(). 
+  int wage; // 'int wage' declares an integer variable. 'wage = 20' assigns wage with 20.
 
   wage = 20;
 
-  cout << "Salary is ";
-  cout << wage * 40 * 52;
-  cout << endl;
+  cout << "Salary is "; // The cout statement outputs 'Salary is ' to the screen at the cursor's present location.
+  cout << wage * 40 * 52; // outputs the result of wage * 40 * 52, so 20 * 40 * 52 or 41600.
+  cout << endl; // 'endl' moves the output cursor to the next line on the screen.
 
-  return 0;
+  return 0; // The 'return 0' statement ends the program.
 }
 ```
