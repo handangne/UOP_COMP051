@@ -24,6 +24,7 @@ int main() { // A program begins executing statements in main().
 }
 ```
 
+## 1.2 Programming Basics
 ### Basic input
 The following statement gets an input value and puts that value into variable x: cin >> x; cin is short for characters in.
 
@@ -71,6 +72,7 @@ The cursor has been moved to the next line.
 This is the second paragraph
 */
 ```
+
 Outputting a variable's value is achieved via: cout << x;. Note that no quotes surround x.
 ```C
 #include <iostream>
@@ -110,5 +112,77 @@ int main() {
    return 0;
 }
 ```
+## 1.3 Comments and Whitespace
+### Comments 
+A comment is text a programmer adds to code, to be read by humans to better understand the code but ignored by the compiler. Two common kinds of comments exist:
+- A single-line comment starts with // and includes all the following text on that line. Single-line comments commonly appear after a statement on the same line.
+- A multi-line comment starts with /* and ends with */, where all text between /* and */ is part of the comment. A multi-line comment is also known as a block comment.
+
+```C
+#include <iostream>
+using namespace std;
+/*
+ This program calculates the amount of pasta to cook, given the
+ number of people eating.
+*/
+int main ()
+{
+   int numPeople;         // Number of people that will be eating
+   int totalOuncesPasta;  // Total ounces of pasta to serve numPeople
+   
+   // Get number of people
+   cout << "Enter number of people: " << endl;
+   cin  >> numPeople;
+   
+   // Calculate and print total ounces of pasta
+   totalOuncesPasta = numPeople * 3;  // Typical ounces per person
+   cout << "Cook " << totalOuncesPasta << " ounces of pasta." << endl;
+   
+   return 0;
+}
+```
+### Whitespace
+Whitespace refers to blank spaces (space and tab characters) between items within a statement and blank lines between statements (called newlines). A compiler ignores most whitespace (Not all spaces are ignored by the compiler. Ex: The spaces in a string literal like "Enter age: " will be printed if the string is output).
+
+- Use blank lines to separate conceptually distinct statements.
+- Indent lines the same amount.
+- Align items to reduce visual clutter.
+- Use a single space before and after any operators like =, +, *, or << to make statements more readable.
+
+```C
+//good use of whitespace
+#include <iostream>
+using namespace std;
+
+int main() {
+   int myFirstVar;    // Aligned comments yield less
+   int yetAnotherVar; // visual clutter 
+   int thirdVar; 
+  
+   // Above blank line separates variable declarations from the rest
+   cout << "Enter a number: ";
+   cin  >> myFirstVar;
+  
+   // Above blank line separates user input statements from the rest   
+   yetAnotherVar = myFirstVar;        // Aligned = operators
+   thirdVar      = yetAnotherVar + 1; 
+   // Also notice the single-space on left and right of + and =
+   // (except when aligning the second = with the first =)
+
+   cout << "Final value is " << thirdVar << endl; // Single-space on each side of <<
+  
+   return 0; // The above blank line separates the return from the rest
+}
+```
+The compiler converts a high-level program into an executable program using machine code (0s and 1s).
+Comments do not generate machine code.
+The compiler recognizes end of statement by semicolon ";".
+
+## 1.4 Errors and Warning
+### Syntax error
+People make mistakes. Programmers thus make mistakes—lots of them. One kind of mistake, known as a syntax error, is to violate a programming language's rules on how symbols can be combined to create a program. An example is forgetting to end a statement with a semicolon.
+
+
+
 
 
