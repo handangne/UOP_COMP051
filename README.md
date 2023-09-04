@@ -181,8 +181,7 @@ The compiler recognizes end of statement by semicolon ";".
 ## 1.4 Errors and Warning
 ### Syntax error
 People make mistakes. Programmers thus make mistakes—lots of them. One kind of mistake, known as a syntax error, is to violate a programming language's rules on how symbols can be combined to create a program. An example is forgetting to end a statement with a semicolon.
-
-
+![](./syntaxError.png)
 
 
 
