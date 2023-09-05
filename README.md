@@ -184,12 +184,14 @@ People make mistakes. Programmers thus make mistakes—lots of them. One kind of
 ![](./syntaxError.png)
 
 Example: 
+```C
 cout << numCats. (statement ending with semicolon, not period)
 cout << "Cats: " numCats; (iterms must be seperated by "<<")
 cout < numCats; ("<<" is required, not "<")
 cout << "Cats: << numCats; (missing the ending ")
 cout << NumCats; (the declare variable is "numCats")
 cout >> numCats; (must use "<<" instead of ">>" for cout)
+```
 
 ### Unclear error message
 Compiler error messages are often unclear or even misleading. The message is like the compiler's "best guess" of what is really wrong.
