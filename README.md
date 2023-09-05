@@ -195,6 +195,20 @@ cout >> numCats; (must use "<<" instead of ">>" for cout)
 
 ### Unclear error message
 Compiler error messages are often unclear or even misleading. The message is like the compiler's "best guess" of what is really wrong.
+![](./unclearError.png)
+The compiler indicates a missing semicolon ';'. But the real error is the missing << symbols.
+Sometimes the compiler error message refers to a line that is actually many lines past where the error actually occurred. Not finding an error at the specified line, the programmer should look to previous lines.
+For example: When a compiler says that an error exists on line 5, the error may actually exist in an earlier line, but the compiler didn't get confused until reaching line 5.
+
+The actual error could be different, like missing parentheses. If a programmer makes a mistake, the statement and subsequent statements may still be valid code, but eventually the compiler cannot make sense of the code and generates an error message.
+Some errors create an upsettingly long list of error messages. Good practice is to focus on fixing just the first error reported by the compiler and then recompiling. The remaining error messages may be real but are more commonly due to the compiler's confusion caused by the first error and are thus irrelevant.
+
+### Logic error
+Because a syntax error is detected by the compiler, a syntax error is known as a type of compile-time error.
+Successfully compiling means the program doesn't have compile-time errors, but the program may have other kinds of errors. A logic error, also called a bug, is an error that occurs while a program runs. For example, a programmer might mean to type numBeans * numJars but accidentally types numBeans + numJars (+ instead of *). The program would compile but would not run as intended.
+
+### Compiler warning
+A compiler will sometimes report a warning, which doesn't stop the compiler from creating an executable program but indicates a possible logic error. Ex: Some compilers will report a warning like "Warning, dividing by 0 is not defined" if encountering code like: totalItems = numItems / 0 (running that program does result in a runtime error).
 
 
 
