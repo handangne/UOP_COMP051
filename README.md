@@ -8,7 +8,7 @@ A computer program consists of instructions executing one at a time. Basic instr
 
 Programs use variables to refer to data, like x, y, and z below. The name is due to a variable's value varying as a program assigns a variable like x with new values.
 
-```C
+```Cpp
 #include <iostream>
 using namespace std;
 
@@ -29,7 +29,7 @@ int main() { // A program begins executing statements in main().
 ### Basic input
 The following statement gets an input value and puts that value into variable x: cin >> x; cin is short for characters in.
 
-```C
+```Cpp
 #include <iostream>
 using namespace std;
  
@@ -52,7 +52,7 @@ Text in double quotes " " is known as a string literal.
 Multiple cout statements continue printing on the same output line.
 The statement cout << endl; starts a new output line, called a newline.
 
-```C
+```Cpp
 #include <iostream>
 using namespace std;
  
@@ -75,7 +75,7 @@ This is the second paragraph
 ```
 
 Outputting a variable's value is achieved via: cout << x;. Note that no quotes surround x.
-```C
+```Cpp
 #include <iostream>
 using namespace std;
 
@@ -98,7 +98,7 @@ Goodbye.
 */
 ```
 Programmers commonly use a single output statement for each line of output by combining the outputting of text, variable values, and a new line. The programmer simply separates the items with << symbols. Such combining can improve program readability because the program's code corresponds more closely to the program's output.
-```C
+```Cpp
 #include <iostream>
 using namespace std;
 
@@ -119,7 +119,7 @@ A comment is text a programmer adds to code, to be read by humans to better unde
 - A single-line comment starts with // and includes all the following text on that line. Single-line comments commonly appear after a statement on the same line.
 - A multi-line comment starts with /* and ends with */, where all text between /* and */ is part of the comment. A multi-line comment is also known as a block comment.
 
-```C
+```Cpp
 #include <iostream>
 using namespace std;
 /*
@@ -150,7 +150,7 @@ Whitespace refers to blank spaces (space and tab characters) between items withi
 - Align items to reduce visual clutter.
 - Use a single space before and after any operators like =, +, *, or << to make statements more readable.
 
-```C
+```Cpp
 //good use of whitespace
 #include <iostream>
 using namespace std;
@@ -185,7 +185,7 @@ People make mistakes. Programmers thus make mistakes—lots of them. One kind of
 ![](./syntaxError.png)
 
 Example: 
-```C
+```Cpp
 cout << numCats. (statement ending with semicolon, not period)
 cout << "Cats: " numCats; (iterms must be seperated by "<<")
 cout < numCats; ("<<" is required, not "<")
@@ -217,6 +217,32 @@ A compiler will sometimes report a warning, which doesn't stop the compiler from
 - An assignment assigns a variable with a value, such as x = 5 => x is assigned with 5 and x keeps that value during subsequent assignments, until x is assigned again.
 - An assignment's left side must be a variable. The right side can be an expression, so an assignment may be x = 5, y = x, or z = x + 2. The 5, x, and x + 2 are each an expression that evaluates to a value.
 - "=" is not equal. "=" is an assignment of a left-side variable with a right-side value. "=" is NOT equality as in mathematics. Thus, x = 5 is read as "x is assigned with 5", and not as "x equals 5". When one sees x = 5, one might think of a value being put into a box.
+
+### Assignments with variable on the left and right
+Increasing a variable's value by 1, as in x = x + 1, is common, and known as incrementing the variable.
+Because in programming = means assignment, a variable may appear on both the left and right as in x = x + 1.
+
+## 2.2 Variables (int)
+### Variables declaration
+- A variable declaration is a statement that declares a new variable, specifying the variable's name and type. Ex: int userAge; declares a new variable named userAge that can hold an integer value.
+- The compiler allocates a memory location for userAge capable of storing an integer.
+- Allocation is the process of determining a suitable memory location to store data like variables.
+When a statement that assigns a variable with a value executes, the processor writes the value into the variable's memory location. Likewise, reading a variable's value reads the value from the variable's memory location. The programmer must declare a variable before any statement that assigns or reads the variable, so that the variable's memory location is known.
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   int userAge;
+
+   cout << "Enter your age: ";
+   cin >> userAge;
+   cout << userAge << " is a great age." << endl;
+
+   return 0;
+}
+```
+
 
 
 
