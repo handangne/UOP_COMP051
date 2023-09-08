@@ -1,4 +1,5 @@
 # UOP_COMP051
+# 1. Introduction to C++
 ## 1.1 Programming (General)
 A computer program consists of instructions executing one at a time. Basic instruction types are:
 - Input: A program gets data, perhaps from a file, keyboard, touchscreen, network, etc.
@@ -209,6 +210,13 @@ Successfully compiling means the program doesn't have compile-time errors, but t
 
 ### Compiler warning
 A compiler will sometimes report a warning, which doesn't stop the compiler from creating an executable program but indicates a possible logic error. Ex: Some compilers will report a warning like "Warning, dividing by 0 is not defined" if encountering code like: totalItems = numItems / 0 (running that program does result in a runtime error).
+
+# 2. Variables / Assignment
+## 2.1 Variables and assignment (general)
+- In a program, a variable is a named item, such as x or numPeople, used to hold a value.
+- An assignment assigns a variable with a value, such as x = 5 => x is assigned with 5 and x keeps that value during subsequent assignments, until x is assigned again.
+- An assignment's left side must be a variable. The right side can be an expression, so an assignment may be x = 5, y = x, or z = x + 2. The 5, x, and x + 2 are each an expression that evaluates to a value.
+- "=" is not equal. "=" is an assignment of a left-side variable with a right-side value. "=" is NOT equality as in mathematics. Thus, x = 5 is read as "x is assigned with 5", and not as "x equals 5". When one sees x = 5, one might think of a value being put into a box.
 
 
 
