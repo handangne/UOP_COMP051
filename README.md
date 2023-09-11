@@ -314,6 +314,10 @@ And they know 8000000 people.
 */
 ```
 
+### Common error
+- A common error is to read a variable that has not yet been assigned a value. If a variable is declared but not initialized, the variable's memory location contains some unknown value, commonly but not always 0.
+- A program with an uninitialized variable may thus run correctly on a system that has 0 in the memory location, but then fail on a different system—a very difficult bug to fix.
+
 
 
 
