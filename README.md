@@ -242,6 +242,79 @@ int main() {
    return 0;
 }
 ```
+### Assignment Statement
+- An assignment statement assigns the variable on the left-side of the = with the current value of the right-side expression.
+- An expression may be a number like 80, a variable name like numApples, or a simple calculation like numApples + 1.
+- Simple calculations can involve standard math operators like +, -, and *, and parentheses as in 2 * (numApples - 1). An integer like 80 appearing in an expression is known as an integer literal.
+
+```Cpp
+
+#include <iostream>
+using namespace std;
+
+int main() {
+   int litterSize;
+   int yearlyLitters;
+   int annualMice;
+
+   litterSize    = 3; // Low end of litter size range
+   yearlyLitters = 5; // Low end of litters per year
+
+   cout << "One female mouse may give birth to ";
+   annualMice = litterSize * yearlyLitters;
+   cout << annualMice << " mice," << endl;
+   
+   litterSize    = 14; // High end
+   yearlyLitters = 10; // High end
+
+   cout << "and up to ";
+   annualMice = litterSize * yearlyLitters;
+   cout << annualMice << " mice, in a year." << endl;
+   
+   return 0;
+}
+
+/*
+One female mouse may give birth to 15 mice,
+and up to 140 mice, in a year.
+*/
+```
+
+### Initializing Variables
+Although not required, an integer variable is often assigned an initial value when declared. Ex: int maxScore = 100; declares an int variable named maxScore with an initial value of 100.
+
+### Assignment statement with same variables on both sides
+Commonly, a variable appears on both the right and left side of the = operator.
+Ex: If numItems is 5, after numItems = numItems + 1; executes, numItems will be 6. The statement reads the value of numItems (5), adds 1, and assigns numItems with the result of 6, which replaces the value previously held in numItems.
+
+```Cpp
+#include <iostream>
+using namespace std;
+            
+int main() {
+   int yourFriends;
+   int totalFriends;
+            
+   cout << "Enter the number of people you know: ";
+   cin >> yourFriends;
+   totalFriends = yourFriends;
+   cout << " You know " << totalFriends << " people.\n";
+   totalFriends = totalFriends * yourFriends;
+   cout << " Those people know " << totalFriends << " people.\n";
+   totalFriends = totalFriends * yourFriends;
+   cout << " And they know " << totalFriends << " people.\n\n";
+            
+   return 0;
+}
+/*
+Enter the number of people you know: 200
+You know 200 people.
+Those people know 40000 people.
+And they know 8000000 people.
+*/
+```
+
+
 
 
 
