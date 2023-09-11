@@ -318,7 +318,18 @@ And they know 8000000 people.
 - A common error is to read a variable that has not yet been assigned a value. If a variable is declared but not initialized, the variable's memory location contains some unknown value, commonly but not always 0.
 - A program with an uninitialized variable may thus run correctly on a system that has 0 in the memory location, but then fail on a different system—a very difficult bug to fix.
 
+## 2.3 Identifiers
+### Rules of identifiers
+A name created by a programmer for an item like a variable or function is called an identifier. An identifier must:
+- be a sequence of letters (a-z, A-Z), underscores (_), and digits (0-9)
+- start with a letter or underscore
 
+Note that "_", called an underscore, is considered to be a letter.
+Identifiers are case sensitive, meaning upper and lower case letters differ. So numCats and NumCats are different.
+
+- A reserved word is a word that is part of the language, like int, short, or double. A reserved word is also known as a keyword. A programmer cannot use a reserved word as an identifier. Many language editors will automatically color a program's reserved words.
+
+![](./reservedWord/keywords.png)
 
 
 
