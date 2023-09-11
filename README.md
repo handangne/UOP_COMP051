@@ -329,7 +329,8 @@ Identifiers are case sensitive, meaning upper and lower case letters differ. So 
 
 - A reserved word is a word that is part of the language, like int, short, or double. A reserved word is also known as a keyword. A programmer cannot use a reserved word as an identifier. Many language editors will automatically color a program's reserved words.
 
-![](./reservedWord/keywords.png)
+![](./reservedWord:keywords.png)
+
 
 
 
