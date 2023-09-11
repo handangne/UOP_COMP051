@@ -331,6 +331,11 @@ Identifiers are case sensitive, meaning upper and lower case letters differ. So 
 
 ![](./reservedWord:keywords.png)
 
+### Style guidelines for identifiers
+While various (crazy-looking) identifiers may be valid, programmers may follow identifier naming conventions (style) defined by their company, team, teacher, etc. Two common conventions for naming variables are:
+- Camel case: Lower camel case abuts multiple words, capitalizing each word except the first, as in numApples or peopleOnBus.
+- Underscore separated: Words are lowercase and separated by an underscore, as in num_apples or people_on_bus.
+
 
 
 
