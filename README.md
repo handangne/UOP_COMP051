@@ -336,6 +336,21 @@ While various (crazy-looking) identifiers may be valid, programmers may follow i
 - Camel case: Lower camel case abuts multiple words, capitalizing each word except the first, as in numApples or peopleOnBus.
 - Underscore separated: Words are lowercase and separated by an underscore, as in num_apples or people_on_bus.
 
+## 2.4 Arithmetic expression
+### Basic
+- An expression is any individual item or combination of items, like variables, literals, operators, and parentheses, that evaluates to a value, like 2 * (x + 1). A common place where expressions are used is on the right side of an assignment statement, as in y = 2 * (x + 1).
+- A literal is a specific value in code like 2.
+- An operator is a symbol that performs a built-in calculation, like +, which performs addition.
+The addition operator is "+", as in "x + y".
+The subtraction operator is "-", as in "x - y".
+The multiplication operator is "*", as in "x * y".
+The division operator is "/", as in "x / y".
+
+### Evaluation of expressions
+An expression evaluates to a value, which replaces the expression. Ex: If x is 5, then x + 1 evaluates to 6, and y = x + 1 assigns y with 6.
+An expression is evaluated using the order of standard mathematics, such order known in programming as precedence rules.
+![](./precedenceRules.png)
+
 
 
 
