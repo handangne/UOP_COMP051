@@ -351,6 +351,139 @@ An expression evaluates to a value, which replaces the expression. Ex: If x is 5
 An expression is evaluated using the order of standard mathematics, such order known in programming as precedence rules.
 ![](./precedenceRules.png)
 
+## 2.5 Arithmetic expression
+Below is a simple program that includes an expression involving integers.
+```Cpp
+#include <iostream>
+using namespace std;
+
+/* Computes the total cost of leasing a car given the down payment,
+   monthly rate, and number of months
+*/
+
+int main() {
+   int downPayment;
+   int paymentPerMonth;
+   int numMonths;
+   int totalCost;  // Computed total cost to be output
+
+   cout << "Enter down payment: ";
+   cin  >> downPayment;
+
+   cout << "Enter monthly payment: ";
+   cin  >> paymentPerMonth;
+
+   cout << "Enter number of months: ";
+   cin  >> numMonths;
+
+   totalCost = downPayment + (paymentPerMonth * numMonths);
+
+   cout << "Total cost: " << totalCost << endl;
+
+   return 0;
+}
+/*
+Enter down payment: 500
+Enter monthly payment: 300
+Enter number of months: 60
+Total cost: 18500
+*/
+```
+### Single space around operator
+- A single space around operators for readability, as in "numItems + 2", rather than "numItems+2". An exception is minus used as negative, as in: xCoord = -yCoord. Minus (-) used as negative is known as unary minus.
+
+### Compound operator
+Special operators called compound operators provide a shorthand way to update a variable, such as userAge += 1 being shorthand for userAge = userAge + 1. Other compound operators include -=, *=, /=, and %=.
+
+### No commas allowed
+Commas are not allowed in an integer literal. So 1,333,555 is written as 1333555.
+
+## 2.6 Example
+
+## 2.7 Floating-point numbers (double)
+### Floating-point (double) variables
+- A floating-point number is a real number containing a decimal point that can appear anywhere (or "float") in the number.
+- A floating-point literal is a number with a fractional part, even if the fraction is 0, as in 1.0, 0.0, or 99.573. Good practice is to always have a digit before the decimal point, as in 0.5, since .5 might mistakenly be viewed as 5.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   double milesTravel; // User input of miles to travel
+   double hoursFly;    // Travel hours if flying those miles
+   double hoursDrive;  // Travel hours if driving those miles
+   
+   cout << "Enter miles to travel: ";
+   cin  >> milesTravel;
+   
+   hoursFly   = milesTravel / 500.0; // Plane flies 500 mph
+   hoursDrive = milesTravel / 60.0;  // Car drives 60 mph
+   
+   cout << milesTravel << " miles would take:" << endl;
+   cout << "   " << hoursFly << " hours to fly" << endl;
+   cout << "   " << hoursDrive << " hours to drive" << endl;
+   
+   return 0;
+}
+/*
+Enter miles to travel: 1800
+1800 miles would take:
+   3.6 hours to fly
+   30 hours to drive
+*/
+/*
+Enter miles to travel: 400.5
+400.5 miles would take:
+   0.801 hours to fly,
+   6.675 hours to drive.
+*/
+```
+Scientific notation
+Very large and very small floating-point values may be printed using scientific notation. Ex: If a floating variable holds the value 299792458.0 (the speed of light in m/s), the value will be printed as 2.99792e+08.
+
+### Choosing a variable type (double vs int)
+A programmer should choose a variable's type based on the type of value held.
+- Integer variables are typically used for values that are counted, like 42 cars, 10 pizzas, or -95 days.
+- Floating-point variables are typically used for measurements, like 98.6 degrees, 0.00001 meters, or -55.667 degrees.
+- Floating-point variables are also used when dealing with fractions of countable items, such as the average number of cars per household.
+
+### Floating point division by 0
+- Dividing a nonzero floating-point number by zero is undefined in regular arithmetic. Many programming languages produce an error when performing floating-point division by 0, but C++ does not. C++ handles this operation by producing infinity or -infinity, depending on the signs of the operands. Printing a floating-point variable that holds infinity or -infinity outputs inf or -inf.
+- If the dividend and divisor in floating-point division are both 0, the division results in a "not a number". Not a number (NaN) indicates an unrepresentable or undefined value. Printing a floating-point variable that is not a number outputs nan.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   double gasVolume;
+   double oilVolume;
+   double mixRatio;
+   
+   cout << "Enter gas volume: ";
+   cin  >> gasVolume;
+
+   cout << "Enter oil volume: ";
+   cin  >> oilVolume;
+
+   mixRatio = gasVolume / oilVolume;
+   
+   cout << "Gas to oil mix ratio is " << mixRatio << ":1" << endl;
+   
+   return 0;
+}
+/*
+Enter gas volume: 10.5
+Enter oil volume: 0.0
+Gas to oil mix ratio is inf:1
+*/
+```
+
+
+
+
+
 
 
 
