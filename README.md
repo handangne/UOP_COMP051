@@ -479,6 +479,37 @@ Enter oil volume: 0.0
 Gas to oil mix ratio is inf:1
 */
 ```
+### Manipulating floating-point output
+- Some floating-point numbers have many digits after the decimal point. Ex: Irrational numbers (Ex: 3.14159265359...) and repeating decimals (Ex: 4.33333333...) have an infinite number of digits after the decimal.
+- By default, most programming languages output at least 5 digits after the decimal point. But for many simple programs, this level of detail is not necessary.
+- Representing currency with two digits after the decimal). The syntax for outputting the double myFloat with two digits after the decimal point is " cout << fixed << setprecision(2) << myFloat; "
+
+```C
+/* Note: setprecision() is found in the iomanip library. fixed and setprecision() are manipulators that need only be written once if the desired number of digits after the decimal point is the same for multiple floating-point numbers. */
+cout << fixed << setprecision(3) << 3.1244 << endl;
+cout << 2.1 << endl;
+/*
+3.124
+2.100
+*/
+
+cout << "Default output of pi: " << M_PI << endl;
+/*
+The mathematical constant pi (π) is irrational, a floating-point number whose digits after the decimal point are infinite and non-repeating. The cmath library defines the constant M_PI with the value of pi.
+Though C++ does not attempt to output the full value of pi, by default, 5 digits after the decimal are output.
+*/
+cout << "pi reduced to 4 digits after the decimal: ";
+cout << fixed << setprecision(4) << M_PI << endl;
+/*
+cout << fixed << setprecision(4) outputs pi to only four digits after the decimal. The last digit is rounded up in the output, but the value of pi remains the same.
+*/
+
+/*
+Default output of pi: 3.14159
+pi reduced to 4 digits after the decimal: 3.1416
+*/
+
+```
 
 
 
