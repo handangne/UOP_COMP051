@@ -575,6 +575,45 @@ Lightning strike was approximately
 1.48012 miles away.
 */
 ```
+## 2.10 Using math function
+- Some programs require math operations beyond +, -, *, /, like computing a square root. A standard math library has about 20 math operations, known as functions.
+- A function is a list of statements executed by invoking the function's name, such invoking is known as a function call. Any function input values, or arguments, appear within ( ), separated by commas if more than one.
+
+```Cpp
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+int main() {
+   double initMass;   // Initial mass of a substance
+   double growthRate; // Annual growth rate
+   double yearsGrow;  // Years of growth
+   double finalMass;  // Final mass after those years
+
+   cout << "Enter initial mass: ";
+   cin  >> initMass;
+
+   cout << "Enter growth rate (Ex: 0.05 is 5%/year): ";
+   cin  >> growthRate;
+
+   cout << "Enter years of growth: ";
+   cin  >> yearsGrow;
+
+   finalMass = initMass * pow(1.0 + growthRate, yearsGrow);
+   // Ex: Rate of 0.05 yields initMass * 1.05^yearsGrow
+
+   cout << "Final mass after " << yearsGrow
+        << " years is: " << finalMass << endl;
+
+   return 0;
+}
+/*
+Enter initial mass: 10000
+Enter growth rate (Ex: 0.05 is 5%/year): 0.06
+Enter years of growth: 20
+Final mass after 20 years is: 32071.4
+*/
+```
 
 
 
