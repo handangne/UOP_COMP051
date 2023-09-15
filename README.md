@@ -538,6 +538,43 @@ int main() {
 Enter grams of gold: 4.5
 4.5 grams of gold contains 1.37536e+22 atoms
 */
+```
+## 2.9 Constant variable
+One reason is to improve code readability. newPrice = origPrice - 5 is less clear than newPrice = origPrice - priceDiscount. When a variable represents a literal, the variable's value should not be changed in the code. If the programmer precedes the variable declaration with the keyword const, then the compiler will report an error if a later statement tries to change that variable's value. An initialized variable whose value cannot change is called a constant variable.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+/*
+ * Estimates distance of lightning based on seconds
+ * between lightning and thunder
+ */
+
+int main() {
+   const double SPEED_OF_SOUND   = 761.207; // Miles/hour (sea level)
+   const double SECONDS_PER_HOUR = 3600.0;  // Secs/hour
+   double secondsBetween;
+   double timeInHours;
+   double distInMiles;
+   
+   cout << "Enter seconds between lightning and thunder: ";
+   cin  >> secondsBetween;
+   
+   timeInHours = secondsBetween / SECONDS_PER_HOUR;
+   distInMiles = SPEED_OF_SOUND * timeInHours;
+   
+   cout << "Lightning strike was approximately" << endl;
+   cout << distInMiles << " miles away." << endl;
+   
+   return 0;
+}
+/*
+Enter seconds between lightning and thunder: 7
+Lightning strike was approximately
+1.48012 miles away.
+*/
+```
 
 
 
