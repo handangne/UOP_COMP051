@@ -511,6 +511,36 @@ pi reduced to 4 digits after the decimal: 3.1416
 
 ```
 
+## 2.8 Scientific notation for floating-point literals
+- Scientific notation is useful for representing floating-point numbers that are much greater than or much less than 0, such as 6.02 x 1023. A floating-point literal using scientific notation is written using an e preceding the power-of-10 exponent, as in 6.02e23 to represent 6.02 x 10^23. 0.001 is 1 x 10^-3 and can be written as 1.0e-3.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   double avogadrosNumber = 6.02e23; // Approximation of atoms per mole  
+   double gramsPerMoleGold = 196.9665;
+   double gramsGold;
+   double atomsGold;
+   
+   cout << "Enter grams of gold: ";
+   cin  >> gramsGold;
+   
+   atomsGold = gramsGold / gramsPerMoleGold * avogadrosNumber;
+   
+   cout << gramsGold << " grams of gold contains ";
+   cout << atomsGold << " atoms" << endl;
+   
+   return 0;
+}
+/*
+Enter grams of gold: 4.5
+4.5 grams of gold contains 1.37536e+22 atoms
+*/
+
+
+
 
 
 
