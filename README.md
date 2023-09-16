@@ -614,6 +614,143 @@ Enter years of growth: 20
 Final mass after 20 years is: 32071.4
 */
 ```
+See this https://cplusplus.com/reference/cmath/ link for a comprehensive list of built-in math functions.
+
+#### cmath and cstdlib 
+- The "c" in cmath indicates that the library comes from a C language library.
+- Some math functions for integers are in a library named cstdlib, requiring: #include <cstdlib>. Ex: abs() computes the absolute value of an integer.
+
+## 2.11 Integer division and modulo
+### Division: Integer rounding
+When the operands of / are integers, the operator performs integer division, which does not generate any fraction.
+Eg: y = 10 / 4 = 2; y = 4 / 9 = 0; a = (1/2) * b * h = 0 (always)...
+
+### Division: Division by 0
+For integer division, the second operand of / or % must never be 0, because division by 0 is mathematically undefined. A divide-by-zero error occurs at runtime if a divisor is 0, causing a program to terminate. A divide-by-zero error is an example of a runtime error, a severe error that occurs at runtime and causes a program to terminate early.
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   int salaryPerYear; // User input: Yearly salary
+   int daysPerYear;   // User input: Days worked per year
+   int salaryPerDay;  // Output:     Salary per day
+
+   cout << "Enter yearly salary: ";
+   cin  >> salaryPerYear;
+   
+   cout << "Enter days worked per year: ";
+   cin  >> daysPerYear;
+
+   // If daysPerYear is 0, then divide-by-zero causes program termination.
+   salaryPerDay = salaryPerYear / daysPerYear;
+
+   cout << "Salary per day is: " << salaryPerDay << endl;
+
+   return 0;
+}
+/*
+Enter yearly salary: 60000
+Enter days worked per year: 0
+Floating point exception
+*/
+```
+### Modulo
+The basic arithmetic operators include not just +, -, *, /, but also %. The modulo operator (%) evaluates the remainder of the division of two integer operands. Ex: 23 % 10 is 3.
+Examples:
+24 % 10 is 4. Reason: 24 / 10 is 2 with remainder 4.
+50 % 50 is 0. Reason: 50 / 50 is 1 with remainder 0.
+1 % 2 is 1. Reason: 1 / 2 is 0 with remainder 1.
+10 % 4.0 is not valid. "Remainder" only makes sense for integer operands.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   int userMinutes;   // User input: Minutes
+   int outHours;      // Output hours
+   int outMinutes;    // Output minutes (remaining)
+
+   cout << "Enter minutes: ";
+   cin  >> userMinutes;
+
+   outHours   = userMinutes / 60;
+   outMinutes = userMinutes % 60; // 1 hour = 60 minutes, so when do this, you will get the remainder minutes
+
+   cout << userMinutes << " minutes is ";
+   cout << outHours    << " hours and ";
+   cout << outMinutes  << " minutes." << endl;
+
+   return 0;
+}
+/*
+Enter minutes: 139
+139 minutes is 2 hours and 19 minutes.
+*/
+```
+
+### Modulo examples
+#### Random number in a range
+Given a random number randNum, % can generate a random number within a range:
+randNum % 10
+Yields 0 - 9: Possible remainders are 0, 1, ..., 8, 9. Remainder 10 is not possible: Ex: 19 % 10 is 9, but 20 % 10 is 0.
+
+randNum % 51
+Yields 0 - 50: Note that % 50 would yield 0 - 49.
+
+(randNum % 9) + 1
+Yields 1 - 9: The % 9 yields 9 possible values 0 - 8, so the + 1 yields 1 - 9.
+
+(randNum % 11) + 20
+Yields 20 - 30: The % 11 yields 11 possible values 0 - 10, so the + 20 yields 20 - 30.
+
+#### Getting digits
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   int userValue;
+   int onesDigit;
+   int tensDigit;
+   int hundredsDigit;
+   int tmpValue;
+   
+   cin >> userValue; // get the value from user
+   
+   onesDigit = userValue % 10;
+   tmpValue = userValue / 10;
+   tensDigit = tmpValue % 10;
+   tmpValue = tmpValue / 10;
+   hundredsDigit = tmpValue % 10;
+   
+   cout << "Row digit is: " << onesDigit << endl;
+   cout << "Ten digit is: " << tensDigit << endl;
+   cout << "Hundred digit is: " << hundredsDigit << endl;
+   
+   return 0;
+}
+/*
+10987
+Row digit is: 7
+Ten digit is: 8
+Hundred digit is: 9
+*/
+```
+
+### Getting prefix of a phone number
+Given a 10-digit phone number stored as an integer, % and / can be used to get any part, such as the prefix. For phoneNum = 1365551212 (whose prefix is 555):
+
+tmpVal = phoneNum / 10000; // / 10000 shifts right by 4, so 136555. 
+prefixNum = tmpVal % 1000; // % 1000 gets the right 3 digits, so 555.
+Dividing by a power of 10 shifts a value right. 321 / 10 is 32. 321 / 100 is 3.
+
+% by a power of 10 gets the rightmost digits. 321 % 10 is 1. 321 % 100 is 21.
+
+
+
+
 
 
 
