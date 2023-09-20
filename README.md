@@ -748,6 +748,14 @@ Dividing by a power of 10 shifts a value right. 321 / 10 is 32. 321 / 100 is 3.
 
 % by a power of 10 gets the rightmost digits. 321 % 10 is 1. 321 % 100 is 21.
 
+## 2.12 Type convertion
+A type conversion is a conversion of one data type to another, such as an int to a double. The compiler automatically performs several common conversions between int and double types, such automatic conversions are known as implicit conversion.
+
+int-to-double conversion is straightforward: 25 becomes 25.0.
+double-to-int conversion just drops the fraction: 4.9 becomes 4.
+
+
+
 
 
 
