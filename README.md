@@ -859,6 +859,62 @@ ASCII is an early standard for encoding characters as numbers. The following tab
 
 ![](./ASCIICODE.png)
 
+### Escape sequences
+In addition to regular characters like Z, $, or 5, character encoding includes numbers for several special characters. Ex: A newline character is encoded as 10. Because no visible character exists for a newline, the language uses an escape sequence: A two-character sequence starting with \ that represents a special character.
+Common escape sequences:
+\n : newline
+\t : tab
+\' : single quote
+\" : double quote
+\\ : backplash
+
+eg:
+Goal output: Say "Hello"
+cout << "Say \"Hello"";    // Each \" represents a single " character. The \ is needed so the compiler doesn't treat the " before the H as the end of the string "Say ".
+
+Goal output: OK    bye
+(Assume a tab exists between OK and bye).
+cout << "OK\tbye";    // Upon seeing the \, the compiler looks at the next character. Seeing the t, the compiler inserts a single tab character.
+
+### Common errors
+- A common error is to use double quotes rather than single quotes around a character literal, as in myChar = "x", yielding a compiler error.
+- Similarly, a common error is to forget the quotes around a character literal, as in myChar = x, usually yielding a compiler error (unless x is also a declared variable, then perhaps yielding a logic error).
+
+## 2.15 String
+### String and string literals
+A string is a sequence of characters. A string literal surrounds a character sequence with double quotes, as in "Hello", "52 Main St.", or "42", vs. an integer literal like 42 or character literal like 'a'. Various characters may be in a string, such as letters, numbers, spaces, or symbols like $ or %, as in "$100 for Julia!!". Earlier sections showed string literals being output, as in: cout << "Hello";.
+
+### String variables and assignments
+- Some variables should hold a string. A string data type isn't built into C++ like char, int, or double, but is available in the standard library and can be used after adding: #include <string>. A programmer can then declare a string variable as: string firstName;.
+- A programmer can assign a string just as for other types. Ex: str1 = "Hello", or str1 = str2. The string type automatically reallocates memory for str1 if the right-side string is larger or smaller, and then copies the characters into str1.
+- A programmer can initialize a string variable during declaration: string firstMonth = "January";. Otherwise, a string variable is automatically initialized to an empty string "".
+``` Cpp
+#include <iostream>
+#include <string>
+using namespace std;
+ 
+int main() {
+   string sentenceSubject;
+   string sentenceVerb;
+   string sentenceObject = "an apple";
+
+   sentenceSubject = "boy";
+   sentenceVerb = "ate";
+
+   cout << "A ";
+   cout << sentenceSubject << " ";
+   cout << sentenceVerb << " ";
+   cout << sentenceObject << "." << endl;
+ 
+   return 0;
+}
+/*
+A boy ate an apple.
+*/
+```
+
+
+
 
 
 
