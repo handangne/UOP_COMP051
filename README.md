@@ -754,6 +754,111 @@ A type conversion is a conversion of one data type to another, such as an int to
 int-to-double conversion is straightforward: 25 becomes 25.0.
 double-to-int conversion just drops the fraction: 4.9 becomes 4.
 
+### Type casting
+- Ex: If a program needs a floating-point result from dividing two integers, then at least one of the integers needs to be converted to double so floating-point division is performed. Otherwise, integer division is performed, evaluating to only the quotient and ignoring the remainder. A type cast explicitly converts a value of one type to another type.
+- The static_cast operator (static_cast<type>(expression)) converts the expression's value to the indicated type. Ex: If myIntVar is 7, then static_cast<double>(myIntVar) converts int 7 to double 7.0.
+``` Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   int kidsInFamily1;       // Should be int, not double
+   int kidsInFamily2;       // (know anyone with 2.3 kids?)
+   int numFamilies; 
+   
+   double avgKidsPerFamily; // Expect fraction, so double
+
+   kidsInFamily1 = 3;
+   kidsInFamily2 = 4;
+   numFamilies = 2; 
+   
+   avgKidsPerFamily = static_cast<double>(kidsInFamily1 + kidsInFamily2)
+                      / static_cast<double>(numFamilies);
+   
+   cout << "Average kids per family: " << avgKidsPerFamily << endl;
+   
+   return 0;
+}
+/*
+Average kids per family: 3.5
+*/
+```
+eg:
+static_cast<double>(10) / static_cast<double>(4) = 2.5
+static_cast<double>(15/4) = 3 // This common error first does integer division of 15 / 4 which is 3, then converts to 3.0.
+
+## 2.13 Binary
+- Normally, a programmer can think in terms of base ten numbers. However, a compiler must allocate some finite quantity of bits (e.g., 32 bits) for a variable, and that quantity of bits limits the range of numbers that the variable can represent. Thus, some background on how the quantity of bits influences a variable's number range is helpful.
+- Because each memory location is composed of bits (0s and 1s), a processor stores a number using base 2, known as a binary number.
+- For a number in the more familiar base 10, known as a decimal number, each digit must be 0-9 and each digit's place is weighed by increasing powers of 10.
+Eg: Decimal numbers use weighed powers of 10:
+212 = 2 * 10^2 + 1 * 10^1 + 2 * 10^0
+Eg: In base 2, each digit must be 0-1 and each digit's place is weighed by increasing powers of 2.
+1101 = 1 * 2^3 + 1 * 2^2 + 0 * 2^1 + 1 * 2^0 = 8 + 4 + 0 + 1 = 13
+
+The compiler translates decimal numbers into binary numbers before storing the number into a memory location. The compiler would convert the decimal number 212 to the binary number 11010100, meaning 1*128 + 1*64 + 0*32 + 1*16 + 0*8 + 1*4 + 0*2 + 0*1 = 212, and then store that binary number in memory.
+
+## 2.14 Characters
+### Basics
+A variable of char type, as in char myChar;, can store a single character like the letter m. A character literal is surrounded with single quotes, as in myChar = 'm';.
+``` Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   char arrowBody;
+   char arrowHead;
+
+   arrowBody = '-';
+   arrowHead = '>';
+
+   cout << arrowBody << arrowBody << arrowBody << arrowHead << endl;
+
+   arrowBody = 'o';
+
+   cout << arrowBody << arrowBody << arrowBody << arrowHead << endl;
+
+   return 0;
+}
+/*
+--->
+ooo>
+*/
+```
+### Getting a characters from input
+``` Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   char bodyChar;
+   char headChar;
+
+   cout << "Type two characters: ";
+   cin  >> bodyChar;
+   cin  >> headChar;
+
+   // Output arrow body then head
+   cout << bodyChar << bodyChar << bodyChar;
+   cout << headChar << endl;
+
+   return 0;
+}
+/*
+Type two characters: ->
+--->
+...
+Type two characters:    *     /
+***/
+*/
+```
+
+### A character is internally stored as a number
+Under the hood, a char variable stores a number. Ex: 'a' is stored as 97. In an output statement, the compiler outputs the number's corresponding character.
+ASCII is an early standard for encoding characters as numbers. The following table shows the ASCII encoding as a decimal number (Dec) for common printable characters (for readers who have studied binary numbers, the table shows the binary encoding also). Other characters such as control characters (e.g., a "line feed" character) or extended characters (e.g., the letter "n" with a tilde above it as used in Spanish) are not shown.
+
+![](./ASCIICODE.png)
+
 
 
 
