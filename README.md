@@ -913,6 +913,53 @@ A boy ate an apple.
 */
 ```
 
+### Getting a string without whitespaces from input
+A whitespace character is a character used to represent horizontal and vertical spaces in text, and includes spaces, tabs, and newline characters. Ex: "Oh my goodness!" has two whitespace characters, one between h and m, the other between y and g.
+
+Below shows the basic approach to get a string from input into variable userString. The approach automatically skips initial whitespace, then gets characters until the next whitespace is seen.
+
+Eg:
+```Cpp
+cin >> userString;
+cout << userString;
+
+// Hi there -> Hi
+// abc -> abc
+```
+
+### Getting a string with whitespace from input
+Sometimes a programmer wishes to get whitespace characters into a string, such as getting a user's input of the name "Franklin D. Roosevelt" into a string variable presidentName.
+
+For such cases, the language supports getting an entire line into a string. The function getline(cin, stringVar) gets all remaining text on the current input line, up to the next newline character (which is removed from input but not put in stringVar).
+
+Eg:
+```Cpp
+getline (cin, userString1);
+getline (cin, userString2);
+
+cout << "String 1: " << userString1;
+cout << "String 2: " << userString2;
+
+/*
+Hello there!
+Welcome.
+->
+String 1: Hello there!
+String 2: Welcome.
+
+(this is a blank)
+abc
+def
+->
+String 1:
+String 2: abc
+*/
+```
+### Mixing cin and getline
+Mixing cin >> and getline() can be tricky, because cin >> leaves the newline in the input, while getline() does not skip leading whitespace.
+
+
+
 
 
 
