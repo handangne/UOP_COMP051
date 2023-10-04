@@ -974,7 +974,7 @@ int and double are the most common numeric data types. However, several other nu
 
 The size of integer numeric data types can vary between compilers, for reasons beyond our scope. The following table lists the sizes for numeric integer data types used in this material along with the minimum size for those data types defined by the language standard.
 
-![](./Integer numeric data types.png)
+![](./Integer_numeric_data_types.png)
 
 
 
