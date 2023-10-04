@@ -976,6 +976,14 @@ The size of integer numeric data types can vary between compilers, for reasons b
 
 ![](./Integer_numeric_data_types.png)
 
+- int is the most commonly used integer type.
+- long long is used for integers expected to exceed about 2 billion. That is not a typo; the word appears twice.
+- short is rarely used. One situation is to save memory when storing many (e.g., tens of thousands) of smaller numbers, which might occur for arrays (another section). Another situation is in embedded computing systems having a tiny processor with little memory, as in a hearing aid or TV remote control. Similarly, char, while technically a number, is rarely used to directly store a number, except as noted for short.
+
+## 2.18 Unsigned 
+Sometimes a programmer knows that a variable's numbers will always be positive (0 or greater), such as when the variable stores a person's age or weight. The programmer can prepend the word "unsigned" to inform the compiler that the integers will always be positive.
+
+
 
 
 
