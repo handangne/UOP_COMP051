@@ -179,6 +179,9 @@ The compiler converts a high-level program into an executable program using mach
 Comments do not generate machine code.
 The compiler recognizes end of statement by semicolon ";".
 
+Not all spaces are ignored by the compiler. Ex: The spaces in a string literal like "Enter age: " will be printed if the string is output.
+
+
 ## 1.4 Errors and Warning
 ### Syntax error
 People make mistakes. Programmers thus make mistakes—lots of them. One kind of mistake, known as a syntax error, is to violate a programming language's rules on how symbols can be combined to create a program. An example is forgetting to end a statement with a semicolon.
