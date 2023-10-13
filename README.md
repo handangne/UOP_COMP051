@@ -1302,6 +1302,92 @@ Radius: 4.9348
 The last test seems to validate that the problem is a bad radius computation. The programmer visually examines the expression for a circle's radius given the circumference, which looks fine at first glance. However, the programmer notices that radius = circumference / 2 * PI_VAL; should have been radius = circumference / (2 * PI_VAL);. The parentheses around the product in the denominator are necessary and represent the desired order of operations. Changing to radius = circumference / (2 * PI_VAL); solves the problem.
 
 
+# 3. Branches
+## 3.1 If-else branches
+### Branch Basic (If)
+In a program, a branch is a sequence of statements only executed under a certain condition. Ex: A hotel may discount a price only for people over age 65. An if branch is a branch taken only IF an expression is true.
+![](./Basic_Branch_if.png)
+1. A decision leads to two program branches. If the expression is true, the first branch executes. Else, the second branch executes.
+2. If userAge is 68, then 68 > 65 is true. So the first branch executes, which discounts hotelRate.
+3. Execution rejoins the other branch, and continues with subsequent statements, outputting 135. If userAge were instead 50, the output would be 155.
+
+### If-else branches
+An if-else branch has two branches: The first branch is executed IF an expression is true, ELSE the other branch is executed.
+
+In the example below, if a user inputs an age less than 25, the statement insurePrice = 4800 executes. Else, insurePrice = 2200 executes.
+![](./if_else.png)
+
+### If-elseif-else branches
+An if-else can be extended to an if-elseif-else structure. Each branch's expression is checked in sequence; as soon as one branch's expression is found to be true, that branch is taken. If no expression is found true, execution will reach the else branch, which then executes.
+The else part is optional. If omitted, then if none of the previous expressions are true, no branch executes.
+![](./if__elseif_else.png)
+1. This program detects the specific value of a variable. If numYears is 1, the first branch executes and "Newlyweds" is output.
+2. Else, if numYears is 25, the second branch executes and "Silver" is output. Else, if numYears is 50, the third branch executes and "Golden" is output.
+3. Else, the last branch executes.
+
+## 3.2 Detecting equal values with branches
+### Detecting if two items are equal using an if statement
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   int hotelRate;
+   int numYears;
+
+   hotelRate = 150;
+
+   cout << "Enter number of years married: ";
+   cin >> numYears;
+
+   if (numYears == 50) {
+      cout << "Congratulations on 50 years "
+            << "of marriage!" << endl;
+
+      hotelRate = hotelRate / 2;
+   }
+
+   cout << "Your hotel rate: ";
+   cout << hotelRate << endl;
+
+   return 0;
+}
+```
+1. An if statement executes a group of statements if an expression is true. The program assigns hotelRate with 150 and then gets the number of years the user has been married from input.
+2. numYears is 50. So the expression numYears == 50 evaluates to true, and the if's statement will execute. Thus, the statement following the opening brace { will execute next.
+3. hotelRate is divided in half, which is the discount for guests celebrating their 50th wedding anniversary.
+4. The closing brace } indicates the end of the group of statements.
+5. The program completes by printing the hotel rate.
+
+### Equality and inequality operators
+![](./equalityAndInequality.png)
+
+### If else statement
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   int userNum;
+   int divRemainder;
+
+   cout << "Enter a number: ";
+   cin  >> userNum;
+
+   divRemainder = userNum % 2;
+
+   if (divRemainder == 0) {
+       cout << userNum << " is even." << endl;
+   }
+   else {
+       cout << userNum << " is odd." << endl;
+   }
+
+   return 0;
+}
+```
+
+
 
 
 
