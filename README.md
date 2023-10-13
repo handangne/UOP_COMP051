@@ -189,12 +189,12 @@ People make mistakes. Programmers thus make mistakes—lots of them. One kind of
 
 Example: 
 ```Cpp
-cout << numCats. (statement ending with semicolon, not period)
-cout << "Cats: " numCats; (iterms must be seperated by "<<")
-cout < numCats; ("<<" is required, not "<")
-cout << "Cats: << numCats; (missing the ending ")
-cout << NumCats; (the declare variable is "numCats")
-cout >> numCats; (must use "<<" instead of ">>" for cout)
+cout << numCats. // (statement ending with semicolon, not period)
+cout << "Cats: " numCats; //(iterms must be seperated by "<<")
+cout < numCats; //("<<" is required, not "<")
+cout << "Cats: << numCats; //(missing the ending ")
+cout << NumCats; //(the declare variable is "numCats")
+cout >> numCats; //(must use "<<" instead of ">>" for cout)
 ```
 
 ### Unclear error message
