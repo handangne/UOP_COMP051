@@ -1387,8 +1387,179 @@ int main() {
 }
 ```
 
+### Multi-branch If-else statement
+An If-else statement can be extended to have three (or more) branches. Each branch's expression is checked in sequence. As soon as one branch's expression is found to be true, that branch's statements execute (and no subsequent branch is considered). If no expression is true, the else branch executes. The example below detects values of 1, 10, 25, or 50 for variable numYears.
+```Cpp
+#include <iostream>
+using namespace std;
 
+int main() {
+   int numYears;
 
+   cout << "Enter number years married: ";
+   cin  >> numYears;
+
+   if (numYears == 1) {
+      cout << "Your first year -- great!" << endl;
+   }
+   else if (numYears == 10) {
+      cout << "A whole decade -- impressive." << endl;
+   }
+   else if (numYears == 25) {
+      cout << "Your silver anniversary -- enjoy." << endl;
+   }
+   else if (numYears == 50) {
+      cout << "Your golden anniversary -- amazing." << endl;
+   }
+   else {
+      cout << "Nothing special." << endl;
+   }
+
+   return 0;
+}
+```
+
+### Comparing characters, strings, and floating-point types
+The relational and equality operators work for integer, character, and floating-point built-in types.
+
+Comparing characters compares their ASCII numerical encoding.
+
+Floating-point types should not be compared using the equality operators, due to the imprecise representation of floating-point numbers, as discussed in a later section.
+
+The operators can also be used for the string type. Strings are equal if they have the same number of characters and corresponding characters are identical. If string myStr = "Tuesday", then (myStr == "Tuesday") is true, while (myStr == "tuesday") is false because T differs from t.
+
+## 3.3 Detecting ranges with branches (general)
+### Detecting ranges using if-elseif-else
+An if-elseif-else structure can detect number ranges with each branch performing a different action for each range. Each expression only needs to indicate the upper range part; if execution reaches an expression, the lower range part is implicit from the previous expressions being false.
+![](./detcetingRanges_ifelseifelse.png)
+
+### Using multi-branch if-else to detect ranges
+![](./detcetingRanges.png)
+
+## 3.4 Detecting ranges with branches
+### Relational operators
+A relational operator checks how one operand's value relates to another, like being greater than.
+![](./relationalOperators.png)
+
+### Detecting ranges with if-else statements
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   int userAge;
+   int insurancePrice;
+
+   cout << "Enter your age: ";
+   cin  >> userAge;
+
+   if (userAge < 16) {             // Age 15 and under
+      cout << "Too young." << endl;
+      insurancePrice = 0;
+   }
+   else if (userAge < 25) {        // Age 16 - 24
+      insurancePrice = 4800;
+   }
+   else if (userAge < 40) {        // Age 25 - 39
+      insurancePrice = 2350;
+   }
+   else {                          // Age 40 and up
+      insurancePrice = 2100;
+   }
+
+   cout << "Annual price: $" << insurancePrice << endl;
+   return 0;
+}
+```
+
+## 3.5 Detecting ranges using logical operators
+### Logical AND, OR, and NOT (general)
+A logical operator treats operands as being true or false, and evaluates to true or false. Logical operators include AND, OR, and NOT. Programming languages typically use various symbols for those operators, but below the words AND, OR, and NOT are used for introductory purposes.
+![](./logicalOperators.png)
+
+### Logical operators
+![](./LOGICAL_OPERATORS.png)
+
+```Cpp
+if ((userChannel >= 2) && (userChannel <= 499)) {
+   channelType = 's';
+}
+else if ((userChannel >= 1002) && (userChannel <= 1499)) {
+   channelType = 'h';
+}
+else {
+   channelType = 'e';
+}
+```
+### Detecting ranges implicitly vs. explicitly
+A programmer often uses logical operators to detect a range by explicitly specifying the high-end and low-end of the range. However, if a program should detect increasing ranges without gaps, a multi-branch if-else statement can be used without logical operators; the low-end of the range is implicitly known upon reaching an expression. Likewise, a decreasing range without gaps has implicitly-known high-ends.
+```Cpp
+// Explictly defined ranges:
+if (x < 0) {
+ // Negative
+}
+else if ( (x >= 0) && (x <= 10) ) {
+ // 0..10
+}
+else if ( (x >= 11) && (x <= 20) ) {
+ // 11..20
+}
+else {
+ // 21+
+}
+
+//Implictly defined ranges
+if (x < 0) {
+ // Negative
+}
+else if (x <= 10) {
+ // 0..10
+}
+else if (x <= 20) {
+ // 11..20
+}
+else {
+ // 21+
+}
+```
+
+1. This code detects ranges explicitly using the AND operator. The first branch executes when x < 0, the second when (x >=0) && (x <= 10).
+2. But, if the first branch doesn't execute, x must be >= 0. So the second branch's expression can just be x <= 10. The x >= 0 is implicit.
+3. Implicit ranges can simplify a multi-branch if statement for ranges without gaps.
+
+## 3.6 Detecting ranges with gaps
+### Basic ranges with gaps
+Oftentimes, ranges contain gaps. Ex: Movie theaters often give ticket discounts to children (anyone 12 and under) and seniors (anyone 65 and older). The gap is the group of people aged 13 to 64. An if-else statement can be used to detect such ranges with gaps.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   int userAge;
+   int movieTicketPrice;
+
+   cout << "Enter your age: ";
+   cin  >> userAge;
+
+   if (userAge <= 12) {            // Age 12 and under
+      cout << "Child ticket discount." << endl;
+      movieTicketPrice = 11;
+   }
+   else if (userAge >= 65) {       // Age 65 and older
+      cout << "Senior ticket discount." << endl;    
+      movieTicketPrice = 12;
+   }
+   else {                          // All other ages
+      movieTicketPrice = 14;
+   }
+
+   cout << "Movie ticket price: $"
+         << movieTicketPrice << endl;
+   return 0;
+}
+```
+### Ranges with gaps using logical operators
 
 
 
