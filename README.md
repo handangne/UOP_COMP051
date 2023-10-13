@@ -209,12 +209,80 @@ Some errors create an upsettingly long list of error messages. Good practice is 
 
 If a compiler generates a specific message like "missing semicolon", the actual error could be different, like missing parentheses. If a programmer makes a mistake, the statement and subsequent statements may still be valid code, but eventually the compiler cannot make sense of the code and generates an error message.
 
+### Fixing the first error
+Some errors create an upsettingly long list of error messages. The remaining error messages may be real but are more commonly due to the compiler's confusion caused by the first error and are thus irrelevant.
+
+1. Focus on FIRST error message, ignoring the rest.
+2. Look at reported line of first error message. If error found, fix. Else, look at previous few lines.
+3. Compile, repeat.
+
+
 ### Logic error
 Because a syntax error is detected by the compiler, a syntax error is known as a type of compile-time error.
+
 Successfully compiling means the program doesn't have compile-time errors, but the program may have other kinds of errors. A logic error, also called a bug, is an error that occurs while a program runs. For example, a programmer might mean to type numBeans * numJars but accidentally types numBeans + numJars (+ instead of *). The program would compile but would not run as intended.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   int numBeans;
+   int numJars;
+   int totalBeans;
+
+   numBeans = 500;
+   numJars = 3;
+   
+   cout << numBeans << " beans in ";
+   cout << numJars  << " jars yields ";
+   totalBeans = numBeans + numJars; // Oops, used + instead of *
+   cout << totalBeans << " total" << endl;
+   
+   return 0;
+}
+```
+### Compiling frequently
+Good practice, especially for new programmers, is to compile after writing only a few lines of code, rather than writing tens of lines and then compiling. New programmers commonly write tens of lines before compiling, which may result in an overwhelming number of compilation errors and warnings and logic errors that are hard to detect and correct. This is the reason why we should compile frequently.
+
 
 ### Compiler warning
 A compiler will sometimes report a warning, which doesn't stop the compiler from creating an executable program but indicates a possible logic error. Ex: Some compilers will report a warning like "Warning, dividing by 0 is not defined" if encountering code like: totalItems = numItems / 0 (running that program does result in a runtime error).
+
+Default settings commonly do NOT report all important issues. Good practice is to explicitly configure the compiler to report most warnings.
+
+## 1.6 Computer tour
+### Processor or CPU
+Probably the most important component and most sophisticated in a computer.
+A Processor or CPU is commonly found on the Motherboard adjacent to RAM.
+
+Processors have memory reserved at space 0 for the fastest and first in / out access.
+
+### Memory or RAM
+This is volatile storage which has a faster read / write speed. But the contents are lost if the computer loses power, or the system process is ended.
+
+Memory size is normally allocated in bits or bytes where a byte is 8 bits.
+Common sizes are in MB or GB. In intervals of 8. I.e. 4096MB of RAM or 4GB of RAM are essentially the same.
+
+### Storage Devices or Disks
+• In the past, these were spindle drives or rotating drives. Which came in various sizes and spindle speeds.
+• Disks store files or information such as program files, user files (like documents and pictures), and Operating System files.
+• Today – we use SSD’s or Solid-State Disks and some systems use NVmE devices for even faster storage.
+• The main fault of disks is normally the access, aka read / write speed.
+
+### Input / Output devices or I/O devices.
+These are the screen, keyboard, mouse. However, computers we use often have additional peripherals such as a USB device, printers, speakers, microphones, etc. These are commonly called peripherals.
+
+### Operating system
+An operating system (OS) is a crucial software that runs on a computer or electronic device to manage and control its operations. The OS serves as an interface between the user and the hardware, while managing system resources such as memory, processor, peripherals, and storage.
+
+The operating system provides essential services and functions such as file management, memory management, scheduling and multitasking, networking, user interface, and various other applications. It enables users to perform tasks through a graphical user interface or command line, and allows for the execution of different application programs.
+
+There are several popular operating systems, including Windows, macOS, Linux, and mobile operating systems such as Android and iOS. Each operating system has its own characteristics and supports different applications and hardware, depending on the purpose and end-user requirements.
+
+### Clock
+Processors and systems interact with the system clock to schedule and execute operations. These are found in all sorts of devices ranging from simple gadgets to expensive research equipment.
+
 
 # 2. Variables / Assignment
 ## 2.1 Variables and assignment (general)
