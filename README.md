@@ -2066,6 +2066,254 @@ else {
 }
 ```
 ## 3.13 String comparisons
+### String comparison: Equality
+Two strings are commonly compared for equality. Equal strings have the same number of characters, and each corresponding character is identical.
+```Cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+   string userWord;
+
+   cout << "Enter a word: ";
+   cin  >> userWord;
+
+   if (userWord == "USA") {
+      cout << "United States of America";
+   }
+   else {
+      cout << userWord;
+   }
+   cout << endl;
+
+   return 0;
+}
+```
+### String comparison: Relational
+Strings are sometimes compared relationally (less than, greater than), as when sorting words alphabetically. A comparison begins at index 0 and compares each character until the evaluation results in false, or the end of a string is reached. 'A' is 65, 'B' is 66, etc., while 'a' is 97, 'b' is 98, etc. So "Apples" is less than "apples" because 65 is less than 97.
+A programmer compares strings relationally using the relational operators <, <=, >, and >=.
+
+A common error is to forget that case matters in a string comparison. A programmer can compare strings while ignoring case by first converting both strings to lowercase before comparing (discussed elsewhere).
+
+## 3.14 String access operations
+### String character indices
+A string is a sequence of characters in memory. Each string character has a position number called an index, starting with 0 (not 1).
+
+### Accessing string characters
+at(): The notation someString.at(x) accesses the character at index x of a string.
+
+```Cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+   string userWord;
+
+   cout << "Enter a 5-letter word: ";
+   cin  >> userWord;
+
+   cout << "Scrambled: ";
+   cout << userWord.at(3);
+   cout << userWord.at(1);
+   cout << userWord.at(4);
+   cout << userWord.at(0);
+   cout << userWord.at(2);
+   cout << endl;
+
+   return 0;
+}
+/*
+Enter a 5-letter word: water
+Scrambled: earwt
+
+...
+
+Enter a 5-letter word: Quick
+Scrambled: cukQi
+
+...
+
+Enter a 5-letter word: 98765
+Scrambled: 68597
+*/
+```
+### Changing a character in a string
+A character in a string can be assigned. If userString is "abcde", then userString.at(3) = 'X' yields "abcXe".
+
+```Cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+   string userWord ="Caterpillar";
+   int replaceIndex;
+   
+   cout << "Enter an index (0-10): ";
+   cin  >> replaceIndex;
+
+   userWord.at(replaceIndex) = '*';
+
+   cout << "Updated string: ";
+   cout << userWord << endl;
+
+   return 0;
+}
+/*
+Enter an index (0-10): 0
+Updated string: *aterpillar
+
+...
+
+Enter an index (0-10): 3
+Updated string: Cat*rpillar
+
+...
+
+Enter an index (0-10): 10
+Updated string: Caterpilla*
+*/
+```
+
+### Working with the end of a string
+Determining the last character in a string is often useful. If a string's length is known, the last character is at index length - 1.
+Ex: "Hey" has length 3, with y at index 2. The function s1.size() returns s1's length. Ex: If s1 is "Hey", s1.size() returns 3.
+
+A common task is to append (add to the end) a string to an existing string. The function s1.append(s2) appends string s2 to string s1.
+Ex: If s1 is "Hey", s1.append("!!!") makes s1 "Hey!!!".
+
+The example program below might be part of a "caption contest" for a website where a user enters a string below an image. The program automatically adds a period if the user did not include any punctuation at the caption's end.
+```Cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+   string userCaption;
+   char lastChar;
+   int lastIndex;
+
+   cout << "Enter a caption: ";
+   getline(cin, userCaption);
+
+   lastIndex = userCaption.size() - 1;
+   lastChar  = userCaption.at(lastIndex);
+
+   if ( (lastChar != '.') && (lastChar != '!') && (lastChar != '?') ) {
+      // User's caption lacked ending punctuation, so add a period
+      userCaption.append(".");
+   }
+
+   cout << "New: ";
+   cout << userCaption << endl;
+
+   return 0;
+}
+/*
+Enter a caption: Hello world
+New: Hello world.
+
+...
+
+Enter a caption: Anyone home?
+New: Anyone home?
+
+...
+
+Enter a caption: TGIF!
+New: TGIF!
+
+...
+
+Enter a caption: Another day.
+New: Another day.
+
+...
+
+Enter a caption: Life is sweet
+New: Life is sweet.
+*/
+```
+The size() and length() functions both return a string's length. Ex: For the string firstName = "Tosi", firstName.size() and firstName.length() both return 4.
+
+### Common errors
+A common error is to access an invalid string index, especially exactly one larger than the largest index. Given userText with size 8, the range of valid indices are 0 … 7; accessing with index 8 is an error.
+
+The .at(index) function generates an exception if the index is out of range for the string's size. An exception is a detected runtime error that commonly prints an error message and terminates the program.
+
+C++ also supports C-style access of a string using brackets [] rather than .at(), as in: someString[0]. However, such C-style access does not provide such error checking. Good practice is to use .at() rather than brackets for accessing a string's characters, due to .at()'s error checking.
+
+## 3.15 Character operations
+Including the cctype library via #include <cctype> provides access to several functions for working with characters. ctype stands for character type. The first c indicates the library is originally from the C language.
+![](./Character_functions_return_values.png)
+
+```Cpp
+#include <iostream>
+#include <cctype>
+using namespace std;
+
+int main() {
+   char let0;
+   char let1;
+
+   cout << "Enter a two-letter state abbreviation: ";
+   cin >> let0;
+   cin >> let1;
+
+   if ( ! (isalpha(let0) && isalpha(let1)) ) {
+      cout << "Error: Both are not letters." << endl;
+   }
+   else {
+      let0 = toupper(let0);
+      let1 = toupper(let1);
+      cout << "Capitalized: " << let0 << let1 << endl;
+   }
+
+   return 0;
+}
+```
+## 3.16 More string operations
+### Finding in a string / Getting a substring
+![](./find()_substr()_functions.png)
+
+```Cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+   string emailText;
+   int atSymbolIndex;
+   string emailUsername;
+
+   cout << "Enter email address: ";
+   cin  >> emailText;
+
+   atSymbolIndex = emailText.find('@');
+   if (atSymbolIndex == string::npos) {
+      cout << "Address is missing @" << endl;
+   }
+   else {
+      emailUsername = emailText.substr(0, atSymbolIndex);
+      cout << "Username: " << emailUsername << endl;
+   }
+
+   return 0;
+}
+/*
+Enter email address: AbeLincoln@fakeemail.com
+Username: AbeLincoln
+
+...
+
+Enter email address: swimming_is_fun
+Address is missing @
+*/
+```
+
+
 
 
 
