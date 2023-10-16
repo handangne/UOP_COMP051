@@ -1560,6 +1560,513 @@ int main() {
 }
 ```
 ### Ranges with gaps using logical operators
+```Cpp
+if (officeNum >= 100 && officeNum <= 150) {
+   // valid office number
+}
+else if (officeNum >= 200 && officeNum <= 250) {
+   // valid office number
+}
+else {
+   // invalid office number
+}
+```
+```Cpp
+if ((officeNum >= 100 && officeNum <= 150) || (officeNum >= 200 && officeNum <= 250)) {
+   // valid office number
+}
+else {
+   // invalid office number
+}
+```
+## 3.7 Detecting multiple features with branches
+### Multiple distinct if statements
+A programmer can use multiple if statements in sequence to detect multiple features with independent actions. Multiple sequential if statements looks similar to a multi-branch if-else statement but has a very different meaning. Each if-statement is independent, and thus more than one branch can execute, in contrast to the multi-branch if-else arrangement.
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   int userAge;
+   
+   cout << "Enter age: ";
+   cin  >> userAge;
+   
+   // Note that more than one "if" statement can execute
+   if (userAge < 16) {
+      cout << "Enjoy your early years." << endl;
+   }
+   
+   if (userAge > 15) {
+      cout << "You are old enough to drive." << endl;
+   }
+   
+   if (userAge > 17) {
+      cout << "You are old enough to vote." << endl;
+   }
+   
+   if (userAge > 24) {
+      cout << "Most car rental companies will rent to you." << endl;
+   }
+   
+   if (userAge > 34) {
+      cout << "You can run for president." << endl;
+   }
+   
+   return 0;
+}
+/*
+Enter age: 12
+Enjoy your early years.
+
+...
+
+Enter age: 27
+You are old enough to drive.
+You are old enough to vote.
+Most car rental companies will rent to you.
+
+...
+
+Enter age: 99
+You are old enough to drive.
+You are old enough to vote.
+Most car rental companies will rent to you.
+You can run for president.
+*/
+```
+
+### Nested if-else statements
+A branch's statements can include any valid statements, including another if-else statement, which are known as nested if-else statements. Nested if statements are commonly used to make decisions that are based on multiple features. Ex: To calculate a discount based on both the number of items purchased and the total cost of those items, one if statement checks the number of items purchased and a nested if statement can check the total cost.
+
+```Cpp
+if (numItems > 3) {     
+   if (totalCost > 100) {       // numItems > 3 and totalCost > 100
+      saleDiscount = 20;
+   }
+   else if (totalCost > 50) {  // numItems > 3 and totalCost > 50
+      saleDiscount = 10;
+   }
+}
+else if (numItems > 0) {
+   ...
+}
+```
+
+## 3.8 Common branching errors
+### Common error: Missing braces
+```Cpp
+if (numSales < 20)
+   salesBonus = 0;
+else
+   totBonus = totBonus + 1; 
+   salesBonus = 20;
+```
+Indentation is irrelevant.
+salesBonus = 20; is not part of else, 
+so always executes.
+
+### Common error: Using the incorrect operators
+Perhaps the most common error in C and C++ is to use = rather than == in an if-else expression, as in: if (numDogs = 9) { ... }. That code is not a syntax error. The statement assigns numDogs with 9, and then because that value is non-zero, the expression is considered true. C's designers allowed assignment in expressions to allow compact code, and use = for assignment rather than := or similar to save typing. Many people believe those language design decisions were mistakes, leading to many bugs. Some modern compilers provide a warning when = appears in an if-else expression.
+
+Another common error is to use invalid character sequences like =>, !<, or <>, which are not valid operators.
+
+## 3.9 Example: Toll calculation
+### Calculating toll based on time of day
+```Cpp
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+int main() {
+   int timeHour;      // Time of travel hour
+   int timeMinute;    // Time of travel minute
+   char inputColon;   // Used to read time format
+   double tollAmount;
+   
+   cout << "Enter time of travel (HH:MM in 24 hour format): ";
+   
+   // Read an integer (hour), colon (char), and integer (minute)
+   cin  >> timeHour >> inputColon >> timeMinute;
+   
+   // Determine toll based on hour of travel
+   if (timeHour < 6) {         // Before 6:00 am
+      tollAmount = 1.55;
+   }
+   else if (timeHour < 10) {   // 6 am to 9:59 am
+      tollAmount = 4.65;
+   }
+   else if (timeHour < 18) {   // 10 am to 5:59 pm
+      tollAmount = 2.35;
+   }
+   else {                      // 6 pm and after
+      tollAmount = 1.55;
+   }
+   
+   // Output time and toll amount
+   cout << "Toll at " << timeHour << ":";
+   
+   // Output minute with formatting (discussed elsewhere) to
+   // print two digits for minutes.
+   cout << setw(2) << setfill('0') << timeMinute;
+   cout << " is " << tollAmount << endl;
+   
+   return 0;
+}
+```
+
+### Calculating toll based on time of day and day of week
+```Cpp
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+int main() {
+   int timeHour;      // Time of travel hour (24 hour format)
+   int timeMinute;    // Time of travel minute
+   int typeOfDay;     // 0 - weekday, 1 - weekend/holiday
+   char inputColon;   // Used to read time format
+   double tollAmount;
+   
+   cout << "Enter time of travel (HH:MM in 24 hour format): ";
+   
+   // Read an integer (hour), colon (char), and integer (minute)
+   cin  >> timeHour >> inputColon >> timeMinute;
+   
+   cout << "Enter type of day (0 - weekday, 1 - weekend/holiday): ";
+   cin >> typeOfDay;
+   
+   if (typeOfDay == 0) { // Weekday time and rates
+                         // Determine toll based on hour of travel
+      if (timeHour < 6) {         // Before 6:00 am
+         tollAmount = 1.55;
+      }
+      else if (timeHour < 10) {   // 6 am to 9:59 am
+         tollAmount = 4.65;
+      }
+      else if (timeHour < 18) {   // 10 am to 5:59 pm
+         tollAmount = 2.35;
+      }
+      else {                      // 6 pm and after
+         tollAmount = 1.55;
+      }
+   }
+   else { // Weekend/holiday time and rates
+          // Determine toll based on hour of travel
+      if (timeHour < 8) {         // Before 8:00 am
+         tollAmount = 1.55;
+      }
+      else if (timeHour < 12) {   // 8 am to 11:59 am
+         tollAmount = 3.05;
+      }
+      else if (timeHour < 16) {   // 12 pm to 3:59 pm
+         tollAmount = 3.45;
+      }
+      else if (timeHour < 19) {   // 4 pm to 6:5 9pm
+         tollAmount = 3.60;
+      }
+      else if (timeHour < 22) {   // 7 pm to 9:59 pm
+         tollAmount = 3.05;
+      }
+      else {                      // 10 pm and after
+         tollAmount = 1.55;
+      }
+   }
+   
+   // Output toll using am/pm format
+   cout << "Toll at ";
+   
+   // Output hour adjusting for am/pm format
+   if (timeHour == 0) {
+      cout << "12:";
+   }
+   else if (timeHour <= 12) {
+      cout << timeHour << ":";
+   }
+   else {
+      cout << timeHour - 12 << ":";
+   }
+   
+   // Output minute with formatting (discussed elsewhere) to
+   // print two digits for minutes.
+   cout << setw(2) << setfill('0') << timeMinute;
+
+   // Output am/pm
+   if (timeHour < 12) {
+      cout << " am";
+   }
+   else {
+      cout << " pm";
+   }
+   
+   cout << " is " << tollAmount << endl;
+   
+   return 0;
+}
+```
+
+## 3.10 Order of evaluation
+### Precedence rules
+The order in which operators are evaluated in an expression are known as precedence rules. Arithmetic, logical, and relational operators are evaluated in the order shown below.
+![](./precedenceRules.png)
+
+### Common error: Missing parentheses
+A common error is to write an expression that is evaluated in a different order than expected. Good practice is to use parentheses in expressions to make the intended order of evaluation explicit. Several examples are below.
+
+### Common error: Math expression for range
+A common error often made by new programmers is to write expressions like (16 < age < 25), as one might see in mathematics.
+
+The meaning, however, almost certainly is not what the programmer intended. Suppose age is presently 28. The expression is evaluated left-to-right, so evaluation of 16 < age yields true. Next, the expression true < 25 is evaluated; clearly not the programmer's intent. However, true is actually 1, and evaluating 1 < 25 will yield true. Thus, the above expression evaluates to true, even for ages greater than 25.
+
+Thus, 16 < age < 25 is actually the same as (16 < age) < 25, which evaluates to (true) < 25 for any age over 16, which is the same as (1) < 25, which evaluates to true. The correct way to do such a comparison is: (age > 16) && (age < 25).
+
+### Common error: Bitwise rather than logical operators
+Logical AND is && and not just &, and logical OR is || and not just |. & and | represent bitwise operators, which perform AND or OR on corresponding individual bits of the operands.
+
+A common error is to use a bitwise operator instead of a logical operator, typing & instead of &&, or typing | instead of ||. A bitwise operator may yield different behavior than expected.
+
+## 3.11 Switch statements
+### Switch statement
+A switch statement can more clearly represent multi-branch behavior involving a variable being compared to constant values. The program executes the first case whose constant expression matches the value of the switch expression, executes that case's statements, and then jumps to the end. If no case matches, then the default case statements are executed.
+
+```Cpp
+switch (a) {
+  case 0:
+     // Print "zero"
+     break;
+
+  case 1:
+     // Print "one"
+     break;
+
+  case 2:
+     // Print "two"
+     break;
+
+   default:
+     // Print "unknown"
+     break;
+}
+```
+### Switch statement general form
+The switch statement's expression should be an integer or char. The expression should not be a string or a floating-point type. Each case must have a constant expression like 2 or 'q'; a case expression cannot be a variable.
+
+The order of cases doesn't matter assuming break statements exist at the end of each case. The earlier program could have been written with case 3 first, then case 2, then case 0, then case 1, for example (though that would be bad style).
+
+Good practice is to always have a default case for a switch statement. A programmer may be sure all cases are covered only to be surprised that some case was missing.
+
+```Cpp
+switch (expression) {
+   case constantExpr1: 
+      // Statements
+      break;
+
+   case constantExpr2:
+      // Statements
+      break;
+   
+   ...
+   
+   default: // If no other case matches
+      // Statements
+      break;
+}
+```
+```Cpp
+#include <iostream>
+using namespace std;
+
+/* Estimates dog's age in equivalent human years.
+   Source: www.dogyears.com
+*/
+
+int main() {
+   int dogAgeYears;
+
+   cout << "Enter dog's age (in years): ";
+   cin  >> dogAgeYears;
+
+   switch (dogAgeYears) {
+      case 0:
+         cout << "That's 0..14 human years." << endl;
+         break;
+
+      case 1:
+         cout << "That's 15 human years." << endl;
+         break;
+
+      case 2:
+         cout << "That's 24 human years." << endl;
+         break;
+
+      case 3:
+         cout << "That's 28 human years." << endl;
+         break;
+
+      case 4:
+         cout << "That's 32 human years." << endl;
+         break;
+
+      case 5:
+         cout << "That's 37 human years." << endl;
+         break;
+
+      default:
+         cout << "Human years unknown." << endl;
+         break;
+   }
+
+   return 0;
+}
+```
+
+### Omitting the break statement
+Omitting the break statement for a case will cause the statements within the next case to be executed. Such "falling through" to the next case can be useful when multiple cases, such as cases 0, 1, and 2, should execute the same statements.
+
+The following extends the previous program for dog ages less than 1 year old. If the dog's age is 0, the program asks for the dog's age in months. Within the  switch (dogAgeMonths) statement, "falling through" is used to execute the same display statement for several values of dogAgeMonths. For example, if dogAgeMonths is 0, 1 or 2, the same statement executes.
+
+A common error occurs when the programmer forgets to include a break statement at the end of a case's statements.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   int dogAgeYears;
+   int dogAgeMonths;
+
+   cout << "Enter dog's age (in years): ";
+   cin >> dogAgeYears;
+
+   if (dogAgeYears == 0) {
+      cout << "Enter dog's age in months: ";
+      cin  >> dogAgeMonths;
+
+      switch (dogAgeMonths) {
+         case 0:
+         case 1:
+         case 2:
+            cout << "That's 0..14 human months." << endl;
+            break;
+
+         case 3:
+         case 4:
+         case 5:
+         case 6:
+            cout << "That's 1..5 human years." << endl;
+            break;
+
+         case 7:
+         case 8:
+            cout << "That's 5..9 human years." << endl;
+            break;
+
+         case 9:
+         case 10:
+         case 11:
+         case 12:
+            cout << "That's 9..15 human years." << endl;
+            break;
+
+         default:
+            cout << "Invalid input." << endl;
+            break;
+      }
+   }
+   else {
+      cout << "FIXME: Do earlier dog year cases." << endl;
+      switch (dogAgeYears) {
+      }
+   }
+
+   return 0;
+}
+```
+
+## 3.12 Boolean data type
+### Boolean data type
+Boolean refers to a quantity that has only two possible values, true or false. C++ has the built-in data type bool for representing Boolean quantities.
+
+A Boolean variable may be set using true or false keywords. Ex: isWeekend = true; assigns isWeekend with the Boolean value true. A Boolean variable may also be set to the result of a logical expression. Ex: isLargeParty = (partySize > 6); assigns isLargeParty with the result of the expression partySize > 6.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   int waitTime;
+   int partySize;
+   char day;
+   bool isLargeParty;
+   bool isWeekend;
+   
+   // Get day of reservation
+   cout << "Day of reservation (T/W/R/F/S/U): ";
+   cin >> day;
+   if (day == 'F' || day == 'S' || day == 'U') {
+      isWeekend = true;
+   }
+   else {
+      isWeekend = false;
+   }
+   
+   // Get party size
+   cout << "Enter party size: ";
+   cin  >> partySize;
+   isLargeParty = (partySize > 6);
+   
+   // Determine wait time based on day of week and party size
+   if (isWeekend && !isLargeParty) {
+      waitTime = 30;
+   }
+   else if (!isWeekend && !isLargeParty) {
+      waitTime = 10;
+   }
+   else if (isWeekend && isLargeParty) {
+      waitTime = 45;
+   }
+   else {
+      waitTime = 15;
+   }
+   
+   cout << "Restaurant wait time is " << waitTime
+        << " minutes." << endl;
+   
+   return 0;
+}
+```
+### Uses of Boolean data types
+A programmer can use a Boolean variable to simplify a complex expression. An expression that combines logical and relational operators can be simplified by assigning bool variables with the result of the expression using relational operators. The if-else expression can then consist of only logical operations using those variables.
+
+The following program assigns bool variables isHot, isReallyHot, and isHumid with the results of expressions comparing currentTemp, desiredTemp, and currentHumidity. The if-else statement then uses isHot and isHumid in the if-else's expressions.
+
+```Cpp
+isHot = (currentTemp > desiredTemp);
+isReallyHot = (currentTemp > (desiredTemp + 5.0));
+isHumid = (currentHumidity > 0.50);
+   
+if (isReallyHot) {
+   // Use A/C and evaporative cooler
+   acOn = true;
+   evapCoolerOn = true;
+}
+else if (isHot && isHumid) {
+   // Use A/C
+   acOn = true;
+   evapCoolerOn = false;
+}
+else if (isHot && !isHumid) {
+   // Use evaporative cooler
+   acOn = false;
+   evapCoolerOn = true;
+}
+else {
+   acOn = false;
+   evapCoolerOn = false;
+}
+```
+## 3.13 String comparisons
+
 
 
 
