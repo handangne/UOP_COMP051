@@ -2497,6 +2497,395 @@ int main() {
 ```
 
 ### Basic while loop example
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   double celsiusValue;
+   double fahrenheitValue;
+   char userChar;
+
+   celsiusValue = 0.0;
+   userChar = 'y';
+
+   while (userChar == 'y') {
+      fahrenheitValue = (celsiusValue * 9.0 / 5.0) + 32.0;
+
+      cout << celsiusValue << " C is ";
+      cout << fahrenheitValue << " F" << endl; 
+
+      cout << "Type y to continue, any other to quit: ";
+      cin >> userChar;
+
+      celsiusValue = celsiusValue + 5;
+      cout << endl;
+   }
+
+   cout << "Goodbye." << endl;
+
+   return 0;
+}
+/*
+0 C is 32 F
+Type y to continue, any other to quit: y
+
+5 C is 41 F
+Type y to continue, any other to quit: y
+
+10 C is 50 F
+Type y to continue, any other to quit: y
+
+15 C is 59 F
+Type y to continue, any other to quit: y
+
+20 C is 68 F
+Type y to continue, any other to quit: y
+
+25 C is 77 F
+Type y to continue, any other to quit: y
+
+30 C is 86 F
+Type y to continue, any other to quit: y
+
+35 C is 95 F
+Type y to continue, any other to quit: y
+
+40 C is 104 F
+Type y to continue, any other to quit: q
+
+Goodbye.
+*/
+```
+
+### Getting input before a loop
+The above examples got user input into a variable only at the end of the loop body. The examples assigned that variable an initial value that always caused the loop body to execute the first time. Another common pattern gets that initial value from user input as well, thus getting input in two places: before the loop, and at the loop body's end.
+```Cpp
+// Get input into userChar
+
+while (userChar == 'y') {
+   // Do something ...
+   // Get input into userChar
+}
+```
+
+### Loop expressions
+Various kinds of expressions are found in while loop expressions. For example, sometimes a loop is executed as long as a value is greater than another value, or less than another value. Sometimes a loop is executed as long as a value is NOT equal to another value.
+
+Below is an example with a relational operator in the loop expression.
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+  int userNum;
+ 
+  cin >> userNum;
+ 
+  while (userNum > 0) {
+     cout << userNum % 10 << endl;
+     userNum = userNum / 10;
+  }
+ 
+  return 0;
+}
+```
+
+### Common Errors
+A common error is to use the opposite loop expression than desired, like using x == 0 rather than x != 0. Programmers should remember that the expression describes when the loop should iterate, not when the loop should terminate.
+
+An infinite loop is a loop that never stops iterating. A common error is to accidentally create an infinite loop, often by forgetting to update a variable in the body, or by creating a loop expression whose evaluation to false isn't always reachable.
+
+```Cpp
+numKids = 2;
+
+// Get userChar from input
+
+while (userChar == 'y') {
+ // Put numKids to output
+ // numKids = numKids * 2;
+}
+// forgot to get userChar from input again
+```
+
+```Cpp
+// Get userVal from input
+
+while (userVal != 0) {
+ // Put userVal to output
+ // userVal = userVal - 2;
+}
+
+// 3 1 -1 -3 -5
+// loop expression always evaluates to true
+```
+
+## 4.3 More while examples
+The following is an example of using a loop to compute a mathematical quantity. The program computes the greatest common divisor (GCD) among two user-entered integers numA and numB, using Euclid's algorithm: If numA > numB, set numA to numA - numB, else set numB to numB - numA. These steps are repeated until numA equals numB, at which point numA and numB each equal the GCD.
+```Cpp
+#include <iostream>
+using namespace std;
+
+// Output GCD of user-input numA and numB
+
+int main() {
+   int numA;  // User input
+   int numB;  // User input
+   
+   cout << "Enter first positive integer: ";
+   cin  >> numA;
+   
+   cout << "Enter second positive integer: ";
+   cin  >> numB;
+   
+   while (numA != numB) { // Euclid's algorithm
+      if (numB > numA) {
+         numB = numB - numA;
+      }
+      else {
+         numA = numA - numB;
+      }
+   }
+   
+   cout << "GCD is: " << numA << endl;
+   
+   return 0;
+}
+/*
+Enter first positive integer: 9
+Enter second positive integer: 7
+GCD is: 1
+
+...
+
+Enter first positive integer: 15
+Enter second positive integer: 10
+GCD is: 5
+
+...
+
+Enter first positive integer: 99
+Enter second positive integer: 33
+GCD is: 33
+
+...
+
+Enter first positive integer: 500
+Enter second positive integer: 500
+GCD is: 500
+*/
+```
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+// Outputs average of list of positive integers
+// List ends with 0 (sentinel)
+// Ex: 10 1 6 3 0  yields (10 + 1 + 6 + 3) / 4, or 5
+
+int main() {
+   int currValue;
+   int valuesSum;
+   int numValues;
+
+   valuesSum = 0;
+   numValues = 0;
+
+   cin >> currValue;
+
+   while (currValue > 0) { // Get values until 0 (or less)
+      valuesSum = valuesSum + currValue;
+      numValues = numValues + 1;
+      cin >> currValue;
+   }
+
+   cout << "Average: " << (valuesSum / numValues) << endl;
+
+   return 0;
+}
+```
+## 4.4 For loops
+### Basics
+A loop commonly must iterate a specific number of times, such as 10 times. Though achievable with a while loop, that situation is so common that a special kind of loop exists. A for loop is a loop with three parts at the top: a loop variable initialization, a loop expression, and a loop variable update. A for loop describes iterating a specific number of times more naturally than a while loop.
+
+```Cpp
+for (initialExpression; conditionExpression; updateExpression) {
+  // Loop body
+}
+// Statements after the loop
+```
+The statement i = i + 1 is so common that the language supports the shorthand ++i, with ++ known as the increment operator. (Likewise, -- is the decrement operator, --i means i = i - 1). As such, a standard way to loop N times is shown below.
+```Cpp
+int i;
+...
+for (i = 0; i < N; ++i) {
+   ...
+}
+```
+Note: Actually two increment operators exist: ++i (pre-increment) and i++ (post-increment). ++i increments before evaluating to a value, while i++ increments after. Ex: If i is 5, outputting ++i outputs 6, while outputting i++ outputs 5 (and then i becomes 6). This material primarily uses ++i for simplicity and safety, although many programmers use i++, especially in for loops.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+// Outputs average of list of integers
+// First value indicates list size
+// Ex: 4  10 1 6 3  yields (10 + 1 + 6 + 3) / 4, or 5
+
+int main() {
+   int currValue;
+   int valuesSum;
+   int numValues;
+   int i;
+
+   cin >> numValues; // Gets number of values in list
+
+   valuesSum = 0;
+
+   for (i = 0; i < numValues; ++i) {
+      cin >> currValue; // Gets next value in list
+      valuesSum += currValue;
+   }
+
+   cout << "Average: " << (valuesSum / numValues) << endl;
+
+   return 0;
+}
+```
+
+### Choosing among for and while loops
+for: Number of iterations is computable before the loop, like iterating N times.
+while: Number of iterations is not (easily) computable before the loop, like iterating until the input is 'q'.
+
+## 4.5 More for loops examples
+```Cpp
+#include <iostream>
+using namespace std;
+
+// Outputs max of list of integers
+// First value indicates list size
+// Ex: 4 -1 9 0 3  yields 9
+
+int main() {
+   int maxSoFar;
+   int currValue;
+   int numValues;
+   int i;
+   
+   cin >> numValues;
+   
+   for (i = 0; i < numValues; ++i) {
+      cin >> currValue;
+      
+      if (i == 0) { // First iteration
+         maxSoFar = currValue;
+      }
+      else if (currValue > maxSoFar) {
+         maxSoFar = currValue;
+      }
+   }
+   
+   if (numValues > 0) {
+      cout << "Max: " << maxSoFar << endl;
+   }
+   
+   return 0;
+}
+```
+
+### Loop style issues
+#### Starting with 0
+Programmers in C, C++, Java, and other languages have generally standardized on looping N times by starting with i = 0 and checking for i < N, rather than by using i = 1 and i <= N. One reason is due to other constructs (arrays / vectors), often used with loops, start with 0. Another is simply that a choice was made.
+
+#### The ++ operators
+The ++ operator can appear as ++i (prefix form) or as i++ (postfix form). ++i increments i first and then evaluates the result, while i++ evaluates the result first and then increments i. The distinction is relevant in a statement like x = ++i vs. x = i++; if i is 5, the first yields x = 6, the second x = 5.
+
+Some consider ++i safer for beginners in case they type i = ++i, which typically works as expected (whereas i = i++ does not), so this material uses ++i throughout. The -- operator also has prefix and postfix versions. Incidentally, the C++ programming language gets its name from the ++ operator, suggesting C++ is an increment or improvement over its C language predecessor.
+
+#### In-loop declaration of i
+Variables can be declared throughout code, so many programmers use: for (int i = 0; i < N; ++i). But, the teaching experience of this material's authors suggests such declarations may confuse learners who may declare variables within loops, repeatedly re-declaring variables, etc. This material avoids the in-loop declaration approach. The authors hope to make the learning less error-prone, and have confidence that programmers can easily pick up on the common in-loop declaration approach later.
+
+### Common errors
+```Cpp
+// Loop variable updated twice per iteration
+for (i = 0; i < 5; ++i) {
+   // Loop body
+   ++i; // Oops
+}
+```
+```Cpp
+// initialExpression not related to counting iterations; move r = rand() before loop
+for (i = 0, r = rand(); i < 5; ++i) {
+   // Loop body 
+}
+
+// updateExpression not related to counting iterations; move r = r + 2 into loop body
+for (i = 0; i < 5; ++i, r = r + 2) {
+   // Loop body 
+}
+```
+
+## 4.6 Loops and strings
+### Iterating through a string with a for loop
+```Cppp
+#include <iostream>
+#include <string>
+#include <cctype>
+using namespace std;
+
+int main() {
+   string inputWord;
+   int numLetters;
+   unsigned int i;
+
+   cout << "Enter a word: ";
+   cin  >> inputWord;
+
+   numLetters = 0;
+   for (i = 0; i < inputWord.size(); ++i) {
+      if (isalpha(inputWord.at(i))) {
+         numLetters += 1;
+      }
+   }
+
+   cout << "Number of letters: " << numLetters << endl;
+
+   return 0;
+}
+```
+
+### Iterating until done with a while loop
+```Cppp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+   string userText;
+   int usaIndex;
+
+   cout << "Enter text: ";
+   getline(cin, userText);
+
+   // At least one occurrence exists
+   while (userText.find("U.S.A.") != string::npos) {
+      // Get index of first instance
+      usaIndex = userText.find("U.S.A.");
+
+      // U.S.A. is 6 long
+      userText.replace(usaIndex, 6, "USA");
+   }
+
+   cout << "New text: " << userText<< endl;
+
+   return 0;
+}
+```
+
+
+
+
 
 
 
