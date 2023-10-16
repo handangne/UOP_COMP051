@@ -2313,6 +2313,196 @@ Address is missing @
 */
 ```
 
+### Combining / Replacing
+![](./String_modify_functions.png)
+
+```Cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+   string userName;
+   string greetingText;
+   int itemIndex;
+   
+   itemIndex = 0;
+   
+   cout << "Enter name: ";
+   getline(cin, userName);
+   
+   // Combine strings using +
+   greetingText = "Hello " + userName;
+   
+   // Append a period (could have used +)
+   greetingText.push_back('.'); // '' not ""
+   cout << greetingText << endl;
+   
+   // Insert Mr/Ms before user's name
+   greetingText.insert(6, "Mr/Ms ");
+   cout << greetingText << endl;
+   
+   // Replace occurrence of "Darn" by "@$#"
+   if (greetingText.find("Darn") != string::npos) { // Found
+      itemIndex = greetingText.find("Darn");
+      greetingText.replace(itemIndex, 4, "@#$");
+   }
+   cout << greetingText << endl;
+   
+   return 0;
+}
+/*
+Enter name: Julia
+Hello Julia.
+Hello Mr/Ms Julia.
+Hello Mr/Ms Julia.
+
+...
+
+Enter name: Darn Rabbit
+Hello Darn Rabbit.
+Hello Mr/Ms Darn Rabbit.
+Hello Mr/Ms @#$ Rabbit.
+*/
+```
+## 3.17 Conditional expressions
+A conditional expression has the form condition ? exprWhenTrue : exprWhenFalse.
+
+All three operands are expressions. If the condition evaluates to true, then exprWhenTrue is evaluated. If the condition evaluates to false, then exprWhenFalse is evaluated. The conditional expression evaluates to whichever of those two expressions was evaluated. For example, if x is 2, then the conditional expression (x == 2) ? 5 : 9 * x evaluates to 5.
+
+A conditional expression has three operands and thus the "?" and ":" together are sometimes referred to as a ternary operator.
+
+Good practice is to restrict usage of conditional expressions to an assignment statement, as in: y = (x == 2) ? 5 : 9 * x;. Common practice is to put parentheses around the first expression of the conditional expression, to enhance readability.
+
+## 3.18 Floating-point comparison
+Floating-point numbers should not be compared using ==. Ex: Avoid float1 == float2. Reason: Some floating-point numbers cannot be exactly represented in the limited available memory bits like 64 bits. Floating-point numbers expected to be equal may be close but not exactly equal.
+
+Floating-point numbers should be compared for "close enough" rather than exact equality. Ex: If (x - y) < 0.0001, x and y are deemed equal. Because the difference may be negative, the absolute value is used: fabs(x - y) < 0.0001. fabs() is a function in the math library. The difference threshold indicating that floating-point numbers are equal is often called the epsilon. Epsilon's value depends on the program's expected values, but 0.0001 is common.
+
+The std::abs() function is overloaded to support floating-point and integer types. However, good practice is to use the fabs() function to make the operation clear.
+
+```Cpp
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+int main() {
+   double bodyTemp;
+
+   cout << "Enter body temperature in Fahrenheit: ";
+   cin >> bodyTemp;
+
+   if (fabs(bodyTemp - 98.6) < 0.0001) {
+      cout << "Temperature is exactly normal." << endl;
+   }
+   else if (bodyTemp > 98.6) {
+      cout << "Temperature is above normal." << endl;
+   }
+   else {
+      cout << "Temperature is below normal." << endl;
+   }
+
+   return 0;
+}
+/*
+Enter body temperature in Fahrenheit: 98.6
+Temperature is exactly normal.
+
+...
+
+Enter body temperature in Fahrenheit: 90
+Temperature is below normal.
+
+...
+
+Enter body temperature in Fahrenheit: 99
+Temperature is above normal.
+*/
+```
+To see the inexact value stored in a floating-point variable, a manipulator can be used in an output statement. Such output formatting is discussed in another section.
+Figure 3.18.2: Observing the inexact values stored in floating-point variables.
+```Cpp
+#include <iostream>
+#include <ios>
+#include <iomanip>
+using namespace std;
+
+int main() {
+   double sampleValue1 = 0.2;
+   double sampleValue2 = 0.3;
+   double sampleValue3 = 0.7;
+   double sampleValue4 = 0.0;
+   double sampleValue5 = 0.25;
+   
+   
+   cout << "sampleValue1 using just cout: " 
+        << sampleValue1 << endl;
+
+   cout << setprecision(25)
+        << "sampleValue1 is " << sampleValue1 << endl
+        << "sampleValue2 is " << sampleValue2 << endl
+        << "sampleValue3 is " << sampleValue3 << endl
+        << "sampleValue4 is " << sampleValue4 << endl
+        << "sampleValue5 is " << sampleValue5 << endl;
+   
+   return 0;
+}
+/*
+sampleValue1 using just cout: 0.2
+sampleValue1 is 0.2000000000000000111022302
+sampleValue2 is 0.2999999999999999888977698
+sampleValue3 is 0.699999999999999955591079
+sampleValue4 is 0
+sampleValue5 is 0.25
+*/
+```
+## 3.19 Short circuit evaluation
+A logical operator evaluates operands from left to right. Short circuit evaluation skips evaluating later operands if the result of the logical operator can already be determined. The logical AND operator short circuits to false if the first operand evaluates to false, and skips evaluating the second operand. The logical OR operator short circuits to true if the first operand is true, and skips evaluating the second operand.
+
+# 4. Loops (general)
+## 4.1 Loops (general)
+### Loop basics
+A loop is a program construct that repeatedly executes the loop's statements (known as the loop body) while the loop's expression is true; when false, execution proceeds past the loop. Each time through a loop's statements is called an iteration.
+
+## 4.2 While loops
+### While loop: Basics
+A while loop is a program construct that repeatedly executes a list of sub-statements (known as the loop body) while the loop's expression evaluates to true. Each execution of the loop body is called an iteration. Once entering the loop body, execution continues to the body's end, even if the expression would become false midway through.
+```Cpp
+while (expression) { // Loop expression
+    // Loop body: Executes if expression evaluated to true 
+    // After body, execution jumps back to the "while"
+}
+// Statements that execute after the expression evaluates to false
+```
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+  int currPower;
+  char userChar;
+ 
+  currPower = 2;
+  userChar = 'y';
+ 
+  while (userChar == 'y') {
+     cout << currPower << endl;
+     currPower = currPower * 2;
+     cin >> userChar;
+  }
+ 
+  cout << "Done" << endl;
+ 
+  return 0;
+```
+
+### Basic while loop example
+
+
+
+
+
+
 
 
 
