@@ -2828,7 +2828,7 @@ for (i = 0; i < 5; ++i, r = r + 2) {
 
 ## 4.6 Loops and strings
 ### Iterating through a string with a for loop
-```Cppp
+```Cpp
 #include <iostream>
 #include <string>
 #include <cctype>
@@ -2856,7 +2856,7 @@ int main() {
 ```
 
 ### Iterating until done with a while loop
-```Cppp
+```Cpp
 #include <iostream>
 #include <string>
 using namespace std;
