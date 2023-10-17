@@ -2883,6 +2883,424 @@ int main() {
 }
 ```
 
+## 4.7 Netsted loop
+A nested loop is a loop that appears in the body of another loop. The nested loops are commonly referred to as the inner loop and outer loop.
+
+Nested loops have various uses. One use is to generate all combinations of some items. For example, the following program generates all two-letter .com Internet domain names.
+```Cpp
+#include <iostream>
+using namespace std;
+
+/* Output all two-letter .com Internet domain names */
+
+int main() {
+   char letter1;
+   char letter2;
+   
+   cout << "Two-letter domain names:" << endl;
+   
+   letter1 = 'a';
+   while (letter1 <= 'z') {
+      letter2 = 'a';
+      while (letter2 <= 'z') {
+         cout << letter1 << letter2 << ".com" << endl;
+         ++letter2;
+      }
+      ++letter1;
+   }
+   
+   return 0;
+}
+/*
+Two-letter domain names:
+aa.com
+ab.com
+ac.com
+ad.com
+ae.com
+af.com
+ag.com
+ah.com
+ai.com
+aj.com
+ak.com
+al.com
+am.com
+an.com
+ao.com
+ap.com
+aq.com
+ar.com
+as.com
+at.com
+au.com
+av.com
+aw.com
+ax.com
+ay.com
+az.com
+ba.com
+bb.com
+bc.com
+bd.com
+be.com
+
+...
+
+zw.com
+zx.com
+zy.com
+zz.com
+
+*/
+```
+Note that the program makes use of ascending characters being encoded as ascending numbers, e.g., 'a' is 97, 'b' is 98, etc., so assigning 'a' to letter1 and then incrementing yields 'b'.
+
+Below is a nested loop example that graphically depicts an integer's magnitude by using asterisks, creating a "histogram." The inner loop is a for loop that handles the printing of the asterisks. The outer loop is a while loop that handles executing until a negative number is entered.
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   int numAsterisk;  // Number of asterisks to print
+   int i;            // Loop counter
+   
+   numAsterisk = 0;
+
+   while (numAsterisk >= 0) {
+      cout << "Enter an integer (negative to quit): ";
+      cin >> numAsterisk;
+      
+      if (numAsterisk >= 0) {
+         cout << "Depicted graphically:" << endl;
+         for (i = 1; i <= numAsterisk; ++i) {
+            cout << "*";
+         }
+         cout << endl << endl;
+      }
+   }
+   
+   cout << "Goodbye." << endl;
+
+   return 0;
+}
+/*
+Enter an integer (negative to quit): 9
+Depicted graphically:
+*********
+
+Enter an integer (negative to quit): 23
+Depicted graphically:
+***********************
+
+Enter an integer (negative to quit): 35
+Depicted graphically:
+***********************************
+
+Enter an integer (negative to quit): -1
+Goodbye.
+*/
+```
+
+## 4.8 Developing programs incrementally
+
+## 4.9 Break and Continue
+A break statement in a loop causes an immediate exit of the loop. A break statement can sometimes yield a loop that is easier to understand.
+The nested for loops generate all possible meal options for the number of empanadas and tacos that can be purchased. The inner loop body calculates the cost of the current meal option. If equal to the user's money, the search is over, so the break statement immediately exits the inner loop. The outer loop body also checks if equal, and if so that break statement exits the outer loop.
+
+The program could be written without break statements, but the loop's condition expressions would be more complex and the program would require additional code, perhaps being harder to understand.
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   const int EMPANADA_COST = 3;
+   const int TACO_COST     = 4;
+   
+   int userMoney;
+   int numTacos;
+   int numEmpanadas;
+   int mealCost;
+   int maxEmpanadas;
+   int maxTacos;
+
+   mealCost = 0;
+   
+   cout << "Enter money for meal: ";
+   cin >> userMoney;
+   
+   maxEmpanadas = userMoney / EMPANADA_COST;
+   maxTacos = userMoney / TACO_COST;
+   
+   for (numTacos = 0; numTacos <= maxTacos; ++numTacos) {
+      for (numEmpanadas = 0; numEmpanadas <= maxEmpanadas; ++numEmpanadas) {
+         
+         mealCost = (numEmpanadas * EMPANADA_COST) + (numTacos * TACO_COST);
+         
+         // Find first meal option that exactly matches user money
+         if (mealCost == userMoney) {
+            break;
+         }
+      }
+      
+      // If meal option exactly matching user money is found, 
+      // break from outer loop as well
+      if (mealCost == userMoney) {
+         break;
+      }
+   }
+   
+   if (mealCost == userMoney) {
+      cout << "$" << mealCost << " buys " << numEmpanadas
+      << " empanadas and " << numTacos << " tacos without change." << endl;
+   }
+   else {
+      cout << "You cannot buy a meal without having change left over." << endl;
+   }
+   
+   return 0;
+}
+/*
+Enter money for meal: 20
+$20 buys 4 empanadas and 2 tacos without change.
+
+...
+
+Enter money for meal: 31
+$31 buys 9 empanadas and 1 tacos without change.
+*/
+```
+
+A continue statement in a loop causes an immediate jump to the loop condition check. A continue statement can sometimes improve the readability of a loop. The example below extends the previous meal finder program to find meal options for which the total number of items purchased is evenly divisible by the number of diners. The program also outputs all possible meal options, instead of just reporting the first meal option found.
+The nested loops generate all possible combinations of tacos and empanadas. If the total number of tacos and empanadas is not exactly divisible by the number of diners (e.g., ((numTacos + numEmpanadas) % numDiners) != 0), the continue statement proceeds to the next iteration, thus causing incrementing of numEmpanadas and checking of the loop condition.
+
+Break and continue statements can avoid excessive indenting/nesting within a loop. But they could be easily overlooked, and should be used sparingly, when their use is clear to the reader.
+```Cpp
+#include <iostream>
+using namespace std;
+
+#include <stdio.h>
+
+int main() {
+   const int EMPANADA_COST = 3;
+   const int TACO_COST     = 4;
+   
+   int userMoney;
+   int numTacos;
+   int numEmpanadas;
+   int mealCost;
+   int maxEmpanadas;
+   int maxTacos;
+   int numOptions;
+   int numDiners;
+
+   mealCost = 0;
+   numOptions = 0;
+   
+   cout << "Enter money for meal: ";
+   cin >> userMoney;
+   
+   cout << "How many people are eating: ";
+   cin >> numDiners;
+   
+   maxEmpanadas = userMoney / EMPANADA_COST;
+   maxTacos     = userMoney / TACO_COST;
+   
+   numOptions = 0;
+   for (numTacos = 0; numTacos <= maxTacos; ++numTacos) {
+      for (numEmpanadas = 0; numEmpanadas <= maxEmpanadas; ++numEmpanadas) {
+         
+         // Total items purchased must be equally 
+         // divisible by number of diners
+         if ( ((numTacos + numEmpanadas) % numDiners) != 0) {
+            continue;
+         }
+         
+         mealCost = (numEmpanadas * EMPANADA_COST) + (numTacos * TACO_COST);
+         
+         if (mealCost == userMoney) {
+            cout << "$" << mealCost << " buys " << numEmpanadas
+                 << " empanadas and " << numTacos 
+                 << " tacos without change." << endl;
+            numOptions = numOptions + 1;
+         }
+      }
+   }
+   
+   if (numOptions == 0) {
+      cout << "You cannot buy a meal without " 
+           << "having change left over." << endl;
+   }
+   
+   return 0;
+}
+/*
+Enter money for meal: 60
+How many people are eating: 3
+$60 buys 12 empanadas and 6 tacos without change.
+$60 buys 0 empanadas and 15 tacos without change.
+
+...
+
+Enter money for meal: 54
+How many people are eating: 2
+$54 buys 18 empanadas and 0 tacos without change.
+$54 buys 10 empanadas and 6 tacos without change.
+$54 buys 2 empanadas and 12 tacos without change.
+*/
+```
+## 4.10 Variable name scope
+### Scope of names
+A declared name is only valid within a region of code known as the name's scope. Ex: A variable userNum declared in main() is only valid within main(), from the declaration to main()'s end.
+
+Most of this material declares variables at the top of main() (and if the reader has studied functions, at the top of other functions). However, a variable may be declared within other blocks too. A block is a brace-enclosed {...} sequence of statements, such as found with an if-else, for loop, or while loop. A variable name's scope extends from the declaration to the closing brace }.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+
+   // int val1  = userNum;    // ERROR
+  int userNum = 2;           // Name valid to main's "}"  
+  int newNum  = userNum + 1;
+  int i;
+
+   for (i = 0; i < newNum; ++i) {
+     int valSquared;        // Name valid to for's "}"
+     valSquared = userNum * userNum;
+     cout << i << " squared: " << valSquared << endl;
+  }
+
+   // cout << "Last value: " << valSquared << endl; // ERROR
+
+   return 0;
+}
+```
+1. userNum's scope is from the declaration to main's closing brace. Using userNum before the declaration would yield an "Undeclared name" compiler error.
+2. A declaration can appear within any block (statements in braces {...}). valSquared is valid from the declaration to the closing brace.
+3. valSquared is not valid outside that block.
+
+### For loop index
+Programmers commonly declare a for loop's index variable in the for loop's initialization statement. That index variable's scope covers the other parts of the for loop, up to the for loop's closing brace. The reason is clear from the for loop's equivalent while loop code shown below, noting the braces around the equivalent code.
+![](./Index_variable_declared_in_a_for_loop.png)
+The approach of declaring a for loop's index variable in the for loop's initialization statement makes clear that the variable's sole purpose is to serve as that loop's index.
+
+### Common errors
+A common error is to declare a variable inside a loop whose value should persist across iterations. Below, the programmer expects the output to be 0, 1 (0+1), 3 (0+1+2), 6 (0+1+2+3), and 10 (0+1+2+3+4), but instead the output is just 0, 1, 2, 3, 4.
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   int i = 0;
+
+   while (i < 5) {
+      int tmpSum = 0;
+      tmpSum = tmpSum + i; // Logic error: Sum is always just i
+      cout << "tmpSum: " << tmpSum << endl;
+      i = i + 1;
+   }
+
+   return 0;
+}
+/*
+tmpSum: 0
+tmpSum: 1
+tmpSum: 2
+tmpSum: 3
+tmpSum: 4
+*/
+```
+## 4.11 Enumerations
+Some variables only need to store a small set of named values. For example, a variable representing a traffic light need only store values named GREEN, YELLOW, or RED. An enumeration type (enum) declares a name for a new type and possible values for that type.
+```Cpp
+enum identifier {enumerator1, enumerator2,  ...};
+```
+The items within the braces ("enumerators") are integer constants automatically assigned an integer value, with the first item being 0, the second 1, and so on. An enumeration declares a new data type that can be used like the built-in types int, char, etc.
+```Cpp
+#include <iostream>
+using namespace std;
+
+/* Manual controller for traffic light */
+int main() {
+   enum LightState {LS_RED, LS_GREEN, LS_YELLOW, LS_DONE};
+   LightState lightVal;
+   char userCmd;
+
+   lightVal = LS_RED;
+   userCmd = '-';
+
+   cout << "User commands: n (next), r (red), q (quit)." << endl << endl;
+
+   lightVal = LS_RED;
+   while (lightVal != LS_DONE) {
+      
+      if (lightVal == LS_GREEN) {
+         cout << "Green light  ";
+         cin >> userCmd;
+         if (userCmd == 'n') { // Next
+            lightVal = LS_YELLOW;
+         }
+      }
+      else if (lightVal == LS_YELLOW) {
+         cout << "Yellow light  ";
+         cin >> userCmd;
+         if (userCmd == 'n') { // Next
+            lightVal = LS_RED;
+         }
+      }
+      else if (lightVal == LS_RED) {
+         cout << "Red light  ";
+         cin >> userCmd;
+         if (userCmd == 'n') { // Next
+            lightVal = LS_GREEN;
+         }
+      }
+      
+      if (userCmd == 'r') { // Force immediate red
+         lightVal = LS_RED;
+      }
+      else if (userCmd == 'q') { // Quit
+         lightVal = LS_DONE;
+      }
+   }
+   
+   cout << "Quit program." << endl;
+
+   return 0;
+}
+/*
+User commands: n (next), r (red), q (quit).
+
+Red light  n
+Green light  n
+Yellow light  n
+Red light  n
+Green light  r
+Red light  n
+Green light  n
+Yellow light  n
+Red light  q
+Quit program.
+*/
+```
+The program declares a new enumeration type named LightState. The program then declares a new variable lightVal of that type. The loop updates lightVal based on the user's input.
+
+The example illustrates the idea of a state machine that is sometimes used in programs, especially programs that interact with physical objects, wherein the program moves among particular situations ("states") depending on input.
+
+Because different enumerated types might use some of the same names, e.g., enum Colors {RED, PURPLE, BLUE, GREEN}; might also appear in the same program, the program above follows the practice of prepending a distinguishing prefix, in this case "LS" (for Light State).
+
+One might ask why the light variable wasn't simply declared as a string, and then compared with strings "GREEN", "RED", and "YELLOW". Enumerations are safer. If using a string, an assignment like light = "ORANGE" would not yield a compiler error, even though ORANGE is not a valid light color. Likewise, light == "YELOW" would not yield a compiler error, even though YELLOW is misspelled.
+
+One could instead declare constant strings like const string LS_GREEN = "GREEN"; or even integer values like const int LS_GREEN = 0; and then use those constants in the code, but an enumeration is clearer, requires less code, and is less prone to error.
+
+Note: Each enumerator by default is assigned an integer value of 0, 1, 2, etc. However, a programmer can assign a specific value to any enumerator. Ex: enum TvChannels {TC_CBS = 2, TC_NBC = 5, TC_ABC = 7};
+
+
+
+
+
 
 
 
