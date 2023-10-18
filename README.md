@@ -735,6 +735,7 @@ Examples:
 50 % 50 is 0. Reason: 50 / 50 is 1 with remainder 0.
 1 % 2 is 1. Reason: 1 / 2 is 0 with remainder 1.
 10 % 4.0 is not valid. "Remainder" only makes sense for integer operands.
+100 % 0 = Error. Because 100 % 0 is undefined (as 100 / 0 is undefined) and causes the program to terminate.
 
 ```Cpp
 #include <iostream>
