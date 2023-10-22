@@ -3298,6 +3298,10 @@ One could instead declare constant strings like const string LS_GREEN = "GREEN";
 
 Note: Each enumerator by default is assigned an integer value of 0, 1, 2, etc. However, a programmer can assign a specific value to any enumerator. Ex: enum TvChannels {TC_CBS = 2, TC_NBC = 5, TC_ABC = 7};
 
+# 5. Arrays/Vectors
+## 5.1 Array/Vector concepts
+
+
 
 
 
