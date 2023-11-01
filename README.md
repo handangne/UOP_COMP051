@@ -3300,12 +3300,160 @@ Note: Each enumerator by default is assigned an integer value of 0, 1, 2, etc. H
 
 # 5. Arrays/Vectors
 ## 5.1 Array/Vector concepts
+An array is a special variable having one name, but storing a list of data items, with each item being directly accessible. Some languages use a construct similar to an array called a vector. Each item in an array is known as an element.
+```Cpp
+peoplePerDay[0] =  250; // assigns element 0 with the value 250
+peoplePerDay[1] =  99; // assigns element 1 with the value 99
+```
 
+## 5.2 Vectors
+### Vector declaration and accessing elements
+A programmer commonly needs to maintain a list of items, just as people often maintain lists of items like a grocery list or a course roster. A vector is an ordered list of items of a given data type. Each item in a vector is called an element. A programmer must include the statement #include <vector> at the top of the file when planning to use vectors.
+```Cpp
+vector<dataType> vectorName(numElements);
 
+vectore<int> gameScores(4); // declares a vector gameScores with 4 integer elements.
 
+/*
+Terminology note: { } are braces. < > are angle brackets, or chevrons. In a vector access, the number in .at() parentheses is called the index of the corresponding element. The first vector element is at index 0.
+*/
+```
+```Cpp
+vector<int> yearsList(4); // The declaration creates vector yearsList with 4 elements. The elements' indices will be 0, 1, 2, and 3.
 
+yearsList.at(0) = 1999;
+yearsList.at(1) = 2012;
+yearsList.at(2) = 2025;
 
+/*
+currYear = yearsList.at(4); this will cause an error because yearsList.at(4) does not exists
+*/
+```
 
+### Using an expression for a vector index
+A powerful aspect of vectors is that the index is an expression.
+```Cpp
+userNums.at(i); // uses the value held in the int variable i as the index. As such, a vector is useful to easily lookup the Nth item in a list.
+```
+A vector's index must be an unsigned integer type. The vector index cannot be a floating-point type, even if the value is 0.0, 1.0, etc.
+
+```Cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+   vector<int> oldestPeople(5);  
+   int nthPerson;               // User input, Nth oldest person
+
+   oldestPeople.at(0) = 122; // Died 1997 in France
+   oldestPeople.at(1) = 119; // Died 1999 in U.S.
+   oldestPeople.at(2) = 117; // Died 1993 in U.S. 
+   oldestPeople.at(3) = 117; // Died 1998 in Canada
+   oldestPeople.at(4) = 116; // Died 2006 in Ecuador
+
+   cout << "Enter N (1..5): ";
+   cin  >> nthPerson;
+
+   if ((nthPerson >= 1) && (nthPerson <= 5)) {
+      cout << "The #" << nthPerson << " oldest person lived ";
+      cout << oldestPeople.at(nthPerson - 1) << " years." << endl;
+   }
+
+   return 0;
+}
+/*
+Enter N (1..5): 1
+The 1th oldest person lived 122 years.
+
+...
+
+Enter N (1..5): 4
+The 4th oldest person lived 117 years.
+
+...
+
+Enter N (1..5): 9
+
+...
+
+Enter N (1..5): 0
+
+...
+
+Enter N (1..5): 5
+The 5th oldest person lived 116 years.
+*/
+```
+
+### Loops and vectors
+A key advantage of vectors becomes evident when used in conjunction with loops. The program below uses a loop to allow a user to enter 8 integer values, storing those values in a vector, and then printing those 8 values.
+
+A vector's size() function returns the number of vector elements. Ex: In the program below, userVals.size() is 8 because the vector was declared with 8 elements.
+
+```Cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+   const int NUM_VALS = 8;         // Number of elements in vector
+   vector<int> userVals(NUM_VALS); // User values
+   unsigned int i;                 // Loop index
+   
+   cout << "Enter " << NUM_VALS << " integer values..." << endl;
+   for (i = 0; i < userVals.size(); ++i) {
+      cout << "Value: ";
+      cin >> userVals.at(i);
+   }
+   
+   cout << "You entered: ";
+   for (i = 0; i < userVals.size(); ++i) {
+      cout << userVals.at(i) << " ";
+   }
+   cout << endl;
+   
+   return 0;
+}
+/*
+Enter 8 integer values...
+Value: 5
+Value: 99
+Value: -1
+Value: -44
+Value: 8
+Value: 555555
+Value: 0
+Value: 2
+You entered: 5 99 -1 -44 8 555555 0 2
+*/
+```
+
+### Vector initialization
+A vector's elements are automatically initialized to 0s during the vector declaration.
+All of a vector's elements may be initialized to another single value.
+```Cpp
+vector<int> myVector(3, -1); // creates a vector named myVector with three elements, each with value -1.
+```
+
+A programmer may initialize each vector element with different values by specifying the initial values in braces {} separated by commas.
+```Cpp
+vector<int> carSales = {5, 7, 11}; // creates a vector of three integer elements initialized with values 5, 7, and 11.
+```
+Such vector declaration and initialization does not require specifying the vector size, because the vector's size is automatically set to the number of elements within the braces. For a larger vector, initialization may be done by first declaring the vector, and then using a loop to assign vector elements.
+
+### Common errors
+A common error is to forget the #include <vector> at the top of the file when using vectors. Trying to then declare a vector variable may yield a strange compiler error message, such as:
+```Cpp
+testfile.cpp:12: error: ISO C++ forbids declaration of vector with no type
+testfile.cpp:12: error: expected ; before < token
+```
+The same error message may be seen if the vector library is included but the namespace std is not used.
+
+## 5.3 Array/vector iteration drill
+
+## 5.4 Iterating through vectors
+### Iterating through vectors using loops
 
 
 
