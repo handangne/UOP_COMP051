@@ -3454,6 +3454,191 @@ The same error message may be seen if the vector library is included but the nam
 
 ## 5.4 Iterating through vectors
 ### Iterating through vectors using loops
+Iterating through vectors using loops is commonplace and is an important programming skill to master. Because vector indices are numbered 0 to N - 1 rather than 1 to N, programmers commonly use this for loop structure:
+```Cpp
+// Iterating through myVector
+for (i = 0; i < myVector.size(); ++i) {
+   // Loop body accessing myVector.at(i)
+}
+```
+
+### Determining a quantity about a vector's items
+```Cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+   const int NUM_ELEMENTS = 8;         // Number of elements in vector
+   vector<int> userVals(NUM_ELEMENTS); // User values
+   unsigned int i;                     // Loop index
+   int sumVal;                         // For computing sum
+   
+   cout << "Enter " << NUM_ELEMENTS << " integer values..." << endl;
+   for (i = 0; i < userVals.size(); ++i) {
+      cout << "Value: ";
+      cin >> userVals.at(i);
+      cout << endl;
+   }
+   
+   // Determine sum
+   sumVal = 0;
+   for (i = 0; i < userVals.size(); ++i) {
+      sumVal = sumVal + userVals.at(i);
+   }
+   cout << "Sum: " << sumVal << endl;
+   
+   return 0;
+}
+/*
+Enter 8 integer values...
+Value: 3
+Value: 5
+Value: 234
+Value: 346
+Value: 234
+Value: 73
+Value: 26
+Value: -1
+Sum: 920
+*/
+```
+
+### Finding the maximum value in a vector
+```Cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+   const int NUM_VALS = 8;         // Number of elements in vector
+   vector<int> userVals(NUM_VALS); // User values
+   unsigned int i;                 // Loop index
+   int maxVal;                     // Computed max
+   
+   cout << "Enter " << NUM_VALS << " integer values..." << endl;
+   for (i = 0; i < userVals.size(); ++i) {
+      cout << "Value: ";
+      cin >> userVals.at(i);
+   }
+   
+   // Determine largest (max) number
+   maxVal = userVals.at(0);        // Largest so far
+   for (i = 0; i < userVals.size(); ++i) {
+      if (userVals.at(i) > maxVal) {
+         maxVal = userVals.at(i);
+      }
+   }
+   cout << "Max: " << maxVal << endl;
+   
+   return 0;
+}
+```
+The program below determines the maximum value in a user-entered list. If the user enters numbers 7, -9, 55, 44, 20, -400, 0, 2, then the program will output "max: 55". The program uses the variable maxVal to store the largest value seen thus far as the program iterates through the vector. During each iteration, if the vector's current element value is larger than the max seen thus far, the program assigns maxVal with the current vector element.
+
+Before entering the loop, maxVal must be initialized to some value because maxVal will be compared with each vector element's value. A logical error would be to initialize maxVal to 0, because 0 is not in fact the largest value seen so far, and would result in incorrect output (of 0) if the user entered all negative numbers. Instead, the program peeks at a vector element (in this case the first element, though any element could be used) and initializes maxVal with that element's value.
+
+### Common error: Accessing out of range vector element
+A common error is to try to access a vector with an index that is out of the vector's index range. Ex: Trying to access highScores.at(8) when highScores valid indices are 0-7. Care should be taken whenever a user enters a number that is then used as a vector index, and when using a loop index as a vector index also, to ensure the array index is within a vector's valid index range. Accessing an index that is out of range causes the program to automatically abort execution, typically with an error message being automatically printed. For example, for the declaration vector highScores(8), accessing highScores.at(8), or highScores.at(i) where i is 8, yields the following error message when running the program compiled with g++:
+```Cpp
+terminate called after throwing an instance of 'std::out_of_range'
+  what():  vector::_M_range_check
+Abort
+```
+
+## 5.5 Multiple vectors
+```Cpp
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+int main() {
+   // Source: www.statista.com, 2015
+   const int NUM_COUNTRIES = 5;             // Num countries supported
+   vector<string> ctryNames(NUM_COUNTRIES); // Country names
+   vector<int>    ctryMins(NUM_COUNTRIES);  // Mins TV watched daily
+   string userCountry;                      // User defined country
+   bool foundCountry = false;               // Match to country supported
+   unsigned int i;                          // Loop index
+   
+   // Fill vector contents
+   ctryNames.at(0) = "China";
+   ctryMins.at(0) = 155;
+   
+   ctryNames.at(1) = "Sweden";
+   ctryMins.at(1) = 154;
+   
+   ctryNames.at(2) = "Russia";
+   ctryMins.at(2) = 246;
+   
+   ctryNames.at(3) = "UK";
+   ctryMins.at(3) = 216;
+   
+   ctryNames.at(4) = "USA";
+   ctryMins.at(4) = 274;
+   
+   // Prompt user for country name
+   cout << "Enter country name: ";
+   cin >> userCountry;
+   
+   // Find country's index and average TV time
+   foundCountry = false;
+   for (i = 0; (i < ctryNames.size()) && (!foundCountry); ++i) {
+      if (ctryNames.at(i) == userCountry) {
+         foundCountry = true;
+         cout << "People in " << userCountry << " watch ";
+         cout << ctryMins.at(i) << " mins of TV daily." << endl;
+      }
+   }
+   if (!foundCountry) {
+      cout << "Country not found; try again." << endl;
+   }
+   
+   return 0;
+}
+```
+
+## 5.6 Vector resize
+Commonly, the size of a list of items is not known during a program's compile time. Thus, a vector's size need not be specified in the vector's declaration. Instead, a vector's size can be set or changed while a program executes using resize(N). Ex: highScore.resize(10) resizes the highScores vector to have 10 elements.
+
+resize() can be called multiple times. If the new size is larger, resize() adds elements at the end. If smaller, resize() deletes elements from the end. If userScores has size 3 (elements 0, 1, 2), userScores.resize(2); would delete element 2, leaving elements 0 and 1. A subsequent access to userScores.at(2) would result in an error.
+
+```Cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+   vector<int> userVals; // No elements yet
+   int numVals;
+   unsigned int i;
+   
+   cout << "Enter number of integer values: ";
+   cin >> numVals;
+   
+   userVals.resize(numVals); // Allocate elements
+   
+   cout << "Enter " << numVals << " integer values..." << endl;
+   for (i = 0; i < userVals.size(); ++i) {
+      cout << "Value: ";
+      cin >> userVals.at(i);
+   }
+
+   cout << "You entered: ";
+   for (i = 0; i < userVals.size(); ++i) {
+      cout << userVals.at(i) << " ";
+   }
+   cout << endl;
+   
+   return 0;
+}
+```
+
+## 5.7 Vector push_back
+
+
+
 
 
 
