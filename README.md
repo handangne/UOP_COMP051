@@ -3636,7 +3636,212 @@ int main() {
 ```
 
 ## 5.7 Vector push_back
+### Appending items to a vector
+A programmer can append a new element to the end of an existing vector using a vector's push_back() function.
+``` Cpp
 
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+   unsigned int i;
+   vector<int> dailySales;
+
+   cout << "Size before: " << dailySales.size();
+
+   dailySales.push_back(521);
+   dailySales.push_back(440);
+   dailySales.push_back(193);
+   dailySales.push_back(317);
+
+   cout << ", after: " << dailySales.size() << endl;
+   cout << "Contents:" << endl;
+   for (i = 0; i < dailySales.size(); ++i) {
+      cout << " " << dailySales.at(i) << endl;
+   }
+ 
+   return 0;
+}
+```
+
+### Vector pop_back() and back()
+![](./function_on_the_back_ofVector.png)
+
+```Cpp
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+int main() {
+   vector<string> groceryList; // Vector storing shopping list
+   string groceryItem;         // Individual grocery items
+   string userCmd;             // User input
+   
+   // Prompt user to populate shopping list
+   cout << "Enter grocery items or type done." << endl;
+   cin >> groceryItem;
+   while (groceryItem != "done") {
+      groceryList.push_back(groceryItem);
+      cin >> groceryItem;
+   }
+   
+   // Display shopping list
+   cout << endl << "Enter any key for next item." << endl;
+   while (groceryList.size() > 0) {
+      groceryItem = groceryList.back();
+      groceryList.pop_back();
+      cout << groceryItem << "   ";
+      cin >> userCmd;
+   }
+   cout << endl << "Done shopping." << endl;
+   
+   return 0;
+}
+/*
+Enter grocery items or type done.
+Oranges
+Apples
+Bread
+Juice
+done
+
+Enter any key for next item.
+Juice   a
+Bread   a
+Apples   a
+Oranges   a
+
+Done shopping.
+*/
+```
+
+```Cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+   vector<int> dataVect;
+   int value;
+   int i;
+
+   cin >> value;
+   while (value != -1) {
+      dataVect.push_back(value);
+      cin >> value;
+   }
+   
+   for (i = 0; i < dataVect.size() - 1; i++)
+   {
+      cout << dataVect.at(i) + dataVect.back() << endl;
+   }
+   /* Your code goes here */
+
+   return 0;
+}
+/*
+0 -6 -3 -12 4 -1
+4
+-2
+1
+-8
+*/
+```
+
+## 5.8 Using a loop to modify, copy, or compare vectors
+### Modifying vector elements
+```Cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+   const int NUM_ELEMENTS = 5;         // Number of elements
+   vector<int> userVals(NUM_ELEMENTS); // User values
+   unsigned int i;                     // Loop index
+   
+   // Prompt user to populate vector
+   cout << "Enter " << NUM_ELEMENTS << " integer values..." << endl;
+   for (i = 0; i < userVals.size(); ++i) {
+      cout << "Value: ";
+      cin >> userVals.at(i);
+   }
+   
+   // Convert negatives to 0
+   for (i = 0; i < userVals.size(); ++i) {
+      if (userVals.at(i) < 0) {
+         userVals.at(i) = 0;
+      }
+   }
+   
+   // Print numbers
+   cout << "New values:";
+   for (i = 0; i < userVals.size(); ++i) {
+      cout << " " << userVals.at(i);
+   }
+   cout << endl;
+   
+   return 0;
+}
+/*
+Enter 5 integer values...
+Value: 67
+Value: -5
+Value: -99
+Value: 4
+Value: 22
+New values: 67 0 0 4 22
+*/
+```
+### Element by element vector copy
+In C++, the = operator conveniently performs an element-by-element copy of a vector, called a vector copy operation. The operation vectorB = vectorA resizes vectorB to vectorA's size, appending or deleting elements as needed. vectorB commonly has a size of 0 before the operation.
+```Cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+   const int   NUM_ELEMENTS = 4;         // Number of elements
+   vector<int> origPrices(NUM_ELEMENTS); // Original prices
+   vector<int> salePrices(NUM_ELEMENTS); // Sale prices
+   unsigned int i;                       // Loop index
+   
+   // Assign original prices
+   origPrices.at(0) = 10;
+   origPrices.at(1) = 20;
+   origPrices.at(2) = 30;
+   origPrices.at(3) = 40;
+   
+   // Copy original prices to sales prices
+   salePrices = origPrices;
+   
+   // Update salePrices. Note: does not affect origPrices
+   salePrices.at(2) = 27;
+   salePrices.at(3) = 35;
+   
+   // Output original and sale prices
+   cout << "Original prices: ";
+   for (i = 0; i < origPrices.size(); ++i) {
+      cout << " " << origPrices.at(i);
+   }
+   cout << endl;
+   
+   cout << "Sale prices:     ";
+   for (i = 0; i < salePrices.size(); ++i) {
+      cout << " " << salePrices.at(i);
+   }
+   cout << endl;
+   
+   return 0;
+}
+/*
+Original prices:  10 20 30 40
+Sale prices:      10 20 27 35
+*/
+```
+## 5.9 Swapping two variables (general)
 
 
 
