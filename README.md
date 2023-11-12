@@ -3842,6 +3842,303 @@ Sale prices:      10 20 27 35
 */
 ```
 ## 5.9 Swapping two variables (general)
+A common method for swapping uses a temporary variable. A temporary variable is a variable used briefly to store a value. To understand the intuition of such temporary storage, consider a person holding a book in one hand and a phone in the other, wishing to swap the items. The person can temporarily place the phone on a table, move the book to the other hand, then pick up the phone.
+
+## 5.10 Debugging example: Reversing a vector
+A common vector modification is to reverse a vector's elements. One way to accomplish this goal is to perform a series of swaps.
+For example, starting with a vector of numbers 10 20 30 40 50 60 70 80, we could first swap the first item with the last item, yielding 80 20 30 40 50 60 70 10.
+We could next swap the second item with the second-to-last item, yielding 80 70 30 40 50 60 20 10.
+The next swap would yield 80 70 60 40 50 30 20 10, and the last would yield 80 70 60 50 40 30 20 10.
+
+```Cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+   const int NUM_ELEMENTS = 8;        // Number of elements
+   vector<int> revVctr(NUM_ELEMENTS); // User values
+   unsigned int i;                    // Loop index
+       
+   cout << "Enter " << NUM_ELEMENTS << " integer values..." << endl;
+   for (i = 0; i < revVctr.size(); ++i) {
+      cout << "Value: ";
+      cin >> revVctr.at(i);
+   }
+   
+   // Reverse
+   for (i = 0; i < revVctr.size(); ++i) {
+      revVctr.at(i) = revVctr.at(revVctr.size() - i); // Swap
+   }
+   
+   // Print values
+   cout << endl << "New values: ";
+   for (i = 0; i < revVctr.size(); ++i) {
+      cout << " " << revVctr.at(i);
+   }
+   cout << endl;
+   
+   return 0;
+}
+/*
+Enter 8 integer values...
+Value: 10
+Value: 20
+Value: 30
+Value: 40
+Value: 50
+Value: 60
+Value: 70
+Value: 80
+libc++abi.dylib: terminating with uncaught exception 
+of type std::out_of_range: vector
+*/
+```
+
+Something went wrong: The program aborted (exited abnormally). The reported message indicates an "out of range" problem related to a vector, meaning the program tried to access a vector element that doesn't exist. Let's try to find the code that caused the problem.
+
+The first and third for loops are fairly standard, so let's initially focus attention on the middle for loop that does the reversing. The swap statement inside that loop is revVctr.at(i) = revVctr.at(revVctr.size() - i). When i is 0, the statement will execute revVctr.at(0) = revVctr.at(8). However, revVctr has size 8 and thus valid indices are 0..7. revVctr.at(8) does not exist. The program should actually swap elements 0 and 7, then 1 and 6, etc. Thus, let's change the right-side index to revVctr.size() - 1 - i. The revised program is shown below.
+
+```Cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+   const int NUM_ELEMENTS = 8;        // Number of elements
+   vector<int> revVctr(NUM_ELEMENTS); // User values
+   unsigned int i;                    // Loop index
+   
+   cout << "Enter " << NUM_ELEMENTS << " integer values..." << endl;
+   for (i = 0; i < revVctr.size(); ++i) {
+      cout << "Value: ";
+      cin >> revVctr.at(i);
+   }
+   
+   // Reverse
+   for (i = 0; i < revVctr.size(); ++i) {
+      revVctr.at(i) = revVctr.at(revVctr.size() - 1 - i); // Swap
+   }
+   
+   // Print values
+   cout << endl << "New values: ";
+   for (i = 0; i < revVctr.size(); ++i) {
+      cout << " " << revVctr.at(i);
+   }
+   cout << endl;
+   
+   return 0;
+}
+/*
+Enter 8 integer values...
+Value: 10
+Value: 20
+Value: 30
+Value: 40
+Value: 50
+Value: 60
+Value: 70
+Value: 80
+
+New values:  80 70 60 50 50 60 70 80
+*/
+```
+We failed to actually swap the vector elements, instead the code just copies values in one direction. We need to add code to properly swap. We add a variable tmpValue to temporarily hold revVctr.at(i) so we don't lose that element's value.
+
+```Cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+   const int NUM_ELEMENTS = 8;        // Number of elements
+   vector<int> revVctr(NUM_ELEMENTS); // User values
+   unsigned int i;                    // Loop index
+   int tmpValue;                      // Placeholder
+   
+   cout << "Enter " << NUM_ELEMENTS << " integer values..." << endl;
+   for (i = 0; i < revVctr.size(); ++i) {
+      cout << "Value: ";
+      cin >> revVctr.at(i);
+   }
+   
+   // Reverse
+   for (i = 0; i < revVctr.size(); ++i) {
+      tmpValue = revVctr.at(i);  // These 3 statements swap
+      revVctr.at(i) = revVctr.at(revVctr.size() - 1 - i);
+      revVctr.at(revVctr.size() - 1 - i) = tmpValue;
+   }
+   
+   // Print values
+   cout << endl << "New values: ";
+   for (i = 0; i < revVctr.size(); ++i) {
+      cout << " " << revVctr.at(i);
+   }
+   cout << endl;
+   
+   return 0;
+}
+/*Enter 8 integer values...
+Value: 10
+Value: 20
+Value: 30
+Value: 40
+Value: 50
+Value: 60
+Value: 70
+Value: 80
+
+New values:  10 20 30 40 50 60 70 80
+*/
+```
+The new values are not reversed. Again, let's manually trace the loop iterations.
+i is 0: revVctr.at(0) = revVctr.at(7). Vector now: 80 20 30 40 50 60 70 10.
+i is 1: revVctr.at(1) = revVctr.at(6). Vector now: 80 70 30 40 50 60 20 10.
+i is 2: revVctr.at(2) = revVctr.at(5). Vector now: 80 70 60 40 50 30 20 10.
+i is 3: revVctr.at(3) = revVctr.at(4). Vector now: 80 70 60 50 40 30 20 10. Looks reversed.
+i is 4: revVctr.at(4) = revVctr.at(3). Vector now: 80 70 60 40 50 30 20 10. Why are we still swapping?
+
+Tracing makes clear that the for loop should not iterate over the entire vector. The reversal is completed halfway through the iterations. The solution is to set the loop expression to i < (revVctr.size() / 2).
+
+```Cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+   const int NUM_ELEMENTS = 8;        // Number of elements
+   vector<int> revVctr(NUM_ELEMENTS); // User values
+   unsigned int i;                    // Loop index
+   int tmpValue;                      // Placeholder
+   
+   cout << "Enter " << NUM_ELEMENTS << " integer values..." << endl;
+   for (i = 0; i < revVctr.size(); ++i) {
+      cout << "Value: ";
+      cin >> revVctr.at(i);
+   }
+   
+   // Reverse
+   for (i = 0; i < (revVctr.size() / 2); ++i) {
+      tmpValue = revVctr.at(i);  // These 3 statements swap
+      revVctr.at(i) = revVctr.at(revVctr.size() - 1 - i);
+      revVctr.at(revVctr.size() - 1 - i) = tmpValue;
+   }
+   
+   // Print values
+   cout << endl << "New values: ";
+   for (i = 0; i < revVctr.size(); ++i) {
+      cout << " " << revVctr.at(i);
+   }
+   cout << endl;
+   
+   return 0;
+}
+/*
+Enter 8 integer values...
+Value: 10
+Value: 20
+Value: 30
+Value: 40
+Value: 50
+Value: 60
+Value: 70
+Value: 80
+
+New values:  80 70 60 50 40 30 20 10
+*/
+```
+
+## 5.11 Array vs. vector
+C++ supports two kinds of ordered list types.
+
+Arrays: declared as int myList[10], accessed as myList[i].
+Vectors: declared as vector<int> myList(10), accessed as myList.at(i).
+Arrays have a simpler syntax than vectors, but vectors are safer to use. Thus, using vectors rather than arrays is good practice.
+
+Vectors are safer because the access v.at(i) is checked during execution to ensure the index is within the vector's valid range. An array access a[i] involves no such check. Such checking is important; trying to access an array with an out-of-range index is a very common error, and one of the hardest errors to debug.
+
+## 5.12 Two-dimensional arrays
+```Cpp
+// Define array with size [2][3]
+
+// Write to some elements
+myArray[0][0] = 55;
+myArray[1][1] = 77;
+myArray[1][2] = 99;
+```
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+/* Direct driving distances between cities, in miles */
+/* 0: Boston  1: Chicago  2: Los Angeles */
+
+int main() {
+   int cityA;                  // Starting city
+   int cityB;                  // Destination city
+   int drivingDistances[3][3]; // Driving distances
+
+   // Initialize distances array
+   drivingDistances[0][0] = 0;
+   drivingDistances[0][1] = 960;  // Boston-Chicago
+   drivingDistances[0][2] = 2960; // Boston-Los Angeles
+   drivingDistances[1][0] = 960;  // Chicago-Boston
+   drivingDistances[1][1] = 0;
+   drivingDistances[1][2] = 2011; // Chicago-Los Angeles
+   drivingDistances[2][0] = 2960; // Los Angeles-Boston
+   drivingDistances[2][1] = 2011; // Los Angeles-Chicago
+   drivingDistances[2][2] = 0;
+
+   cout << "0: Boston  1: Chicago  2: Los Angeles" << endl;
+
+   cout << "Enter city pair (Ex: 1 2) -- ";
+   cin >> cityA;
+   cin >> cityB;
+
+   if ((cityA >= 0) && (cityA <= 2) && (cityB >= 0) && (cityB <= 2)) {
+      cout << "Distance: " << drivingDistances[cityA][cityB];
+      cout << " miles." << endl;
+   }
+
+   return 0;
+}
+/*
+0: Boston  1: Chicago  2: Los Angeles
+Enter city pair (Ex: 1 2) -- 1 2
+Distance: 2011 miles.
+
+...
+
+0: Boston  1: Chicago  2: Los Angeles
+Enter city pair (Ex: 1 2) -- 2 0
+Distance: 2960 miles.
+
+...
+
+0: Boston  1: Chicago  2: Los Angeles
+Enter city pair (Ex: 1 2) -- 1 1
+Distance: 0 miles.
+*/
+```
+A programmer can initialize a two-dimensional array's elements during declaration using nested braces, as below. Multiple lines make the rows and columns more visible.
+```Cpp
+// Initializing a 2D array
+int numVals[2][3] = { {22, 44, 66}, {97, 98, 99} };
+
+// Use multiple lines to make rows more visible
+int numVals[2][3] = {
+   {22, 44, 66}, // Row 0
+   {97, 98, 99}  // Row 1
+};
+```
+Arrays of three or more dimensions can also be declared, as in int myArray[2][3][5], which declares a total of 2*3*5 or 30 elements. Note the rapid growth in size -- an array declared as int myArray[100][100][5][3] would have 100*100*5*3 or 150,000 elements. A programmer should make sure not to unnecessarily occupy available memory with a large array.
+
+## 5.13 Char arrays / C strings
+
+
+
+
 
 
 
