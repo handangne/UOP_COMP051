@@ -4135,6 +4135,170 @@ int numVals[2][3] = {
 Arrays of three or more dimensions can also be declared, as in int myArray[2][3][5], which declares a total of 2*3*5 or 30 elements. Note the rapid growth in size -- an array declared as int myArray[100][100][5][3] would have 100*100*5*3 or 150,000 elements. A programmer should make sure not to unnecessarily occupy available memory with a large array.
 
 ## 5.13 Char arrays / C strings
+A programmer can use an array to store a sequence of characters, known as a string. Char arrays were the only kinds of strings in C++'s predecessor language C, and thus are sometimes called C strings to distinguish them from C++'s string type. An example is: char movieTitle[20] = "Star Wars";. Because a string can be shorter than the character array, a string in a char array must end with a special character known as a null character, written as '\0'. Given a string literal like "Star Wars", the compiler automatically appends a null character.
+
+A char array of size 20 can store strings of lengths 0 to 19. The longest string is 19, not 20, since the null character must be stored.
+
+If a char array is initialized when declared, then the char array's size may be omitted, as in char userName[] = "Hellen"; . The compiler determines the size from the string literal, in this case 6 + 1 (for the null character), or 7.
+
+An array of characters ending with a null character is known as a null-terminated string.
+Output streams automatically handles null-terminated strings, printing each character until reaching the null character that ends the string.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   char cityName[20] = "Forest Lake"; // Compiler appends null char
+
+   // In each cout, printing stops when reaching null char
+   cout << "City:" << endl;           // Compiler appends null char to "City:"
+   cout << cityName << endl; 
+
+   return 0;
+}
+```
+After a string is declared, a programmer may not later assign the string as in movieTitle = "Indiana Jones";. That statement tries to assign a value to the char array variable itself, rather than copying each character from the string on the right into the array on the left. Functions exist to copy strings, such as strcpy(), discussed elsewhere.
+
+A programmer can traverse a string using a loop that stops when reaching the null character.
+
+A common error is to loop for the string's array size rather than stopping at the null character. Such looping visits unused array elements beyond the null character. An even worse common error is to loop beyond the last valid element, which visits memory locations that are not part of the array. These errors are illustrated below. Notice the strange characters that are output as the contents of other memory locations are printed out; the program may also crash.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   char userStr[20] = "1234567890123456789"; // Input string
+   int i; 
+   
+   // Prompt user for string input
+   cout << "Enter string (<20 chars): ";
+   cin >> userStr;
+   
+   // Print string
+   cout << endl << userStr << endl;
+   
+   // Look for '@'
+   for (i = 0; userStr[i] != '\0'; ++i) {
+      if (userStr[i] == '@') {
+         cout << "Found '@'." << endl;
+      }
+   }
+   cout << endl;
+   
+   
+   // The following is an ERROR.
+   // May print chars it shouldn't.
+   // Problem: doesn't stop at null char.
+   cout << "\""; // Print opening "
+   for (i = 0; i < 20; ++i) { // Print each char
+      cout << userStr[i];
+   }
+   cout << "\"" << endl;      // Print closing "
+   
+   
+   // The following is an even WORSE ERROR.
+   // Accesses beyond valid index range.
+   // Program may crash.
+   cout << "\""; // Print opening "
+   for (i = 0; i < 30; ++i) {
+      cout << userStr[i];
+   }
+   cout << "\"" << endl; // Print closing "
+   
+   return 0;
+}
+/*
+Enter string (<20 chars): test@gmail.com
+
+test@gmail.com
+Found '@'.
+
+"test@gmail.com6789"
+"test@gmail.com6789P!"
+*/
+```
+Yet another common error with C strings is for the program user to enter a string larger than the character array. That may cause the input statement to write to memory locations outside the array's locations, which may corrupt other parts of program or data, and typically causes the program to crash.
+
+C string usage is fraught with common errors. C++ introduced its own string type, as in string myString; and accessible after #include <string>, to reduce those errors and increase programmer convenience. C strings are still used in some legacy code and are thus good to learn. C++ provides common functions for handling C strings, which can be used by including the following: #include <cstring>.
+
+The following program is for illustration, showing how a string is made up of individual character elements followed by a null character. Normally a programmer would not create a string that way.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   char nameArr[5];
+
+   nameArr[0] = 'A';
+   nameArr[1] = 'l';
+   nameArr[2] = 'a';
+   nameArr[3] = 'n';
+   nameArr[4] = '\0'; // Null character
+
+   cout << nameArr << endl;
+
+   nameArr[4] = '!';         // Oops, overwrote null char
+   cout << nameArr << endl; // *Might* still work
+
+   return 0;
+}
+```
+When printing a string stored within a character array, each character within the array will be printed until the null character is reached. If the null character is omitted, the program would print whatever values are found in memory after the array, until a null character happens to be encountered. Omitting the null character is a serious logical error.
+
+It just so happens that the null character '\0' has an ASCII encoding of 0. Many compilers initialize memory to 0s. As such, omitting the '\0' in the above program would not always cause erroneous execution. Like a nail in the road, that bug in your code is just waiting to wreak havoc.
+
+## 5.14 C-String library functions
+C++ provides functions for working with C strings, presented in the cstring library. To use those functions, the programmer starts with: #include <cstring>.
+![](./CString_function.png)
+
+For strcpy(), a common error is to copy a source string that is too large, causing an out-of-range access in the destination string. Another common error is to call strcpy with the source string first rather than the destination string, which copies in the wrong direction.
+
+Note that string assignment, as in targetText = orgName, does not copy the string and should not be used. The exception is during initialization, as in char userText[20] = "UNICEF";, for which the compiler copies the string literal's characters into the array.
+![](./CString_function1.png)
+
+strchr() looks for a single character. The second parameter can't be an entire string.
+strcmp() is usually used to compare for equality, returning 0 if the strings are the same length and have identical characters. A common error is to use == when comparing C strings, which does not work. str1 == str2 compares the strings' addresses, not their contents.
+Because those addresses will usually be different, str1 == str2 will evaluate to 0. This is not a syntax error, but clearly a logic error.
+
+Another common error is to forget to compare the result of strcmp with 0, as in if (strcmp(str1, str2)) {...}.
+The code is not a syntax error, but is a logic error because the if condition will be false (0) when the strings are equal. The correct condition would instead be if (strcmp(str1, str2) == 0) {...}. Although strcmp returns 0, a good practice is to avoid using if (!strcmp(str1,str2)) {...} because that 0 does not represent "false" but rather is encoding a particular situation.
+
+```Cpp
+
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+int main() {
+   char userName[15] = "Alan Turing";
+   int i;
+   
+   cout << "Before: " << userName << endl;
+   
+   for (i = 0; i < strlen(userName); ++i) {
+      if (userName[i] == ' ') {
+         userName[i] = '_';
+      }
+   }
+   cout << "After:  " << userName << endl;
+   
+   return 0;
+}
+/*
+Before: Alan Turing
+After:  Alan_Turing
+*/
+```
+
+## 5.15 Char library functions: ctype
+C++ provides common functions for working with characters, presented in the cctype library. The first c indicates the library is a C language standard library, and ctype is short for "character type". To use those functions, the programmer adds the following at the top of a file: #include <cctype>
+
+### Character checking functions
+
+
 
 
 
