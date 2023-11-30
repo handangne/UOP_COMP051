@@ -4297,34 +4297,275 @@ After:  Alan_Turing
 C++ provides common functions for working with characters, presented in the cctype library. The first c indicates the library is a C language standard library, and ctype is short for "character type". To use those functions, the programmer adds the following at the top of a file: #include <cctype>
 
 ### Character checking functions
+![](./characterCheckingFunctions1.png)
+![](./characterCheckingFunctions2.png)
+
+```Cpp
+#include <iostream>
+#include <cctype>
+using namespace std;
+
+int main() {
+   const int MAX_LEN = 30;      // Max string length
+   char userStr[MAX_LEN];       // User defined string
+   int i;
+   
+   // Prompt user to enter string
+   cout << "Enter string (<"
+   << MAX_LEN << " chars): ";
+   cin >> userStr;
+   
+   cout << "Original: " << userStr << endl;
+   
+   cout << "isalpha:  ";
+   for (i = 0; userStr[i] != '\0'; ++i) {
+      if (isalpha(userStr[i])) {
+         cout << "Y";
+      }
+      else {
+         cout << "N";
+      }
+   }
+   cout << endl;
+   
+   cout << "isdigit:  ";
+   for (i = 0; userStr[i] != '\0'; ++i) {
+      if (isdigit(userStr[i])) {
+         cout << "Y";
+      }
+      else {
+         cout << "N";
+      }
+   }
+   cout << endl;
+   
+   cout << "isupper:  ";
+   for (i = 0; userStr[i] != '\0'; ++i) {
+      if (isupper(userStr[i])) {
+         cout << "Y";
+      }
+      else {
+         cout << "N";
+      }
+   }
+   cout << endl;
+   
+   for (i = 0; userStr[i] != '\0'; ++i) {
+      userStr[i] = toupper(userStr[i]);
+   }
+   cout << "After toupper: " << userStr << endl;
+   
+   return 0;
+}
+/*
+Enter string (<30 chars): ABC123$!def
+Original: ABC123$!def
+isalpha:  YYYNNNNNYYY
+isdigit:  NNNYYYNNNNN
+isupper:  YYYNNNNNNNN
+After toupper: ABC123$!DEF
+*/
+```
+
+# 6.User-Defined functions
+## 6.1 User-defined function basics
+### Functions (general)
+![](./functions.png)
+Commonly, a program performs the same operation, such as a calculation, in multiple places. Here, the Fahrenheit to Celsius calculation is done in three places.
+Repeated operations clutter the main program. And such repeated operations are more prone to errors.
+A better approach defines the Fahrenheit to Celsius calculation once, named F2C here. Then, F2C can be "called" three times, yielding a simpler main program.
+The impact is even greater when the operation has multiple statements -- here 3 statements, but commonly tens of statements. The main program is much simpler.
+Even without repeated operations, calling predefined operations keeps the main program simple and intuitive.
+
+### Basics of functions
+A function is a named list of statements.
+- A function definition consists of the new function's name and a block of statements.
+Ex:
+```Cpp
+double CalcPizzaArea() { /* block of statements */ }
+```
+- A function call is an invocation of a function's name, causing the function's statements to execute.
+The function's name can be any valid identifier. A block is a list of statements surrounded by braces.
+
+```Cpp
+
+#include <iostream>
+using namespace std;
+
+double CalcPizzaArea() {
+  double pizzaDiameter;
+  double pizzaRadius;
+  double pizzaArea;
+  double piVal = 3.14159265;
+
+  pizzaDiameter = 12.0;
+  pizzaRadius = pizzaDiameter / 2.0;
+  pizzaArea = piVal * pizzaRadius * pizzaRadius;
+  return pizzaArea;
+}
+
+int main() {
+  cout << "12 inch pizza is " << CalcPizzaArea();
+  cout << " inches squared." << endl;
+  return 0;
+}
+/*
+12 inch pizza is 113.097 inches squared.
+*/
+```
+### Returning a value from a function
+A function may return one value using a return statement.
+Below, the ComputeSquare() function is defined to have a return type of int; thus, the function's return statement must have an expression that evaluates to an int.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+int ComputeSquare(int numToSquare) {
+   return numToSquare * numToSquare;
+}
+
+int main() {
+   int numSquared;
+
+   numSquared = ComputeSquare(7);
+   cout << "7 squared is " << numSquared << endl;
+
+   return 0;
+}
+/*
+7 squared is 49
+*/
+```
+
+### Parameters
+A programmer can influence a function's behavior via an input.
+- A parameter is a function input specified in a function definition. Ex: A pizza area function might have diameter as an input.
+- An argument is a value provided to a function's parameter during a function call. Ex: A pizza area function might be called as CalcPizzaArea(12.0) or as CalcPizzaArea(16.0).
+
+A parameter is like a variable declaration. Upon a call, the parameter's memory location is allocated, and the parameter is assigned with the argument's value. Upon returning to the original call location, the parameter is deleted from memory.
+An argument may be an expression, like 12.0, x, or x * 1.5.
+```Cpp
+#include <iostream>
+using namespace std;
+
+double CalcPizzaArea(double pizzaDiameter) {
+   double pizzaRadius;
+   double pizzaArea;
+   double piVal = 3.14159265;
+
+   pizzaRadius = pizzaDiameter / 2.0;
+   pizzaArea = piVal * pizzaRadius * pizzaRadius;
+   return pizzaArea;
+}
+
+int main() {
+   cout << "12.0 inch pizza is "<< CalcPizzaArea(12.0)
+        << " square inches." << endl;
+   cout << "16.0 inch pizza is "<< CalcPizzaArea(16.0)
+        << " square inches." << endl;
+   return 0;
+}
+/*
+12.0 inch pizza is 113.097 square inches.
+16.0 inch pizza is 201.062 square inches.
+*/
+```
+### Multiple or no parameters
+A function definition may have multiple parameters, separated by commas. Parameters are assigned with argument values by position: First parameter with first argument, second with second, etc.
+A function definition with no parameters must still have the parentheses, as in: int DoSomething() { ... }. The call must include parentheses, with no argument, as in: DoSomething().
+```Cpp
+#include <iostream>
+using namespace std;
+
+double CalcPizzaVolume(double pizzaDiameter, double pizzaHeight) {
+   double pizzaRadius;
+   double pizzaArea;
+   double pizzaVolume;
+   double piVal = 3.14159265;
+
+   pizzaRadius = pizzaDiameter / 2.0;
+   pizzaArea = piVal * pizzaRadius * pizzaRadius;
+   pizzaVolume = pizzaArea * pizzaHeight;
+   return pizzaVolume;
+}
+
+int main() {
+   cout << "12.0 x 0.3 inch pizza is " << CalcPizzaVolume(12.0, 0.3);
+   cout << " inches cubed." << endl;
+   cout << "12.0 x 0.8 inch pizza is " << CalcPizzaVolume(12.0, 0.8);
+   cout << " inches cubed." << endl;
+   cout << "16.0 x 0.8 inch pizza is " << CalcPizzaVolume(16.0, 0.8);
+   cout << " inches cubed." << endl;
+
+   return 0;
+}
+/*
+12.0 x 0.3 inch pizza is 33.9292 inches cubed.
+12.0 x 0.8 inch pizza is 90.4779 inches cubed.
+16.0 x 0.8 inch pizza is 160.85 inches cubed.
+*/
+```
+### Calling functions from functions
+```Cpp
+#include <iostream>
+using namespace std;
+
+double CalcCircleArea(double circleDiameter) {
+   double circleRadius;
+   double circleArea;
+   double piVal = 3.14159265;
+   
+   circleRadius = circleDiameter / 2.0;
+   circleArea = piVal * circleRadius * circleRadius;
+   
+   return circleArea;
+}
+
+double PizzaCalories(double pizzaDiameter) {
+   double totalCalories;
+   double caloriesPerSquareInch = 16.7;    // Regular crust pepperoni pizza
+   
+   totalCalories = CalcCircleArea(pizzaDiameter) * caloriesPerSquareInch;
+   
+   return totalCalories;
+}
 
 
+int main() {
+   cout << "12 inch pizza has " << PizzaCalories(12.0) << " calories." << endl;
+   cout << "14 inch pizza has " << PizzaCalories(14.0) << " calories." << endl;
+   
+   return 0;
+}
+/*
+12 inch pizza has 1888.73 calories.
+14 inch pizza has 2570.77 calories.
+*/
+```
 
+## 6.2 Print functions
+### Printing from a function
+A common operation for a function is to print text. Large text outputs can clutter the main() function of a program, especially if the text needs to be output multiple times. A function that only prints typically does not return a value. The void keyword indicates a function does not return a value. A function with a void return type is often called a void function. Once a void function finishes execution, control returns back to the caller and no value is returned.
 
+```Cpp
+void PrintSummary(int id, int items, double price){
+  cout << "Order " << id << ":" << endl;
+  cout << "   Items: " << items << endl;
+  cout << fixed << setprecision(2);
+  cout << "   Total: $" << price << endl;
+}
 
+int main()
+{
+  ...
+  PrintSummary(id, items, price);
+  ...
+  return 0;
+}
+```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+### Calling a print function multiple times
 
 
 
