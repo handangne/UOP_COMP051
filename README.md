@@ -4564,8 +4564,195 @@ int main()
   return 0;
 }
 ```
-
 ### Calling a print function multiple times
+One benefit of a print function is that complex output statements can be written in code once. Then the print function can be called multiple times to produce the output instead of rewriting complex statements for every necessary instance. Changes to output and formatting are made easier and are less prone to error.
 
+### Example: Menu Systems
+```Cpp
+#include <iostream>
+using namespace std;
+
+void PrintMenu() {
+   cout << "Today's Menu:" << endl;
+   cout << "   1) Gumbo" << endl;
+   cout << "   2) Jambalaya" << endl;
+   cout << "   3) Quit" << endl << endl;
+}
+
+int main() {
+   bool quit = false;
+   int choice;
+
+   while (!quit) {
+      PrintMenu();
+      cout << "Enter choice: ";
+      cin >> choice; 
+      if (choice == 3) {
+         cout << "Goodbye" << endl;
+         quit = true;
+      }
+      else {
+         cout << "Order: ";
+         if (choice == 1) {
+            cout << "Gumbo" << endl;
+         }
+         else if (choice == 2) {
+            cout << "Jambalaya" << endl;
+         }
+         cout << endl;
+      }  
+   }  
+   return 0;
+}
+/*Today's Menu:
+   1) Gumbo
+   2) Jambalaya
+   3) Quit
+
+Enter choice: 2
+Order: Jambalaya
+
+Today's Menu:
+   1) Gumbo
+   2) Jambalaya
+   3) Quit
+
+Enter choice: 1 
+Order: Gumbo
+
+Today's Menu:
+   1) Gumbo
+   2) Jambalaya
+   3) Quit
+
+Enter choice: 3 
+Goodbye
+*/
+```
+
+## 6.3 Reasons for defining functions
+### Improving program readability
+Programs can become hard for humans to read and understand. Decomposing a program into functions can greatly aid program readability, helping yield an initially correct program, and easing future maintenance. Below, the program with functions has a main() that is easier to read and understand. For larger programs, the effect is even greater.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+double StepsToMiles(int numSteps) {
+   const double FEET_PER_STEP = 2.5;               // Typical adult
+   const int    FEET_PER_MILE = 5280;
+
+   return numSteps * FEET_PER_STEP * (1.0 / FEET_PER_MILE);
+}
+
+double StepsToCalories(int numSteps) {
+   const double STEPS_PER_MINUTE = 70.0;           // Typical adult
+   const double CALORIES_PER_MINUTE_WALKING = 3.5; // Typical adult
+   double minutesTotal;
+   double caloriesTotal;
+
+   minutesTotal = numSteps / STEPS_PER_MINUTE;
+   caloriesTotal = minutesTotal * CALORIES_PER_MINUTE_WALKING;
+
+   return caloriesTotal;
+}
+
+int main() {
+   int stepsWalked;
+
+   cout << "Enter number of steps walked: ";
+   cin  >> stepsWalked;
+
+   cout << "Miles walked: " << StepsToMiles(stepsWalked)    << endl;
+   cout << "Calories: "     << StepsToCalories(stepsWalked) << endl;
+
+   return 0;
+}
+```
+
+### Modular and incremental program development
+Programmers commonly use functions to write programs modularly and incrementally.
+- Modular development is the process of dividing a program into separate modules that can be developed and tested separately and then integrated into a single program.
+- Incremental development is a process in which a programmer writes, compiles, and tests a small amount of code, then writes, compiles, and tests a small amount more (an incremental amount), and so on.
+- A function stub is a function definition whose statements have not yet been written.
+
+A programmer can use function stubs to capture the high-level behavior of main() and the required function (or modules) before diving into details of each function, like planning a route for a road trip before starting to drive. A programmer can then incrementally develop and test each function independently.
+
+### Avoid writing redundant code
+A function can be defined once, then called from multiple places in a program, thus avoiding redundant code. Examples of such functions are math functions like abs() that relieve a programmer from having to write several lines of code each time an absolute value needs to be computed.
+
+The skill of decomposing a program's behavior into a good set of functions is a fundamental part of programming that helps characterize a good programmer. Each function should have easily-recognizable behavior, and the behavior of main() (and any function that calls other functions) should be easily understandable via the sequence of function calls.
+
+A general guideline (especially for beginner programmers) is that a function's definition usually shouldn't have more than about 30 lines of code, although this guideline is not a strict rule.
+
+```Cpp
+// main() with redundant code
+#include <iostream>
+using namespace std;
+
+int main() {
+   double pizzaDiameter1;
+   double pizzaDiameter2;
+   double totalPizzaArea;
+   double circleRadius1;
+   double circleRadius2;
+   double circleArea1;
+   double circleArea2;
+   double piVal = 3.14159265;
+   
+   pizzaDiameter1 = 12.0;
+   circleRadius1 = pizzaDiameter1 / 2.0;
+   circleArea1 = piVal * circleRadius1 *
+                 circleRadius1;
+   
+   pizzaDiameter2 = 14.0;
+   circleRadius2 = pizzaDiameter2 / 2.0;
+   circleArea2 = piVal * circleRadius2 *
+                 circleRadius2;
+   
+   totalPizzaArea = circleArea1 + circleArea2;
+   
+   cout << "A 12 and 14 inch pizza has "
+        << totalPizzaArea
+        << " inches squared combined." << endl;
+   
+   return 0;
+}
+```
+```Cpp
+// main() calls CalcCircleArea avoiding redundant code
+#include <iostream>
+using namespace std;
+
+double CalcCircleArea(double circleDiameter) {
+   double circleRadius;
+   double circleArea;
+   double piVal = 3.14159265;
+  circleRadius = circleDiameter / 2.0;
+  circleArea = piVal * circleRadius * circleRadius;
+
+  return circleArea;
+}
+
+int main() {
+   double pizzaDiameter1;
+   double pizzaDiameter2;
+   double totalPizzaArea;
+   
+   pizzaDiameter1 = 12.0;
+   pizzaDiameter2 = 14.0;
+   
+   totalPizzaArea = CalcCircleArea(pizzaDiameter1) +
+                    CalcCircleArea(pizzaDiameter2);
+   
+   cout << "A 12 and 14 inch pizza has "
+        << totalPizzaArea
+        << " inches squared combined." << endl;
+   
+   return 0;
+```
+
+## 6.4 Writing mathematical functions
+### Mathematical functions
 
 
