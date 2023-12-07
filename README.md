@@ -4817,4 +4817,337 @@ int main() {
 7 squared plus 9 squared is 130
 */
 ```
+```Cpp
+double SquareRoot(double x) { ... } 
+void PrintVal(double x) { ... }
+double y;
+
+SquareRoot(9.0); // Valid. The expression evaluates to 3.0. Nothing is done with that value. The statement is legal, but not useful.
+SquareRoot(49.0) = z; // Invalid. The left side of an assignment statement must be a variable, not an expression.
+y = SquareRoot(SquareRoot(16.0)); //Valid
+y = PrintVal(9.0); //Invalid. PrintVal() has a void return type, so cannot be assigned to a variable.
+PrintVal(9.0); // Valid
+```
+
+### Modular functions for mathematical expressions
+```Cpp
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+double CalcCircularBaseArea(double radius) {
+   return M_PI * radius * radius;
+}
+
+double CalcCylinderVolume(double baseRadius, double height) {
+   return CalcCircularBaseArea(baseRadius) * height;
+}
+
+double CalcCylinderSurfaceArea(double baseRadius, double height) {
+   return (2 * M_PI * baseRadius * height) + (2 * CalcCircularBaseArea(baseRadius));
+}
+
+int main() {
+   double radius;  // User defined radius
+   double height;  // User defined height
+
+   // Prompt user for radius
+   cout << "Enter base radius: ";
+   cin >> radius;
+
+   // Prompt user for height
+   cout << "Enter height: ";
+   cin >> height;
+
+   // Output the cylinder volume result
+   cout << "Cylinder volume: ";
+   cout << CalcCylinderVolume(radius, height) << endl;
+
+   // Output the cylinder surface area result
+   cout << "Cylinder surface area: ";
+   cout << CalcCylinderSurfaceArea(radius, height) << endl;
+
+   return 0;
+}
+/*
+Enter base radius: 10
+Enter height: 5
+Cylinder volume: 1570.8
+Cylinder surface area: 942.478
+*/
+```
+
+## 6.5 Functions with branches
+### Example: Shipping cost calculator
+A function's statements may include branches and other statements. The following example uses a function to calculate a package's shipping cost based on weight.
+
+```Cpp
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
+
+double CalcTax(double cost) {
+   return cost * 0.15;
+}
+
+// Determine shipping cost based on weight
+double CalcShippingCost(double weight) {
+   double cost;
+
+   if (weight < 1) {
+      cost = 7.88;
+   }
+   else if (weight < 6) {
+      cost = 14.32;
+   }
+   else if (weight < 10) {
+      cost = 21.11;
+   }
+   else {
+      cost = 25.5;
+   }
+   cost = cost + CalcTax(cost);
+   return cost;
+}
+
+int main() {
+   double weightOfPackage;        // User defined package weight
+
+   cout << "Enter package weight: ";
+   cin >> weightOfPackage;
+   cout << "Shipping cost: $";
+   cout << fixed << setprecision(2) << CalcShippingCost(weightOfPackage) << endl;
+   return 0;
+}
+/*
+Enter package weight: 6
+Shipping cost: $24.28
+
+...
+
+Enter package weight: 10.5
+Shipping cost: $29.33
+
+
+...
+
+Enter package weight: 3.0
+Shipping cost: $16.47
+*/
+```
+
+### Example: Auction website fee calculator
+The following example uses a function to compute the fee charged by eBay when a customer sells an item online.
+```Cpp
+#include <iostream>
+using namespace std;
+
+/* Returns fee charged by ebay.com given the selling
+   price of fixed-price books, movies, music, or video-games.
+   Fee is $0.50 to list plus a % of the selling price:
+   13% for $50.00 or less
+    plus 5% for $50.01 to $1000.00
+    plus 2% for $1000.01 or more
+   Source: http://pages.ebay.com/help/sell/fees.html, 2012.
+
+   Note: double variables often are not used for dollars/cents,
+   but here the dollar fraction may extend past two decimal places.
+*/
+
+// Function determines eBay price given item selling price
+double CalcEbayFee(double sellPrice) {
+   const double BASE_LIST_FEE     = 0.50; // Listing Fee
+   const double PERC_50_OR_LESS   = 0.13; // % $50 or less
+   const double PERC_50_TO_1000   = 0.05; // % $50.01..$1000.00
+   const double PERC_1000_OR_MORE = 0.02; // % $1000.01 or more
+   double feeTotal;                       // Resulting eBay fee
+
+   feeTotal = BASE_LIST_FEE;
+
+   // Determine additional fee based on selling price
+   if (sellPrice <= 50.00) { // $50.00 or lower
+      feeTotal = feeTotal + (sellPrice * PERC_50_OR_LESS);
+   }
+   else if (sellPrice <= 1000.00) { // $50.01..$1000.00
+      feeTotal = feeTotal + (50 * PERC_50_OR_LESS )
+      + ((sellPrice - 50) * PERC_50_TO_1000);
+   }
+   else { // $1000.01 and higher
+      feeTotal = feeTotal + (50 * PERC_50_OR_LESS)
+      + ((1000 - 50) * PERC_50_TO_1000)
+      + ((sellPrice - 1000) * PERC_1000_OR_MORE);
+   }
+
+   return feeTotal;
+}
+
+int main() {
+   double sellingPrice;  // User defined selling price
+
+   cout << "Enter item selling price (Ex: 65.00): ";
+   cin >> sellingPrice;
+
+   cout << "eBay fee: $" << CalcEbayFee(sellingPrice) << endl;
+
+   return 0;
+}
+/*
+Enter item selling price (Ex: 65.00): 9.95
+eBay fee: $1.7935
+
+...
+
+Enter item selling price (Ex: 65.00): 40
+eBay fee: $5.7
+
+...
+
+Enter item selling price (Ex: 65.00): 100
+eBay fee: $9.5
+
+...
+
+Enter item selling price (Ex: 65.00): 500.15
+eBay fee: $29.5075
+
+...
+
+Enter item selling price (Ex: 65.00): 2000
+eBay fee: $74.5
+*/
+```
+
+## 6.6 Functions with loops
+### Example: Computing the average of a list of numbers
+The following example uses a function with a for loop to calculate the average of a list of numbers.
+
+```Cpp
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+double ComputeAverage(int numCount) {
+   double valuesSum = 0;
+   int currValue = 0;
+
+   for (int i = 0; i < numCount; ++i) {
+      cout << "Enter number: ";
+      cin >> currValue;
+      valuesSum += currValue;
+   }
+   return valuesSum / numCount;
+}
+
+int main() {
+   int numValues;
+   double averageVal;
+
+   cout << "Enter number of values: ";
+   cin >> numValues;
+   averageVal = ComputeAverage(numValues);
+
+   cout << "Average: ";
+   cout << fixed << setprecision(3) << averageVal << endl;
+   return 0;
+}
+/*
+Enter number of values: 3
+Enter number: 10
+Enter number: 5
+Enter number: 5
+Average: 6.667
+*/
+```
+
+### Example: Least-common multiple calculator
+The following is another example with user-defined functions. The functions keep main()'s behavior readable and understandable.
+```Cpp
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+// Function prompts user to enter positive non-zero number
+int PromptForPositiveNumber() {
+   int userNum;
+
+   userNum = 0;
+   
+   while (userNum <= 0) {
+      cout << "Enter a positive number (>0): " << endl;
+      cin >> userNum;
+      
+      if (userNum <= 0) {
+         cout << "Invalid number." << endl;
+      }
+   }
+
+   return userNum;
+}
+
+
+// Function returns greatest common divisor of two inputs
+int FindGCD(int aVal, int bVal) {
+   int numA;
+   int numB;
+
+   numA = aVal;
+   numB = bVal;
+   
+   while (numA != numB) { // Euclid's algorithm
+      if (numB > numA) {
+         numB = numB - numA;
+      }
+      else {
+         numA = numA - numB;
+      }
+   }
+   
+   return numA;
+}
+
+// Function returns least common multiple of two inputs
+int FindLCM(int aVal, int bVal) {
+   int lcmVal;
+   
+   lcmVal = abs(aVal * bVal) / FindGCD(aVal, bVal);
+   
+   return lcmVal;
+}
+
+int main() {
+   int usrNumA;
+   int usrNumB;
+   int lcmResult;
+   
+   cout << "Enter value for first input" << endl;
+   usrNumA = PromptForPositiveNumber();
+
+   cout << endl << "Enter value for second input" << endl;
+   usrNumB = PromptForPositiveNumber();
+   
+   lcmResult = FindLCM(usrNumA, usrNumB);
+   
+   cout << endl << "Least common multiple of " << usrNumA
+        << " and " << usrNumB << " is " << lcmResult << endl;
+   
+   return 0;
+}
+/*
+Enter value for first input
+Enter a positive number (>0): 
+13
+
+Enter value for second input
+Enter a positive number (>0): 
+7
+
+Least common multiple of 13 and 7 is 91
+*/
+```
+
+## 6.7 Unit testing (functions)
+
+
+
 
