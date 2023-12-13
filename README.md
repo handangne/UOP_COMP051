@@ -7579,6 +7579,518 @@ Basic use of cin and the extraction operator were covered in an earlier section.
 
 ## 9.2 Output formatting
 ### Floating-point manipulators
+A programmer can adjust the way that a program's output appears, a task known as output formatting. The main formatting approach uses manipulators. A manipulator is a function that overloads the insertion operator << or extraction operator >> to adjust the way output appears. Manipulators are defined in the iomanip and ios libraries in namespace std.
+
+```Cpp
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+int main() {   
+   double miles = 765.4261;
+      
+   cout << "setprecision(p) sets # digits" << endl;
+   cout << miles << " (default p is 6)" << endl;
+   cout << setprecision(8) << miles << " (p = 8)" << endl;
+   cout << setprecision(5) << miles << " (p = 5)" << endl;
+   cout << setprecision(2) << miles << " (p = 2)" << endl;
+   cout << miles << endl << endl;
+      
+   // fixed uses fixed point notation
+   cout << fixed;
+   cout << "fixed: " << miles << endl;
+   
+   // scientific uses scientific notation
+   cout << scientific;
+   cout << "scientific: " << miles << endl;
+   
+   return 0;
+}
+/*
+setprecision(p) sets # digits
+765.426 (default p is 6)
+765.4261 (p = 8)
+765.43 (p = 5)
+7.7e+02 (p = 2)
+7.7e+02
+fixed: 765.43
+scientific: 7.65e+02
+*/
+```
+![](./Floating_point_manipulators.png)
+Manipulators are always meant to be used with the << and >> operators. A common error is to have a statement like setprecision(2); rather than cout << setprecision(2);, which compiles fine but does not impact cout. Details on operator overloading are presented elsewhere in this material.
+
+### Text-alignment manipulators
+```Cpp
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+int main() {
+   // Dog age in human years (dogyears.com)   
+   cout << setw(10) << left  << "Dog age" << "|";
+   cout << setw(12) << right << "Human age" << endl;
+   
+   // Produce long line   
+   cout << setfill('-') << setw(23) << "" << endl;
+   
+   // Reset fill character back to space
+   cout << setfill(' ');
+
+   cout << setw(10) << left  << "2 months" << "|";
+   cout << setw(12) << right << "14 months" << endl;
+   cout << setw(10) << left  << "6 months" << "|";
+   cout << setw(12) << right << "5 years" << endl;   
+   cout << setw(10) << left  << "8 months" << "|";
+   cout << setw(12) << right << "9 years" << endl;
+   cout << setw(10) << left  << "1 year" << "|";
+   cout << setw(12) << right << "15 years" << endl;
+
+   // Produce long line
+   cout << setfill('-') << setw(23) << "" << endl;
+   
+   return 0;
+}
+```
+Dog age   |  Human age
+-----------------------
+2 months  |  14 months
+6 months  |    5 years
+8 months  |    9 years
+1 year    |   15 years
+
+![](./Text_alignment_manipulators.png)
+
+### Buffer manipulators
+Printing characters from the buffer to the output device (e.g., screen) requires a time-consuming reservation of processor resources. Once the resources are reserved, moving characters is fast, whether there is 1 character or 50 characters to print.
+
+To preserve resources, the system may wait until the output buffer is full, or at least has a certain number of characters, before moving the characters to the output device. Or, with fewer characters in the buffer, the system may wait until the resources are not busy. Sometimes a programmer does not want the system to wait. Ex: In a very processor-intensive program, waiting could cause delayed and/or jittery output.
+
+Two manipulators exist to send all buffer contents to the output device without waiting: endl and flush.
+![](./Buffer_manipulators.png)
+
+A common error is to assume that a cout statement is never reached because the output had not been flushed when the program crashed. Ex: If the program crashes on the statement cout << "value is " << someFunction();, the words "value is" will not output because the buffer was not flushed.
+
+## 9.5 File input
+### Opening and reading from a file
+Sometimes a program should get input from a file rather than from a user typing on a keyboard. To read file input, a programmer can create a new input stream that comes from a file, rather than the predefined input stream cin that comes from the standard input (keyboard). An input stream can then be used just like cin.
+
+The inFS.open(str) function has a string parameter str that specifies the name of the file to open. The filename parameter can be a C++ string or a null-terminated C string. A program can also use a user-entered string as the filename, such as using cin >> filename;.
+
+```Cpp
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+int main() {
+   ifstream inFS;     // Input file stream
+   int fileNum1;      // Data value from file
+   int fileNum2;      // Data value from file
+
+   // Try to open file
+   cout << "Opening file numFile.txt." << endl;
+
+   inFS.open("numFile.txt");
+   if (!inFS.is_open()) {
+      cout << "Could not open file numFile.txt." << endl;
+      return 1; // 1 indicates error
+   }
+
+   // Can now use inFS stream like cin stream
+   // numFile.txt should contain two integers, else problems
+   cout << "Reading two integers." << endl;
+   inFS >> fileNum1;
+   inFS >> fileNum2;
+   cout << "Closing file numFile.txt." << endl;
+   inFS.close(); // Done with file, so close it
+
+   // Output values read from file
+   cout << "num1: " << fileNum1 << endl;
+   cout << "num2: " << fileNum2 << endl;
+   cout << "num1 + num2: " << (fileNum1 + fileNum2) << endl;
+
+   return 0;
+}
+```
+A common error is to type cin >> num1; when actually intending to get data from a file as in inFS >> num1. Another common error is a mismatch between the variable data type and the file data. If the data type is int but the file data is "Hello".
+
+### Reading until the end of the file
+A program can read varying amounts of data in a file by using a loop that reads until the end of the file has been reached. The eof() function returns true if the previous stream operation reached the end of the file.
+
+Errors may be encountered while attempting to read from a file, like the inability to read the file, reading corrupt data, etc. So, a program should check that each read was successful before using the variable to which the read data was assigned. The fail() function returns true if the previous stream operation had an error.
+![](./readingFrom_aFile.png)
+
+### Example: Counting instances of a specific word
+The following program uses both the extraction operator, eof(), and fail() to determine how many times a user entered word appears in a file. The number of words in the file is unknown, so the program extracts words until the end of the file is reached. The program exits if the stream extraction causes an error or after the word's frequency in the file is output.
+```Cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+int main() {
+   ifstream inFS;     // Input file stream        
+   string userWord;
+   int wordFreq = 0;
+   string currWord;
+   
+   // Open file
+   cout << "Opening file wordFile.txt." << endl;
+   inFS.open("wordFile.txt");
+   
+   if (!inFS.is_open()) {
+      cout << "Could not open file wordFile.txt." << endl;
+      return 1;
+   }
+   
+   // Word to be found
+   cout << "Enter a word: ";
+   cin >> userWord;
+   
+   // Identify when a word matches the userWord 
+   // and increase wordFreq
+   while (!inFS.eof()) {
+      inFS >> currWord;
+      if (!inFS.fail()) {
+         if (currWord == userWord) {
+            ++wordFreq;
+         }
+      }
+   }
+   
+   cout << userWord << " appears in the file " 
+        << wordFreq << " times." << endl;
+   
+   // Done with file, so close it
+   inFS.close();
+   
+   return 0;
+}
+/*
+Opening file wordFile.txt.
+Enter a word: twenty
+twenty appears in the file 3 times.
+*/
+```
+```txt
+twenty
+associable
+twenty
+unredacted
+associable
+folksay
+twenty
+```
+
+### Example: Business reviews
+The following example reads a file with business reviews as the program starts and outputs data from the file at the end of the program. The number of reviews is unknown to the program, so the program continues to read until the end of the file. Each entry contains the username of the person who left the review and a 1 - 5 rating (1 being a low rating and 5 being a high rating). Upon completion, the program outputs the data from the file along with the average business rating.
+```Cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+
+int main() {
+   ifstream inFS;     // Input file stream
+   string restaurantName;
+   string userName;
+   int userRating;
+   int userRatingSum = 0;
+   int userRatingCount = 0;
+
+   // Open file
+   inFS.open("Trattoria_Reviews.txt");
+   
+   if (!inFS.is_open()) {
+      cout << "Could not open file Trattoria_Reviews.txt."<< endl;
+      return 1;
+   }
+
+   // Read and display the restaurant's name
+   getline(inFS, restaurantName);
+   cout << endl << restaurantName << endl;
+   cout << "--------------------" << endl;
+   
+   // Loop to read all user reviews
+   while (!inFS.eof()) {
+      inFS >> userName;
+      inFS >> userRating;
+           
+      if (!inFS.fail()) {
+         // Display user's name and rating
+         cout << "User name: " << userName << endl;
+         cout << "   Rating: " << userRating << endl;
+         cout << endl;
+         
+         // Add to the sum of all ratings so far
+         userRatingSum += userRating;
+         
+         // Increment the number of ratings read
+         userRatingCount++;
+      }
+   }
+   
+   // Display the restaurant's average rating
+   cout << "--------------------" << endl;
+   cout << "Average rating: ";
+   cout << ((double)userRatingSum / userRatingCount) << endl;
+   
+
+   // Close file when done reading
+   inFS.close();
+
+   return 0;
+}
+/*
+Trattoria Italian Bistro
+--------------------
+User name: sunny8trophy
+   Rating: 4
+
+User name: Angelcopter
+   Rating: 2
+
+User name: Mogoodid24
+   Rating: 5
+
+User name: Elixirnoel8626
+   Rating: 5
+
+User name: gobbledygook
+   Rating: 1
+
+User name: Friderday912
+   Rating: 3
+
+--------------------
+Average rating: 3.33333
+*/
+```
+```txt
+Trattoria Italian Bistro
+
+sunny8trophy
+4
+
+Angelcopter
+2
+
+Mogoodid24
+5
+
+Elixirnoel8626
+5
+
+gobbledygook
+1
+
+Friderday912
+3
+```
+
+### Input stream errors
+A stream error occurs when insertion or extraction fails, causing the stream to enter an error state. Ex: If a file has the string two but the program attempts to extract an integer, the extraction will fail and the stream will enter an error state.
+
+An input stream may also enter an error state if a value extracted is too large (or small) to fit in the given variable. While in an error state, an input stream may: skip extraction, set the given variable to 0, or set the given variable to the maximum (or minimum) value of that variable's data type.
+
+A stream internally uses several 1-bit error flags to track the state of the stream. A program can check a stream's error state using several stream functions that return the current state. A stream's error state is cleared using clear().
+![](./stream_errors.png)
+
+## 9.7 File output
+### Opening and writing to a file
+An ofstream, short for "output file stream", is a class that supports writing to a file. The ofstream class inherits from ostream.
+
+After declaring a variable of type ofstream, a file is opened using the ofstream's open() function. The ofstream's is_open() function is commonly called to check if the file opened successfully. If so, data can be written to the file using the << operator. When all desired data is written, the ofstream's close() function is called to close the file.
+![](./opening_and_writing_a_file.png)
+
+### Example: Writing a text file
+Calling an ofstream's open() function makes an attempt to open the file. The file may fail to open due to things like file permissions or a full disk. The is_open() should be called to check if the file opened successfully. is_open() returns true if the file is open, false otherwise.
+
+The file is created and is initially empty, if opened successfully. Data is written to the file, then the file is closed.
+
+```Cpp
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+int main() {
+   ofstream outFS; // Output file stream
+
+   // Open file
+   outFS.open("myoutfile.txt");
+
+   if (!outFS.is_open()) {
+      cout << "Could not open file myoutfile.txt." << endl;
+      return 1;
+   }
+
+   // Write to file
+   outFS << "Hello" << endl;
+   outFS << "1 2 3" << endl;
+
+   // Done with file, so close
+   outFS.close();
+
+   return 0;
+}
+```
+
+# 10. Inheritance
+## 10.1 Derived classes
+### Derived class concept
+Commonly, one class is similar to another class but with some additions or variations. Ex: A store inventory system might use a class called GenericItem that has itemName and itemQuantity data members. But for produce (fruits and vegetables), a ProduceItem class with data members itemName, itemQuantity, and expirationDate may be desired.
+
+### Inheritance
+A derived class (or subclass) is a class that is derived from another class, called a base class (or superclass). Any class may serve as a base class. The derived class is said to inherit the properties of the base class, a concept called inheritance. An object declared of a derived class type has access to all the public members of the derived class as well as the public members of the base class.
+
+A derived class is declared by placing a colon ":" after the derived class name, followed by a member access specifier like public and a base class name. Ex: class DerivedClass: public BaseClass { ... };. The figure below defines the base class GenericItem and derived class ProduceItem that inherits from GenericItem.
+
+```Cpp
+// Base class
+class GenericItem {
+   public:
+      void SetName(string newName) { 
+          itemName = newName; 
+      }
+   
+      void SetQuantity(int newQty) {
+          itemQuantity = newQty; 
+      }
+   
+      void PrintItem() {
+          cout << itemName << " " << itemQuantity << endl;
+      }
+   
+   private:
+      string itemName;
+      int itemQuantity;
+};
+
+// Derived class inherits from GenericItem 
+class ProduceItem : public GenericItem { 
+   public:
+      void SetExpiration(string newDate) { 
+          expirationDate = newDate; 
+      }
+   
+      string GetExpiration() { 
+          return expirationDate; 
+      }
+   
+   private:
+      string expirationDate;
+};
+```
+
+### Inheritance scenarios
+Various inheritance variations are possible:
+
+A derived class can serve as a base class for another class. Ex: class FruitItem: public ProduceItem {...} creates a derived class FruitItem from ProduceItem, which was derived from GenericItem.
+A class can serve as a base class for multiple derived classes. Ex: class FrozenFoodItem: public GenericItem {...} creates a derived class FrozenFoodItem that inherits from GenericItem, just as ProduceItem inherits from GenericItem.
+A class may be derived from multiple classes. Ex: class House: public Dwelling, public Property {...} creates a derived class House that inherits from base classes Dwelling and Property.
+
+### Example: Business and Restaurant
+The example below defines a Business class with data members name and address. The Restaurant class is derived from Business and adds a rating data member with a getter and setter.
+
+```Cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Business {
+   public:
+      void SetName(string busName) {
+         name = busName;
+      }
+
+      void SetAddress(string busAddress) {
+         address = busAddress;
+      }
+
+      string GetDescription() const {
+         return name + " -- " + address;
+      }
+
+   private:
+      string name;
+      string address;
+};
+
+class Restaurant : public Business {
+   public:
+      void SetRating(int userRating) {
+         rating = userRating;
+      }
+
+      int GetRating() const {
+         return rating;
+      }
+
+   private:
+      int rating;
+};
+
+int main() {
+   Business someBusiness;
+   Restaurant favoritePlace;
+
+   someBusiness.SetName("ACME");
+   someBusiness.SetAddress("4 Main St");
+
+   favoritePlace.SetName("Friends Cafe");
+   favoritePlace.SetAddress("500 W 2nd Ave");
+   favoritePlace.SetRating(5);
+
+   cout << someBusiness.GetDescription() << endl;
+   cout << favoritePlace.GetDescription() << endl;
+   cout << "  Rating: " << favoritePlace.GetRating() << endl;
+
+   return 0;
+}
+```
+
+# 11.
+## 11.1 Recursion: Introduction
+An algorithm is a sequence of steps for solving a problem.
+Some problems can be solved using a recursive algorithm. A recursive algorithm is an algorithm that breaks the problem into smaller subproblems and applies the same algorithm to solve the smaller subproblems.
+
+The mowing algorithm consists of applying the mowing algorithm on smaller pieces of the yard and thus is a recursive algorithm.
+
+At some point, a recursive algorithm must describe how to actually do something, known as the base case.
+
+## 11.2 Recursive functions
+A function may call other functions, including calling itself. A function that calls itself is a recursive function.
+```Cpp
+#include <iostream>
+using namespace std;
+
+void CountDown(int countInt) {
+   if (countInt <= 0) {
+      cout << "Go!\n";
+   }
+   else {
+      cout << countInt << endl;
+      CountDown(countInt - 1);
+   }
+}
+
+int main() {
+   CountDown(2);
+   return 0;
+}
+/*
+2
+1
+Go!
+*/
+```
+
+
+
+
+
+
 
 
 
