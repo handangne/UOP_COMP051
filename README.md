@@ -6260,6 +6260,949 @@ void PickupTruck::SetLength(double fullLength) {
 ```
 The program above is written to illustrate the different ways of defining member functions, but good style is to be consistent. Since both functions are very short, a consistent style would be to define both inline.
 
+## 7.5 Mutators, accessors, and private helpers
+### Mutators and accessors
+A class' public functions are commonly classified as either mutators or accessors.
+- A mutator function may modify ("mutate") a class' data members.
+- An accessor function accesses data members but does not modify a class' data members.
+
+Commonly, a data member has two associated functions: a mutator for setting the value, and an accessor for getting the value, known as a setter and getter function, respectively, and typically with names starting with set or get. Other mutators and accessors may exist that aren't associated with just one data member, such as the Print() function below.
+
+Accessor functions usually are defined as const to make clear that data members won't be changed. The keyword const after a member function's name and parameters causes a compiler error if the function modifies a data member. If a const member function calls another member function, that function must also be const.
+
+
+```Cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Restaurant {
+   public:
+      void   SetName(string restaurantName); // Mutator
+      void   SetRating(int userRating);      // Mutator
+      string GetName() const;                // Accessor
+      int    GetRating() const;              // Accessor
+      void   Print() const;                  // Accessor
+
+   private:
+      string name;
+      int rating;
+};
+
+void Restaurant::SetName(string restaurantName) {
+   name = restaurantName;
+}
+
+void Restaurant::SetRating(int userRating) {
+   rating = userRating;
+}
+
+string Restaurant::GetName() const {
+   return name;
+}
+
+int Restaurant::GetRating() const {
+   return rating;
+}
+
+void Restaurant::Print() const {
+   cout << name << " -- " << rating << endl;
+}
+
+int main() {
+   Restaurant myPlace;
+
+   myPlace.SetName("Maria's Diner");
+   myPlace.SetRating(5);
+
+   cout << myPlace.GetName() << " is rated ";
+   cout << myPlace.GetRating() << endl;
+
+   return 0;
+}
+/*
+Maria's Diner is rated 5
+*/
+```
+
+### Private helper functions
+In addition to public member functions, a class may define private member functions.
+Any member function (public or private) may call a private member function.
+A user of the class can call public member functions, but a user can not call private member functions (which would yield a compiler error).
+
+## 7.6 Initialization and constructors
+### Data member initialization (C++11)
+Since C++11, a programmer can initialize data members in the class definition. Any variable declared of that class type will initially have those values.
+```Cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Restaurant {
+   public:
+      void SetName(string restaurantName);
+      void SetRating(int userRating);
+      void Print();
+   
+   private:
+      string name = "NoName";  // NoName indicates name was not set
+      int rating = -1;         // -1 indicates rating was not set
+};
+
+void Restaurant::SetName(string restaurantName) {
+   name = restaurantName;
+}
+
+void Restaurant::SetRating(int userRating) {
+   rating = userRating;
+}
+
+void Restaurant::Print() {
+   cout << name << " -- " << rating << endl;
+}
+
+int main() {
+   Restaurant favLunchPlace;  // Initializes members with values in class definition
+   
+   favLunchPlace.Print();
+
+   favLunchPlace.SetName("Central Deli");
+   favLunchPlace.SetRating(4);
+
+   favLunchPlace.Print();
+   
+   return 0;
+}
+```
+
+### Constructors
+C++ has a special class member function, a constructor, called automatically when a variable of that class type is declared, and which can initialize data members. A constructor callable without arguments is a default constructor, like the Restaurant constructor below.
+
+A constructor has the same name as the class. A constructor function has no return type, not even void. Ex: Restaurant::Restaurant() {...} defines a constructor for the Restaurant class.
+
+If a class has no programmer-defined constructor, then the compiler implicitly defines a default constructor having no statements.
+
+```Cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Restaurant {
+   public:
+      Restaurant();
+      void SetName(string restaurantName);
+      void SetRating(int userRating);
+      void Print();
+   private:
+      string name;
+      int rating;
+};
+
+Restaurant::Restaurant() {  // Default constructor
+   name = "NoName";         // Default name: NoName indicates name was not set
+   rating = -1;             // Default rating: -1 indicates rating was not set
+}
+
+void Restaurant::SetName(string restaurantName) {
+   name = restaurantName;
+}
+
+void Restaurant::SetRating(int userRating) {
+   rating = userRating;
+}
+
+// Prints name and rating on one line
+void Restaurant::Print() {
+   cout << name << " -- " << rating << endl;
+}
+
+int main() {
+   Restaurant favLunchPlace;  // Automatically calls the default constructor
+
+   favLunchPlace.Print();
+
+   favLunchPlace.SetName("Central Deli");
+   favLunchPlace.SetRating(4);
+   favLunchPlace.Print();
+
+   return 0;
+}
+/*
+NoName -- -1
+Central Deli -- 4
+*/
+```
+
+## 7.7 Classes and vectors/classes
+### Vector of objects: A reviews program
+Combining classes and vectors is powerful. The program below creates a Review class (reviews might be for a restaurant, movie, etc.), then manages a vector of Review objects.
+```Cpp
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+class Review {
+   public:
+      void SetRatingAndComment(int revRating, string revComment) {
+         rating = revRating;
+         comment = revComment;
+      }
+      int GetRating() const { return rating; }
+      string GetComment() const { return comment; }
+
+   private:
+      int rating = -1;
+      string comment = "NoComment";
+};
+
+int main() {
+   vector<Review> reviewList;
+   Review currReview;
+   int currRating;
+   string currComment;
+   unsigned int i;
+
+   cout << "Type rating + comments. To end: -1" << endl;
+   cin >> currRating;
+   while (currRating >= 0) {
+      getline(cin, currComment); // Gets rest of line
+      currReview.SetRatingAndComment(currRating, currComment);
+      reviewList.push_back(currReview);
+      cin >> currRating;
+   }
+
+   // Output all comments for given rating
+   cout << endl << "Type rating. To end: -1" << endl;
+   cin >> currRating;
+   while (currRating != -1) {
+      for (i = 0; i < reviewList.size(); ++i) {
+         currReview = reviewList.at(i);
+         if (currRating == currReview.GetRating()) {
+            cout << currReview.GetComment() << endl;
+         }
+      }
+      cin >> currRating;
+   }
+
+   return 0;
+}
+/*
+Type rating + comments. To end: -1
+5 Great place!
+5 Loved the food.
+2 Pretty bad service.
+4 New owners are nice.
+2 Yuk!!!
+4 What a gem.     
+-1
+
+Type rating. To end: -1
+5
+ Great place!
+ Loved the food.
+1
+4
+ New owners are nice.
+ What a gem.     
+-1
+*/
+```
+### A class with a vector: The Reviews class
+A class' private data often involves vectors. The program below redoes the example above, creating a Reviews class for managing a vector of Review objects.
+
+The Reviews class has functions for reading reviews and printing comments. The resulting main() is clearer than above.
+
+The Reviews class has a "getter" function returning the average rating. The function computes the average rather than reading a private data member. The class user need not know how the function is implemented.
+
+```Cpp
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+class Review {
+   public:
+      void SetRatingAndComment(int revRating, string revComment) {
+         rating = revRating;
+         comment = revComment;
+      }
+      int GetRating() const { return rating; }
+      string GetComment() const { return comment; }
+
+   private:
+      int rating = -1;
+      string comment = "NoComment";
+};
+// END Review class
+
+
+class Reviews {
+   public:
+      void InputReviews();
+      void PrintCommentsForRating(int currRating) const;
+      int GetAverageRating() const;
+
+   private:
+      vector<Review> reviewList;
+};
+
+// Get rating comment pairs, add each to list. -1 rating ends.
+void Reviews::InputReviews() {
+   Review currReview;
+   int currRating;
+   string currComment;
+
+   cin >> currRating;
+   while (currRating >= 0) {
+      getline(cin, currComment); // Gets rest of line
+      currReview.SetRatingAndComment(currRating, currComment);
+      reviewList.push_back(currReview);
+      cin >> currRating;
+   }
+}
+
+// Print all comments for reviews having the given rating
+void Reviews::PrintCommentsForRating(int currRating) const {
+   Review currReview;
+   unsigned int i;
+
+   for (i = 0; i < reviewList.size(); ++i) {
+      currReview = reviewList.at(i);
+      if (currRating == currReview.GetRating()) {
+         cout << currReview.GetComment() << endl;
+      }
+   }
+}
+
+int Reviews::GetAverageRating() const {
+   int ratingsSum;
+   unsigned int i;
+
+   ratingsSum = 0;
+   for (i = 0; i < reviewList.size(); ++i) {
+      ratingsSum += reviewList.at(i).GetRating();
+   }
+   return (ratingsSum / reviewList.size());
+}
+// END Reviews class
+
+int main() {
+   Reviews allReviews;
+   string currName;
+   int currRating;
+
+   cout << "Type ratings + comments. To end: -1" << endl;
+   allReviews.InputReviews();
+
+   cout << endl << "Average rating: ";
+   cout << allReviews.GetAverageRating() << endl;
+
+   // Output all comments for given rating
+   cout << endl << "Type rating. To end: -1" << endl;
+   cin >> currRating;
+   while (currRating != -1) {
+      allReviews.PrintCommentsForRating(currRating);
+      cin >> currRating;
+   }
+
+   return 0;
+}
+/*
+Type ratings + comments. To end: -1
+5 Great place!
+5 Loved the food.
+2 Pretty bad service.
+4 New owners are nice.
+2 Yuk!!!
+4 What a gem.     
+-1
+
+Average rating: 3
+
+Type rating. To end: -1
+5
+ Great place!
+ Loved the food.
+1
+4
+ New owners are nice.
+ What a gem.     
+-1
+*/
+```
+
+### Using Reviews in the Restaurant class
+Programmers commonly use classes within classes. The program below improves the Restaurant class by having a Reviews object rather than a single rating.
+```Cpp
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+// Review and Reviews classes omitted from figure 
+// ...
+
+
+class Restaurant {
+   public:
+      void SetName(string restaurantName) {
+         name = restaurantName;
+      }
+      void ReadAllReviews();
+      void PrintCommentsByRating() const;
+
+   private:
+      string name;
+      Reviews reviews;
+};
+
+void Restaurant::ReadAllReviews() {
+   cout << "Type ratings + comments. To end: -1" << endl;
+   reviews.InputReviews();
+}
+
+void Restaurant::PrintCommentsByRating() const {
+   int i;
+
+   cout << "Comments for each rating level: " << endl;
+   for (i = 1; i <= 5; ++i) {
+     cout << i << ":" << endl;
+     reviews.PrintCommentsForRating(i);
+   }
+}
+
+int main() {
+   Restaurant ourPlace;
+   string currName;
+
+   cout << "Type restaurant name: " << endl;
+   getline(cin, currName);
+   ourPlace.SetName(currName);
+   cout << endl;
+
+   ourPlace.ReadAllReviews();
+   cout << endl;
+
+   ourPlace.PrintCommentsByRating();
+
+   return 0;
+}
+/*
+Type restaurant name: 
+Maria's Healthy Food
+
+Type ratings + comments. To end: -1
+5 Great place!
+5 Loved the food.
+2 Pretty bad service.
+4 New owners are nice.
+2 Yuk!!!
+4 What a gem.     
+-1
+
+Comments for each rating level: 
+1:
+2:
+ Pretty bad service.
+ Yuk!!!
+3:
+4:
+ New owners are nice.
+ What a gem.     
+5:
+ Great place!
+ Loved the food.
+*/
+```
+
+## 7.8 Separate files for classes
+### Two files per class
+Programmers typically put all code for a class into two files, separate from other code.
+- ClassName.h contains the class definition, including data members and member function declarations.
+- ClassName.cpp contains member function definitions.
+
+A file that uses the class, such as a main file or ClassName.cpp, must include ClassName.h. The .h file's contents are sufficient to allow compilation, as long as the corresponding .cpp file is eventually compiled into the program too.
+
+The figure below shows how all the .cpp files might be listed when compiled into one program. Note that the .h file is not listed in the compilation command, due to being included by the appropriate .cpp files.
+![](./separate_files_for_Class.png)
+
+### Ex: Restaurant review classes
+The restaurant review program, introduced in an earlier section, declared the Review, Reviews, and Restaurant classes in main.cpp. Each of the 3 classes should instead be implemented in .h/.cpp files, thus making for cleaner code in main.cpp.
+
+```Cpp
+#ifndef REVIEW_H
+#define REVIEW_H
+
+#include <string>
+
+class Review {
+   public:
+      void SetRatingAndComment(
+         int revRating,
+         std::string revComment);
+      int GetRating() const;
+      std::string GetComment() const;
+
+   private:
+      int rating = -1;
+      std::string comment = "NoComment";
+};
+
+#endif
+```
+```Cpp
+#include "Review.h"
+using namespace std;
+
+void Review::SetRatingAndComment(int revRating, string revComment) {
+   rating = revRating;
+   comment = revComment;
+}
+
+int Review::GetRating() const {
+   return rating;
+}
+
+string Review::GetComment() const {
+   return comment;
+}
+```
+```Cpp
+#ifndef REVIEWS_H
+#define REVIEWS_H
+
+#include <vector>
+#include "Review.h"
+
+class Reviews {
+   public:
+      void InputReviews();
+      void PrintCommentsForRating(int currRating) const;
+      int GetAverageRating() const;
+
+   private:
+      std::vector<Review> reviewList;
+};
+
+#endif
+```
+```Cpp
+#include <iostream>
+#include "Reviews.h"
+using namespace std;
+
+// Get rating comment pairs, add each to list. -1 rating ends.
+void Reviews::InputReviews() {
+   Review currReview;
+   int currRating;
+   string currComment;
+
+   cin >> currRating;
+   while (currRating >= 0) {
+      getline(cin, currComment); // Gets rest of line
+      currReview.SetRatingAndComment(currRating, currComment);
+      reviewList.push_back(currReview);
+      cin >> currRating;
+   }
+}
+
+// Print all comments for reviews having the given rating
+void Reviews::PrintCommentsForRating(int currRating) const {
+   Review currReview;
+   unsigned int i;
+
+   for (i = 0; i < reviewList.size(); ++i) {
+      currReview = reviewList.at(i);
+      if (currRating == currReview.GetRating()) {
+         cout << currReview.GetComment() << endl;
+      }
+   }
+}
+
+int Reviews::GetAverageRating() const {
+   int ratingsSum;
+   unsigned int i;
+
+   ratingsSum = 0;
+   for (i = 0; i < reviewList.size(); ++i) {
+      ratingsSum += reviewList.at(i).GetRating();
+   }
+   return (ratingsSum / reviewList.size());
+}
+```
+```Cpp
+#ifndef RESTAURANT_H
+#define RESTAURANT_H
+
+#include <string>
+#include "Reviews.h"
+
+class Restaurant {
+   public:
+      void SetName(std::string restaurantName);
+      void ReadAllReviews();
+      void PrintCommentsByRating() const;
+
+   private:
+      std::string name;
+      Reviews reviews;
+};
+
+#endif
+```
+```Cpp
+#include <iostream>
+#include "Restaurant.h"
+using namespace std;
+
+void Restaurant::SetName(string restaurantName) {
+   name = restaurantName;
+}
+
+void Restaurant::ReadAllReviews() {
+   cout << "Type ratings + comments. To end: -1" << endl;
+   reviews.InputReviews();
+}
+
+void Restaurant::PrintCommentsByRating() const {
+   int i;
+
+   cout << "Comments for each rating level: " << endl;
+   for (i = 1; i <= 5; ++i) {
+      cout << i << ":" << endl;
+      reviews.PrintCommentsForRating(i);
+   }
+}
+```
+
+## 7.9 Choosing classes to create
+### Decomposing into classes
+Creating a program may start by a programmer deciding what "things" exist, and what each thing contains and does.
+
+### Coding the classes
+```Cpp
+#ifndef TEAMPERSON_H
+#define TEAMPERSON_H
+
+#include <string>
+using namespace std;
+
+class TeamPerson {
+   public:
+      void   SetFullName(string firstAndLastName);
+      void   SetAgeYears(int ageInYears);
+      string GetFullName() const;
+      int    GetAgeYears() const;
+      void   Print() const;
+
+   private:
+      string fullName;
+      int    ageYears;
+};
+```
+```Cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+#include "TeamPerson.h"
+
+void TeamPerson::SetFullName(string firstAndLastName) {
+   fullName = firstAndLastName;
+}
+
+void TeamPerson::SetAgeYears(int ageInYears) {
+   ageYears = ageInYears;
+}
+
+string TeamPerson::GetFullName() const {
+   return fullName;
+}
+
+int TeamPerson::GetAgeYears() const {
+   return ageYears;
+}
+
+void TeamPerson::Print() const {
+   cout << "Full name: "   << fullName << endl;
+   cout << "Age (years): " << ageYears << endl;
+}
+```
+```Cpp
+#ifndef SOCCERTEAM_H
+#define SOCCERTEAM_H
+
+#include "TeamPerson.h"
+
+class SoccerTeam {
+   public:
+      void SetHeadCoach(TeamPerson teamPerson);
+      void SetAssistantCoach (TeamPerson teamPerson);
+
+      TeamPerson GetHeadCoach() const;
+      TeamPerson GetAssistantCoach() const;
+
+      void Print() const;
+
+   private:
+      TeamPerson headCoach;
+      TeamPerson assistantCoach;
+      // Players omitted for brevity
+};
+
+#endif
+```
+```Cpp
+#include <iostream>
+using namespace std;
+
+#include "SoccerTeam.h"
+
+void SoccerTeam::SetHeadCoach(TeamPerson teamPerson) {
+   headCoach = teamPerson;
+}
+
+void SoccerTeam::SetAssistantCoach(TeamPerson teamPerson) {
+   assistantCoach = teamPerson;
+}
+
+TeamPerson SoccerTeam::GetHeadCoach() const {
+   return headCoach;
+}
+
+TeamPerson SoccerTeam::GetAssistantCoach() const {
+   return assistantCoach;
+}
+
+void SoccerTeam::Print() const {
+   cout << "HEAD COACH: " << endl;
+   headCoach.Print();
+   cout << endl;
+
+   cout << "ASSISTANT COACH: " << endl;
+   assistantCoach.Print();
+   cout << endl;
+}
+```
+```Cpp
+#include <iostream>
+using namespace std;
+
+#include "SoccerTeam.h"
+#include "TeamPerson.h"
+
+int main() {
+   SoccerTeam teamCalifornia;
+   TeamPerson headCoach;
+   TeamPerson asstCoach;
+
+   headCoach.SetFullName("Mark Miwerds");
+   headCoach.SetAgeYears(42);
+   teamCalifornia.SetHeadCoach(headCoach);
+
+   asstCoach.SetFullName("Stanley Lee");
+   asstCoach.SetAgeYears(30);
+   teamCalifornia.SetAssistantCoach(asstCoach);
+
+   teamCalifornia.Print();
+
+   return 0;
+}
+/*
+HEAD COACH: 
+Full name: Mark Miwerds
+Age (years): 42
+
+ASSISTANT COACH: 
+Full name: Stanley Lee
+Age (years): 30
+*/
+```
+
+### Included files
+Above, note that each file only includes needed header files. SoccerTeam.h has a TeamPerson member so includes TeamPerson.h. SoccerTeam.cpp includes SoccerTeam.h. main.cpp declares objects of both types so also includes both .h files. A common error is to include unnecessary .h files, which misleads the reader.
+
+Note that only .h files are included, never .cpp files.
+
+## 7.10 Unit testing (classes)
+### Testbenches
+Like a chef who tastes food before serving, a class creator should test a class before allowing use. A testbench is a program whose job is to thoroughly test another program (or portion) via a series of input/output checks known as test cases. Unit testing means to create and run a testbench for a specific item (or "unit") like a function or a class.
+
+The testbench below creates an object, then checks public functions for correctness. Some tests failed.
+
+Features of a good testbench include:
+- Automatic checks. Ex: Values are compared, as in testData.GetNum1() != 100. For conciseness, only fails are printed.
+- Independent test cases. Ex: The test case for GetAverage() assigns new values, vs. relying on earlier values.
+- 100% code coverage: Every line of code is executed. A good testbench would have more test cases than below.
+- Includes not just typical values but also border cases: Unusual or extreme test case values like 0, negative numbers, or large numbers.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+// Note: This class intentionally has errors
+
+class StatsInfo {
+public:
+   void SetNum1(int numVal) { num1 = numVal; }
+   void SetNum2(int numVal) { num2 = numVal; }
+   int GetNum1() const { return num1; }
+   int GetNum2() const { return num1; }
+   int GetAverage() const;
+
+private:
+   int num1;
+   int num2;
+};
+
+int StatsInfo::GetAverage() const {
+   return num1 + num2 / 2;
+}
+// END StatsInfo class
+
+
+// TESTBENCH main() for StatsInfo class
+int main() {
+   StatsInfo testData;
+
+   // Typical testbench tests more thoroughly
+
+   cout << "Beginning tests." << endl;
+
+   // Check set/get num1
+   testData.SetNum1(100);
+   if (testData.GetNum1() != 100) {
+      cout << "   FAILED set/get num1" << endl;
+   }
+
+   // Check set/get num2
+   testData.SetNum2(50);
+   if (testData.GetNum2() != 50) {
+      cout << "   FAILED set/get num2" << endl;
+   }
+
+   // Check GetAverage()
+   testData.SetNum1(10);
+   testData.SetNum2(20);
+   if (testData.GetAverage() != 15) {
+      cout << "   FAILED GetAverage for 10, 20" << endl;
+   }
+
+   testData.SetNum1(-10);
+   testData.SetNum2(0);
+   if (testData.GetAverage() != -5) {
+      cout << "   FAILED GetAverage for -10, 0" << endl;
+   }
+
+   cout << "Tests complete." << endl;
+
+   return 0;
+}
+/*
+Beginning tests.
+   FAILED set/get num2
+   FAILED GetAverage for 10, 20
+   FAILED GetAverage for -10, 0
+Tests complete.
+*/
+```
+
+### Regression testing
+Regression testing means to retest an item like a class anytime that item is changed; if previously-passed test cases fail, the item has "regressed".
+
+A testbench should be maintained along with the item, to always be usable for regression testing. A testbench may be in a class' file, or in a separate file as in MyClassTest.cpp for a class in MyClass.cpp.
+
+Testbenches may be complex, with thousands of test cases. Various tools support testing, and companies employ test engineers who only test other programmers' items. A large percent, like 50% or more, of commercial software development time may go into testing.
+
+
+### Erroneous unit tests
+An erroneous unit test may fail even if the code being tested is correct. A common error is for a programmer to assume that a failing unit test means that the code being tested has a bug. Such an assumption may lead the programmer to spend time trying to "fix" code that is already correct. Good practice is to inspect the code of a failing unit test before making changes to the code being tested.
+
+## 7.11 Constructor overloading
+### Basics
+Programmers often want to provide different initialization values when creating a new object. A class creator can overload a constructor by defining multiple constructors differing in parameter types. A constructor declaration can have arguments. The constructor with matching parameters will be called.
+![](./overloaded_constructor.png)
+
+### If any constructor defined, should define default
+If a programmer defines any constructor, the compiler does not implicitly define a default constructor, so good practice is for the programmer to also explicitly define a default constructor so that a declaration like  MyClass x; remains supported.
+```Cpp
+class Restaurant {
+   public:
+      Restaurant(string initName, int initRating);
+
+      // No other constructors
+      ...
+};
+
+int main() {
+   Restaurant foodPlace;              
+   ...
+}
+/*
+tmp1.cpp:37:15: error: no matching constructor for initialization of
+      'Restaurant'
+   Restaurant foodPlace;
+*/
+```
+### Constructors with default parameter values
+Like any function, a constructor's parameters may be assigned default values.
+If those default values allow the constructor to be called without arguments, then that constructor can serve as the default constructor.
+The default values could be in the function definition, but are clearer to class users in the declaration.
+```Cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Restaurant {
+   public:
+      Restaurant(string initName = "NoName", int initRating = -1);
+      void Print();
+
+    private:
+      string name;
+      int rating;
+};
+
+Restaurant::Restaurant(string initName, int initRating) {
+   name = initName;
+   rating = initRating;
+}
+
+// Prints name and rating on one line
+void Restaurant::Print() {
+   cout << name << " -- " << rating << endl;
+}
+
+int main() {
+   Restaurant foodPlace;
+   Restaurant coffeePlace("Joes", 5);
+
+   foodPlace.Print();
+   coffeePlace.Print();
+
+   return 0;
+}
+/*
+NoName -- -1
+Joes -- 5
+*/
+```
+
+# 8. Pointers
+## 8.1 Why pointers?
+### Vectors use dynamically allocated arrays
+The C++ vector class is a container that internally uses a dynamically allocated array, an array whose size can change during runtime. When a vector is created, the vector class internally dynamically allocates an array with an initial size, such as the size specified in the constructor. If the number of elements added to the vector exceeds the capacity of the current internal array, the vector class will dynamically allocate a new array with an increased size, and the contents of the array are copied into the new larger array. Each time the internal array is dynamically allocated, the array's location in memory will change. Thus, the vector class uses a pointer variable to store the memory location of the internal array.
+
+The ability to dynamically change the size of a vector makes vectors more powerful than arrays. Built-in constructs have also made vectors safer to use in terms of memory management.
+
+### Inserting/erasing in vectors vs. linked lists
+
+
+
+
+
+
 
 
 
