@@ -5276,6 +5276,991 @@ Another common error is to return the wrong variable, such as typing return conv
 
 Failing to return a value for a function is another common error. If execution reaches the end of a function's statements, the function automatically returns. For a function with a void return type, such an automatic return poses no problem, although some programmers recommend including a return statement for clarity. But for a function defined to return a value, the returned value is undefined; the value could be anything. For example, the user-defined function below lacks a return statement:
 
+```Cpp
+#include <iostream>
+using namespace std;
+
+int StepsToFeet(int baseSteps) {
+   const int FEET_PER_STEP = 3;  // Unit conversion
+   int feetTot;                  // Corresponding feet to steps
+   
+   feetTot = baseSteps * FEET_PER_STEP;
+}
+
+int main() {
+   int stepsInput;            // User defined steps
+   int feetTot;               // Corresponding feet to steps
+   
+   // Prompt user for input
+   cout << "Enter number of steps walked: ";
+   cin >> stepsInput;
+   
+   // Call functions to convert steps to feet
+   feetTot = StepsToFeet(stepsInput);
+   cout << "Feet: " << feetTot << endl;
+   
+   return 0;
+}
+/*
+Enter number of steps walked: 1000
+Feet: 3000
+*/
+```
+Sometimes a function with a missing return statement (or just return;) still returns the correct value. The reason is that the compiler uses a memory location to return a value to the calling expression. That location may have also been used by the compiler to store a local variable of that function. If that local variable happens to be the item that was supposed to be returned, the value in that location is the correct return value. But a later seemingly unrelated change to a function, like defining a new variable, may cause the compiler to use different memory locations, and the function suddenly no longer returns the correct value, leading to a bewildered programmer.
+
+## 6.10 Pass by reference
+### Pass by reference
+New programmers sometimes assign a value to a parameter, believing the assignment updates the corresponding argument variable. An example situation is when a function should return two values, whereas a function's return construct can only return one value. Assigning a normal parameter fails to update the argument's variable, because normal parameters are pass by value, meaning the argument's value is copied into a local variable for the parameter.
+
+```Cpp
+
+#include <iostream>
+using namespace std;
+
+void ConvHrMin(int timeVal, int hrVal, int minVal) {
+   hrVal  = timeVal / 60;  
+   minVal = timeVal % 60;
+}
+
+int main() {
+   int totTime;
+   int usrHr;
+   int usrMin;
+
+   totTime = 0;
+   usrHr = 0;
+   usrMin = 0;
+
+   cout << "Enter total minutes: ";
+   cin >> totTime;
+
+   ConvHrMin(totTime, usrHr, usrMin);
+
+   cout << "Equals: ";
+   cout << usrHr << " hrs ";
+   cout << usrMin << " mins" << endl;
+
+   return 0;
+}
+/*
+Enter total minutes: 156
+Equal: 0 hrs 0 mins
+*/
+```
+The user is prompted to specify the total time in minutes. Function ConvHrMin is then called with arguments totTime, usrHr, and usrMin.
+ConvHrMin's parameters are passed by value, so the arguments' values are copied into local variables.
+Upon return, ConvHrMin's local variables are discarded. hrVal and minVal are local copies that do not impact usrHr and usrMin.
+
+C++ supports another kind of parameter that enables updating of an argument variable. A pass by reference parameter does not create a local copy of the argument, but rather the parameter refers directly to the argument variable's memory location. Appending & to a parameter's data type makes the parameter pass by reference type.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+void ConvHrMin(int timeVal, int& hrVal, int& minVal) {
+   hrVal = timeVal / 60;
+   minVal = timeVal % 60;
+}
+
+int main() {
+   int totTime;
+   int usrHr;
+   int usrMin;
+
+   totTime = 0;
+   usrHr = 0;
+   usrMin = 0;
+
+   cout << "Enter total minutes: ";
+   cin >> totTime;
+ 
+   ConvHrMin(totTime, usrHr, usrMin);
+ 
+   cout << "Equals: ";
+   cout << usrHr << " hrs ";
+   cout << usrMin << " min" << endl;
+
+   return 0;
+}
+/*
+Enter total minutes: 156
+Equal: 2 hrs 36 mins
+*/
+```
+The user is prompted to specify the total time in minutes. Function ConvHrMin is then called with arguments totTime, usrHr, and usrMin.
+The & indicates that the hrVal and minVal parameters are passed by reference.
+Parameters passed by reference refer to that variable's memory location, so updates to hrVal and minVal update usrHr and usrMin.
+Upon return from ConvHrMin, usrHr and usrMin retain the updated values.
+
+Pass by reference parameters should be used sparingly. For the case of two return values, commonly a programmer should instead create two functions. For example, defining two separate functions int StepsToFeet(int baseSteps) and int StepsToCalories(int baseSteps) is better than a single function void StepsToFeetAndCalories(int baseSteps, int& baseFeet, int& totCalories) . The separate functions support modular development, and enables use of the functions in an expression as in if (StepsToFeet(mySteps) < 100).
+
+Using multiple pass by reference parameters makes sense when the output values are intertwined, such as computing monetary change, whose function might be void ComputeChange(int totCents, int& numQuarters, int& numDimes, int& numNickels, int& numPennies), or converting from polar to Cartesian coordinates, whose function might be void PolarToCartesian(int radialPol, int anglePol, int& xCar, int& yCar).
+
+### Avoid assigning pass by value parameters
+Although a pass by value parameter creates a local copy, good practice is to avoid assigning such a parameter. The following code is correct but bad practice.
+```Cpp
+int IntMax(int numVal1, int numVal2) {
+   if (numVal1 > numVal2) {
+      numVal2 = numVal1; // numVal2 holds max
+   }
+
+   return numVal2;
+}
+```
+Assigning a parameter can reduce code slightly, but is widely considered a lazy programming style. Assigning a parameter can mislead a reader into believing the argument variable is supposed to be updated. Assigning a parameter also increases likelihood of a bug caused by a statement reading the parameter later in the code but assuming the parameter's value is the original passed value.
+
+### Reference variables
+A programmer can also declare a reference variable. A reference is a variable type that refers to another variable. Ex: int& maxValRef declares a reference to a variable of type int. The programmer must initialize each reference with an existing variable, which can be done by initializing the reference variable when the reference is declared. Ex: int& maxValRef = usrInput3;
+
+In the example below, usrValRef is a reference that refers to usrValInt. The user-entered number is assigned to the variable usrValInt. Because usrValRef refers to usrValInt, printing usrValInt or usrValRef will print the number.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+   int usrValInt;
+   int& usrValRef = usrValInt;  // Refers to usrValInt
+
+   cout << "Enter an integer: ";
+   cin  >> usrValInt;
+
+   cout << "We wrote your integer to usrValInt." << endl;
+   cout << "usrValInt is: " << usrValInt << "." << endl;
+   cout << "usrValRef refers to usrValInt, and is: " << usrValRef << "." << endl;
+
+   usrValInt = 99;
+   cout << endl << "We assigned usrValInt with 99." << endl;
+   cout << "usrValInt is now: " << usrValInt << "." << endl;
+   cout << "usrValRef is now: " << usrValRef << "." << endl;
+   cout << "Note that usrValRef refers to usrValInt, so it changed too." << endl;
+   return 0;
+}
+/*
+Enter an integer: 42
+We wrote your integer to usrValInt.
+usrValInt is: 42.
+usrValRef refers to usrValInt, and is: 42.
+
+We assigned usrValInt with 99.
+usrValInt is now: 99.
+usrValRef is now: 99.
+Note that usrValRef refers to usrValInt, so it changed too.
+
+Feedback?
+*/
+```
+
+## 6.11 Functions with string/vector parameters
+Functions commonly modify a string or vector. The following function modifies a string by replacing spaces with hyphens.
+```Cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Function replaces spaces with hyphens
+void StrSpaceToHyphen(string& modStr) {
+   unsigned int i;   // Loop index
+   
+   for (i = 0; i < modStr.size(); ++i) {
+      if (modStr.at(i) == ' ') {
+         modStr.at(i) = '-';
+      }
+   }
+}
+
+int main() {
+   string userStr;  // Input string from user
+   
+   // Prompt user for input
+   cout << "Enter string with spaces: " << endl;
+   getline(cin, userStr);
+   
+   // Call function to modify user defined string
+   StrSpaceToHyphen(userStr);
+   
+   // Output modified string
+   cout << "String with hyphens: ";
+   cout << userStr << endl;
+   
+   return 0;
+}
+/*
+Enter string with spaces: 
+Hello there everyone.
+String with hyphens: Hello-there-everyone.
+
+...
+
+Enter string with spaces: 
+Good bye  now   !!!
+String with hyphens: Good-bye--now---!!!
+*/
+```
+The string serves as function input and output. The string parameter must be pass by reference, achieved using &, so that the function modifies the original string argument (userStr) and not a copy.
+
+Sometimes a programmer defines a vector or string parameter as pass by reference even though the function does not modify the parameter, to prevent the performance and memory overhead of copying the argument that would otherwise occur.
+
+The keyword "const" can be prepended to a function's vector or string parameter to prevent the function from modifying the parameter. Programmers commonly make a large vector or string input parameter pass by reference, to gain efficiency, while also making the parameter const, to prevent assignment.
+
+The following illustrates. The first function modifies the vector so it defines a normal pass by reference. The second function does not modify the vector but for efficiency uses constant pass by reference.
+
+```Cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+void ReverseVals(vector<int>& vctrVals) {
+   unsigned int i;  // Loop index
+   int tmpVal;      // Temp variable for swapping
+
+   for (i = 0; i < (vctrVals.size() / 2); ++i) {
+      tmpVal = vctrVals.at(i); // These statements swap
+      vctrVals.at(i) = vctrVals.at(vctrVals.size() - 1 - i);
+      vctrVals.at(vctrVals.size() - 1 - i) = tmpVal;
+   }
+}
+
+void PrintVals(const vector<int>& vctrVals) {
+   unsigned int i;  // Loop index
+
+   // Print updated vector
+   cout << endl << "New values: ";
+   for (i = 0; i < vctrVals.size(); ++i) {
+      cout << " " << vctrVals.at(i);
+   }
+   cout << endl;
+}
+
+int main() {
+   const int NUM_VALUES = 8;            // Vector size
+   vector<int> userValues(NUM_VALUES);  // User values
+   int i;                               // Loop index
+
+   // Prompt user to populate vector
+   cout << "Enter " << NUM_VALUES << " values..." << endl;
+   for (i = 0; i < NUM_VALUES; ++i) {
+      cout << "Value: ";
+      cin >> userValues.at(i);
+   }
+
+   // Call function to reverse vector values
+   ReverseVals(userValues);
+
+   // Print reversed values
+   PrintVals(userValues);
+
+   return 0;
+}
+/*
+Enter 8 values...
+Value: 10
+Value: 20
+Value: 30
+Value: 40
+Value: 50
+Value: 60
+Value: 70
+Value: 80
+
+New values:  80 70 60 50 40 30 20 10
+*/
+```
+A reader might wonder why all input parameters are not defined as constant pass by reference parameters: Why make local copies at all? The reason is efficiency. For parameters involving just a few memory locations, making a local copy enables the compiler to generate more efficient code, in part because the compiler can place those copies inside a tiny-but-fast memory inside the processor called a register file—further details are beyond our scope.
+
+In summary:
+- Define a function's output or input/output parameters as pass by reference.
+  But create output parameters sparingly, striving to use return values instead.
+- Define input parameters as pass by value.
+  Except for large items (perhaps 10 or more elements); use constant pass by reference for those.
+
+## 6.12 Functions with C string parameters
+```Cpp
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+// Function replaces spaces with hyphens
+void StrSpaceToHyphen(char modString[]) {
+   int i;      // Loop index
+   
+   for (i = 0; i < strlen(modString); ++i) {
+      if (modString[i] == ' ') {
+         modString[i] = '-';
+      }
+   }
+}
+
+int main() {
+   const int INPUT_STR_SIZE = 50;  // Input C string size
+   char userStr[INPUT_STR_SIZE];   // Input C string from user
+   
+   // Prompt user for input
+   cout << "Enter string with spaces: " << endl;
+   cin.getline(userStr, INPUT_STR_SIZE);
+   
+   // Call function to modify user defined C string
+   StrSpaceToHyphen(userStr);
+   
+   cout << "String with hyphens: " << userStr << endl;
+   
+   return 0;
+}
+/*
+Enter string with spaces: 
+Hello there everyone.
+String with hyphens: Hello-there-everyone.
+
+...
+
+Enter string with spaces: 
+Good bye  now   !!!
+String with hyphens: Good-bye--now---!!!
+*/
+```
+The parameter definition uses [...] to indicate an array parameter. The function call's argument does not use [...]. The compiler automatically passes the C string as a pointer. Hence, the above function modifies the original string argument (userStr) and not a copy.
+
+The strlen() function can be used to determine the length of the string argument passed to the function. So, unlike functions with array parameters of other types, a function with a C string parameter does not require a second parameter to specify the string size.
+
+A programmer can explicitly define an array parameter as a pointer. The following uses char* modString instead of the earlier char modString[]. Such pointer parameters are common for C string parameters, such as in the C string library functions.
+
+```Cpp
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+// Function replaces spaces with hyphens
+void StrSpaceToHyphen(char* modString) {
+   int i;      // Loop index
+   
+   for (i = 0; i < strlen(modString); ++i) {
+      if (modString[i] == ' ') {
+         modString[i] = '-';
+      }
+   }
+}
+
+int main() {
+   const int INPUT_STR_SIZE = 50;  // Input string size
+   char userStr[INPUT_STR_SIZE];   // Input C string from user
+   
+   // Prompt user for input
+   cout << "Enter string with spaces: " << endl;
+   cin.getline(userStr, INPUT_STR_SIZE);
+   
+   // Call function to modify user defined C string
+   StrSpaceToHyphen(userStr);
+   
+   cout << "String with hyphens: " << userStr << endl;
+   
+   return 0;
+}
+/*
+Enter string with spaces: 
+Hello there everyone!
+String with hyphens: Hello-there-everyone!
+
+...
+
+Enter string with spaces: 
+Good bye  now   !!!
+String with hyphens: Good-bye--now---!!!
+
+*/
+```
+
+## 6.13 Scope of variable/function definitions
+The name of a defined variable or function item is only visible to part of a program, known as the item's scope. A variable declared in a function has scope limited to inside that function. In fact, because a compiler scans a program line-by-line from top-to-bottom, the scope starts after the declaration until the function's end. The following highlights the scope of local variable cmVal.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+const double CM_PER_IN = 2.54;
+const int    IN_PER_FT = 12;
+
+/* Converts a height in feet/inches to centimeters */
+double HeightFtInToCm(int heightFt, int heightIn) {
+   int totIn;
+   double cmVal;
+   
+   totIn = (heightFt * IN_PER_FT) + heightIn; // Total inches
+   cmVal = totIn * CM_PER_IN;                 // Conv inch to cm
+   return cmVal;
+}
+
+int main() {
+   int userFt;     // User defined feet
+   int userIn;     // User defined inches
+   
+   // Prompt user for feet/inches
+   cout << "Enter feet: ";
+   cin >> userFt;
+   
+   cout << "Enter inches: ";
+   cin >> userIn;
+   
+   // Output the conversion result
+   cout << "Centimeters: ";
+   cout << HeightFtInToCm(userFt, userIn) << endl;
+   
+   return 0;
+}
+```
+Note that variable cmVal is invisible to the function main(). A statement in main() like newLen = cmVal; would yield a compiler error, e.g., the "error: cmVal was not declared in this scope". Likewise, variables userFt and userIn are invisible to the function HeightFtInToCm(). Thus, a programmer is free to define items with names userFt or userIn in function HeightFtInToCm().
+
+A variable declared outside any function is called a "global variable", in contrast to a local variable declared inside a function. A global variable's scope extends after the declaration to the file's end, and reaches into functions. For example, HeightFtInToCm() above accesses global variables CM_PER_IN and IN_PER_FT.
+
+Global variables should be used sparingly. If a function's local variable (including a parameter) has the same name as a global variable, then in that function the name refers to the local item and the global is inaccessible. Such naming can confuse a reader. Furthermore, if a function updates a global variable, the function has effects that go beyond its parameters and return value, known as side effects, which make program maintenance hard. Global variables are typically limited to const variables like the number of centimeters per inch above. Beginning programmers sometimes use globals to avoid having to use parameters, which is bad practice. Good practice is to minimize the use of non-const global variables.
+
+A function also has scope, which extends from its definition to the end of the file. Commonly, a programmer wishes to have the main() definition appear near the top of a file, with other functions definitions appearing further below, so that the main function is the first thing a reader sees. However, given function scope, main() would not be able to call any of those other functions. A solution involves function declarations. A function declaration specifies the function's return type, name, and parameters, ending with a semicolon where the opening brace would have gone. A function declaration is also known as a function prototype. The function declaration gives the compiler enough information to recognize valid calls to the function. So by placing function declarations at the top of a file, the main function can then appear next, with actual function definitions appearing later in the file.
+
+```Cpp
+#include <iostream>
+#include <cmath> // To use "pow" function
+using namespace std;
+
+/* Program to convert given-year U.S. dollars to
+   current dollars, using simplistic method of 4% annual inflation.
+   Source: http://inflationdata.com (See: Historical) */
+
+// (Function DECLARATION)
+double ToCurrDollars (double pastDol, int pastYr, int currYr);
+
+int main() {
+   double pastDol;        // Starting dollar amount
+   double currDol;        // Ending dollar amount (converted value)
+   int pastYr;            // Starting year
+   int currYr;            // Ending year (converted to year)
+   
+   // Prompt user for previous year/dollar and current year
+   cout << "Enter current year: ";
+   cin >> currYr;
+   cout << "Enter past year: ";
+   cin >> pastYr;
+   cout << "Enter past dollars (Ex: 1000): ";
+   cin >> pastDol;
+   
+   // Function call to convert past to current dollars
+   currDol = ToCurrDollars(pastDol, pastYr, currYr);
+   
+   cout << "$" << pastDol << " in " << pastYr;
+   cout << " is about $" << currDol << " in ";
+   cout << currYr << endl;
+   
+   return 0;
+}
+
+// (Function DEFINITION)
+// Function returns equivalent value of pastDol in pastYr to currYr
+double ToCurrDollars (double pastDol, int pastYr, int currYr) {
+   double currDol;      // Equivalent dollar amount given inflation
+   
+   currDol = pastDol * pow(1.04, currYr - pastYr );
+   
+   return currDol;
+}
+/*
+Enter current year: 2015
+Enter past year: 1970
+Enter past dollars (Ex: 1000): 10000
+$10000 in 1970 is about $58411.8 in 2015
+(Note: Average annual U.S. income in 1970)
+
+...
+
+Enter current year: 2015
+Enter past year: 1970
+Enter past dollars (Ex: 1000): 23000
+$23000 in 1970 is about $134347 in 2015
+(Note: Average U.S. house price in 1970)
+
+...
+
+Enter current year: 2015
+Enter past year: 1933
+Enter past dollars (Ex: 1000): 37
+$37 in 1933 is about $922.435 in 2015
+(Note: Cost of Golden Gate Bridge, in millions)
+
+...
+
+Enter current year: 2015
+Enter past year: 1969
+Enter past dollars (Ex: 1000): 25
+$25 in 1969 is about $151.871 in 2015
+(Note: Cost of Apollo space program, in billions)
+*/
+```
+
+## 6.14 Default parameter values
+Sometimes a function's last parameter (or last few) should be optional. A function call could then omit the last argument, and instead the program would use a default value for that parameter. A function can have a default parameter value for the last parameter(s), meaning a call can optionally omit a corresponding argument.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+// Function prints date in two styles (0: American (default), 1: European)
+void PrintDate(int currDay, int currMonth, int currYear, int printStyle = 0) {
+
+   if (printStyle == 0) {      // American
+      cout << currMonth << "/" << currDay << "/" << currYear;
+   }
+   else if (printStyle == 1) { // European
+      cout << currDay << "/" << currMonth << "/" << currYear;
+   }
+   else {
+      cout << "(invalid style)";
+   }
+}
+
+int main() {
+   
+   // Print dates given various style settings
+   PrintDate(30, 7, 2012, 0);
+   cout << endl;
+   
+   PrintDate(30, 7, 2012, 1);
+   cout << endl;
+   
+   PrintDate(30, 7, 2012); // Uses default value for printStyle
+   cout << endl;
+   
+   return 0;
+}
+/*
+7/30/2012
+30/7/2012
+7/30/2012
+*/
+```
+The fourth (and last) parameter has a default value: int printStyle = 0. If a function call does not provide a fourth argument, then the style parameter is 0.
+
+The same can be done for other parameters, as in: 
+```Cpp
+void PrintDate(int currDay = 1, int currMonth = 1, int currYear = 2000, int printStyle = 0).
+```
+Because arguments are matched with parameters based on their ordering in the function call, only the last arguments can be omitted. The following are valid calls to this PrintDate() function having default values for all parameters:
+```Cpp
+PrintDate(30, 7, 2012, 0); // No defaults
+PrintDate(30, 7, 2012);    // Defaults:                            style=0              
+PrintDate(30, 7);          // Defaults:                 year=2000, style=0
+PrintDate(30);             // Defaults:        month=1, year=2000, style=0 (strange, but valid)
+PrintDate();               // Defaults: day=1, month=1, year=2000, style=0
+```
+If a parameter does not have a default value, then failing to provide an argument generates a compiler error. Ex: Given: void PrintDate(int currDay, int currMonth, int currYear, int printStyle = 0). Then the call PrintDate(30, 7) generates the following error message from g++.
+
+## 6.15 Function name overloading
+Sometimes a program has two functions with the same name but differing in the number or types of parameters, known as function name overloading or just function overloading. The following two functions print a date given the day, month, and year. The first function has parameters of type int, int, and int, while the second has parameters of type int, string, and int.
+
+```Cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+void PrintDate(int currDay, int currMonth, int currYear) {
+   cout << currMonth << "/" << currDay << "/" << currYear;
+}
+
+void PrintDate(int currDay, string currMonth, int currYear) {
+   cout << currMonth << " " << currDay << ", " << currYear;
+}
+
+int main() {
+   
+   PrintDate(30, 7, 2012);
+   cout << endl;
+   
+   PrintDate(30, "July", 2012);
+   cout << endl;
+   
+   return 0;
+}
+/*
+7/30/2012
+July 30, 2012
+*/
+```
+The compiler determines which function to call based on the argument types. PrintDate(30, 7, 2012) has argument types int, int, int, so calls the first function. PrintDate(30, "July", 2012) has argument types int, string, int, so calls the second function.
+
+More than two same-named functions is allowed as long as each has distinct parameter types. Thus, in the above program:
+
+PrintDate(int month, int day, int year, int style) can be added because the types int, int, int, int differ from int, int, int, and from int, string, int.
+PrintDate(int month, int day, int year) yields a compiler error, because two functions have types int, int, int (the parameter names are irrelevant).
+A function's return type does not influence overloading. Thus, having two same-named function definitions with the same parameter types but different return types still yield a compiler error.
+The use of overloading and of default parameter values may be combined as long as no ambiguity is introduced. Adding the function void PrintDate(int month, int day, int year, int style = 0) above would generate a compiler error because the compiler cannot determine if the function call PrintDate(7, 30, 2012) should go to the "int, int, int" function or to that new "int, int, int, int" function with a default value for the last parameter.
+
+## 6.16 Parameter error checking
+### Verifying parameter values
+Commonly, a function expects parameter values to be within some range. A good practice is to check that a parameter's value is within an expected range. If not in the range, the function might take one or more of various actions, like outputting an error message, assigning a valid value, returning a value indicating failure, exiting the program, etc.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+void PrintDate(int currDay, int currMonth, int currYear) {
+
+   // Parameter error checking
+   if ((currDay < 1) || (currDay > 31)) {
+      cout << "Invalid day (" << currDay << "). Using 1." << endl;
+      currDay = 1;
+   }
+
+   if ((currMonth < 1) || (currMonth > 12)) {
+      cout << "Invalid month (" << currMonth << "). Using 1." << endl;
+      currMonth = 1;
+   }
+
+   // Begin function's normal behavior
+   cout << currMonth << "/" << currDay << "/" << currYear;
+}
+
+
+int main() {
+
+   PrintDate(30, 7, 2012);
+   cout << endl << endl;
+
+   PrintDate(40, 7, 2012);
+   cout << endl << endl;
+
+   PrintDate(30, 13, 2012);
+   cout << endl << endl;
+
+   return 0;
+}
+/*
+7/30/2012
+
+Invalid day (40). Using 1.
+7/1/2012
+
+Invalid month (13). Using 1.
+1/30/2012
+*/
+```
+
+## 6.17 Preprocessor and include
+The preprocessor is a tool that scans the file from top to bottom looking for any lines that begin with #, known as a hash symbol. Each such line is not a program statement, but rather directs the preprocessor to modify the file in some way before compilation continues, each such line being known as a preprocessor directive. The directive ends at the end of the line, no semicolon is used at the end of the line.
+
+Perhaps the most commonly-used preprocessor directive is #include, known as an include directive. #include directs the compiler to replace that line by the contents of the given filename.
+
+```Cpp
+#include "filename"
+#include <filename>
+```
+Good practice is to use a .h suffix for any file that will be included in another file. The h is short for header, to indicate that the file is intended to be included at the top (or header) of other files. Although any file can be included in any other file, convention is to only include .h files.
+
+The characters surrounding the filename determine where the preprocessor looks for the file.
+
+```Cpp
+#include "myfile.h"
+```
+-- A filename in quotes causes the preprocessor to look for the file in the same folder/directory as the including file.
+```Cpp
+#include <stdfile>
+```
+-- A filename in angle brackets causes the preprocessor to look in the system's standard library folder/directory. Programmers typically use angle brackets only for standard library files, using quotes for all other include files. Note that nearly every previous example has included at least one standard library file, using angle brackets.
+Header files that are part of the standard C++ library do not have a .h extension.
+Items that were originally part of the C standard library have a "c" prepended, as in cmath.
+
+## 6.18 Separate files
+Separating part of a program's code into a separate file can yield several benefits. One benefit is preventing a main file from becoming unmanageably large. Another benefit is that the separated part could be useful in other programs.
+
+Suppose a program has several related functions that operate on triples of numbers, such as computing the maximum of three numbers or computing the average of three numbers. Those related functions' definitions can be placed in their own file as shown below in the file threeintsfcts.cpp.
+
+![](./separate_files.png)
+Just compiling those two files (without the #include "threeintsfcts.h" line in the main file) would yield an error, as shown above on the left. The problem is that the compiler does not see the function definitions while processing the main file because those definitions are in another file, which is similar to what occurs when defining functions after main(). The solution for both situations is to provide function declarations before main() so the compiler knows enough about the functions to compile calls to those functions. Instead of typing the declarations directly above main(), a programmer can provide the function declarations in a header file, such as the threeintsfcts.h file provided in the figure above. The programmer then includes the contents of that file into a source file via the line: #include "threeintsfcts.h".
+
+The reader may note that the .h file could have contained function definitions rather than just function declarations, eliminating the need for two files (one for declarations, one for definitions). However, the two file approach has two key advantages. One advantage is that with the two file approach, the .h file serves as a brief summary of all functions available. A second advantage is that the main file's copy does not become exceedingly large during compilation, which can lead to slow compilation.
+
+One last consideration that must be dealt with is that a header file could get included multiple times, causing the compiler to generate errors indicating an item defined in that header file is defined multiple times (the above header files only declared functions and didn't define them, but other header files may define functions, types, constants, and other items). Multiple inclusion commonly can occur when one header file includes another header file, e.g., the main file includes file1.h and file2.h, and file1.h also includes file2.h -- thus, file2.h would get included twice into the main file.
+
+The solution is to add some additional preprocessor directives, known as header file guards, to the .h file as follows.
+
+Header file guards are preprocessor directives, which cause the compiler to only include the contents of the header file once. #define FILENAME_H defines the symbol FILENAME_H to the preprocessor. The #ifndef FILENAME_H and #endif form a pair that instructs the preprocessor to process the code between the pair only if FILENAME_H is not defined ("ifndef" is short for "if not defined"). Thus, if the preprocessor includes encounter the header more than once, the code in the file during the second and any subsequent encounters will be skipped because FILENAME_H was already defined.
+
+Good practice is to guard every header file. The following shows the threeintsfcts.h file with the guarding code added.
+```Cpp
+#ifndef FILENAME_H
+#define FILENAME_H
+
+// Header file contents
+
+#endif
+```
+
+```Cpp
+#ifndef THREEINTSFCTS_H
+#define THREEINTSFCTS_H
+
+int ThreeIntsSum(int num1, int num2, int num3);
+int ThreeIntsAvg(int num1, int num2, int num3);
+
+#endif
+```
+
+# 7.Object and Classes 
+## 7.1 Objects: Introduction
+### Grouping things into objects
+The physical world is made up of material items like wood, metal, plastic, fabric, etc. To keep the world understandable, people deal with higher-level objects, like chairs, tables, and TV's. Those objects are groupings of the lower-level items.
+
+Likewise, a program is made up of items like variables and functions. To keep programs understandable, programmers often deal with higher-level groupings of those items known as objects. In programming, an object is a grouping of data (variables) and operations that can be performed on that data (functions).
+
+### Abstraction / Information hiding
+Abstraction means to have a user interact with an item at a high-level, with lower-level internal details hidden from the user (aka information hiding or encapsulation). Ex: An oven supports an abstraction of a food compartment and a knob to control heat. An oven's user need not interact with internal parts of an oven.
+
+Objects strongly support abstraction, hiding entire groups of functions and variables, exposing only certain functions to a user.
+
+An abstract data type (ADT) is a data type whose creation and update are constrained to specific well-defined operations. A class can be used to implement an ADT.
+
+## 7.2 Using a class
+### Classes intro: Public member functions
+The class construct defines a new type that can group data and functions to form an object. A class' public member functions indicate all operations a class user can perform on the object. The power of classes is that a class user need not know how the class' data and functions are implemented, but need only understand how each public member function behaves. The animation below shows a class' public member function declarations only; the remainder of the class definition is discussed later.
+
+```Cpp
+class Restaurant {                          // Info about a restaurant   
+   public:                                          
+      void SetName(string restaurantName);  // Sets the restaurant's name              
+      void SetRating(int userRating);       // Sets the rating (1-5, with 5 best)      
+      void Print();                         // Prints name and rating on one line   
+
+   ...
+};
+```
+A class definition creates a new type that can be used to create objects. The class declares all functions a programmer can call to operate on such an object.
+A class user can declare a variable of the class type to create a new object.
+Then, the class user can call the functions to operate on the object. A class user need not know how the class' data or functions are implemented.
+
+### Using a class
+A programmer can create one or more objects of the same class. Declaring a variable of a class type creates an object of that type. Ex: Restaurant favLunchPlace; declares a Restaurant object named favLunchPlace.
+
+The "." operator, known as the member access operator, is used to invoke a function on an object. Ex: favLunchPlace.SetRating(4) calls the SetRating() function on the favLunchPlace object, which sets the object's rating to 4.
+
+```Cpp
+int main() {
+   Restaurant favLunchPlace;
+   Restaurant favDinnerPlace;
+
+   favLunchPlace.SetName("Central Deli");
+   favLunchPlace.SetRating(4);
+
+   favDinnerPlace.SetName("Friends Cafe");
+   favDinnerPlace.SetRating(5);
+
+   cout << "My favorite restaurants: " << endl;
+   favLunchPlace.Print();
+   favDinnerPlace.Print();
+
+   return 0;
+}
+```
+Declaring a variable of the class type Restaurant creates an object of that type. The compiler allocates memory for the objects, each of which may require numerous memory locations.
+The SetName() and SetRating() functions are invoked on the object favLunchPlace, setting that object's name to "Central Deli" and rating to 4. The object stores these values internally.
+Invoking the SetName() and SetRating() method on the favDinnerPlace object sets that object's name to "Friends Cafe" and rating to 5.
+Invoking the Print() operation on a Restaurant object, prints the restaurant's name and rating.
+
+### Class example: string
+C++'s string type is a class. The string class stores a string's characters in memory, along with variables indicating the length and other things, but a string's user need not know such details. Instead, the string's user just needs to know what public member functions can be used, such as those shown below. (Note: size_t is an unsigned integer type).
+```Cpp
+char& at(size_t pos); // Returns a reference to the character at position pos in the string.
+
+size_t length() const; // Returns the number of characters in the string
+
+void push_back(char c); // Appends character c to the string's end (increasing length by 1).
+```
+
+## 7.3 Defining a class
+### Private data members
+In addition to public member functions, a class definition has private data members: variables that member functions can access but class users cannot. Private data members appear after the word "private:" in a class definition.
+
+```Cpp
+class Restaurant {                          // Keeps a user's review of a restaurant
+   public:                                    
+      void SetName(string restaurantName);  // Sets the restaurant's name        
+      void SetRating(int userRating);       // Sets the rating (1-5, with 5 best)    
+      void Print();                         // Prints name and rating on one line 
+   private:
+      string name;
+      int rating;
+};
+```
+A class definition has private data members for storing local data.
+A class user cannot access a class' private data members; only the class' member functions can.
+
+### Defining a class' public member functions
+A programmer defining a class first declares member functions after the word "public:" in the class definition. A function declaration provides the function's name, return type, and parameter types, but not the function's statements.
+
+The programmer must also define each member function. A function definition provides a class name, return type, parameter names and types, and the function's statements. A member function definition has the class name and two colons (::), known as the scope resolution operator, preceding the function's name. A member function definition can access private data members.
+
+```Cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Restaurant {                          // Info about a restaurant
+   public:
+      void SetName(string restaurantName);  // Sets the restaurant's name
+      void SetRating(int userRating);       // Sets the rating (1-5, with 5 best)
+      void Print();                         // Prints name and rating on one line
+   
+   private:
+      string name;
+      int rating;
+};
+
+// Sets the restaurant's name
+void Restaurant::SetName(string restaurantName) {
+   name = restaurantName;
+}
+
+// Sets the rating (1-5, with 5 best)
+void Restaurant::SetRating(int userRating) {
+   rating = userRating;
+}
+
+// Prints name and rating on one line
+void Restaurant::Print() {
+   cout << name << " -- " << rating << endl;
+}
+
+int main() {
+   Restaurant favLunchPlace;
+   Restaurant favDinnerPlace;
+   
+   favLunchPlace.SetName("Central Deli");
+   favLunchPlace.SetRating(4);
+   
+   favDinnerPlace.SetName("Friends Cafe");
+   favDinnerPlace.SetRating(5);
+   
+   cout << "My favorite restaurants: " << endl;
+   favLunchPlace.Print();
+   favDinnerPlace.Print();
+   
+   return 0;
+}
+/*
+My favorite restaurants: 
+Central Deli -- 4
+Friends Cafe -- 5
+*/
+```
+
+### Example: RunnerInfo class
+```Cpp
+#include <iostream>
+using namespace std;
+
+class RunnerInfo {
+   public:                                
+      void SetTime(int timeRunSecs);       // Time run in seconds
+      void SetDist(double distRunMiles);   // Distance run in miles
+      double GetSpeedMph();                // Speed in miles/hour
+   private:
+      int timeRun;
+      double distRun;
+};
+
+void RunnerInfo::SetTime(int timeRunSecs) {
+   timeRun = timeRunSecs;  // timeRun refers to data member
+}
+
+void RunnerInfo::SetDist(double distRunMiles) {
+   distRun = distRunMiles;
+}
+
+double RunnerInfo::GetSpeedMph(){
+   return distRun / (timeRun / 3600.0); // miles / (secs / (hrs / 3600 secs))
+}
+
+int main() {
+   RunnerInfo runner1; // User-created object of class type RunnerInfo
+   RunnerInfo runner2; // A second object
+
+   runner1.SetTime(360);
+   runner1.SetDist(1.2);
+
+   runner2.SetTime(200);
+   runner2.SetDist(0.5);
+
+   cout << "Runner1's speed in MPH: " << runner1.GetSpeedMph() << endl;
+   cout << "Runner2's speed in MPH: " << runner2.GetSpeedMph() << endl;
+
+   return 0;
+}
+/*
+Runner1's speed in MPH: 12
+Runner2's speed in MPH: 9
+*/
+```
+
+## 7.4 Inline member functions
+### Inline member functions
+A member function's definition may appear within the class definition, known as an inline member function. Programmers may use inline short function definitions to yield more compact code, keeping longer function definitions outside the class definition to avoid clutter.
+```Cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Restaurant {                          // Info about a restaurant
+   public:
+      void SetName(string restaurantName) { // Sets the restaurant's name
+         name = restaurantName;
+      }
+      void SetRating(int userRating) {      // Sets the rating (1-5, with 5 best)
+         rating = userRating;
+      }
+      void Print();                         // Prints name and rating on one line
+   
+   private:
+      string name;
+      int rating;
+};
+
+// Prints name and rating on one line
+void Restaurant::Print() {
+   cout << name << " -- " << rating << endl;
+}
+
+int main() {
+   Restaurant favLunchPlace;
+   Restaurant favDinnerPlace;
+   
+   favLunchPlace.SetName("Central Deli");
+   favLunchPlace.SetRating(4);
+   
+   favDinnerPlace.SetName("Friends Cafe");
+   favDinnerPlace.SetRating(5);
+   
+   cout << "My favorite restaurants: " << endl;
+   favLunchPlace.Print();
+   favDinnerPlace.Print();
+   
+   return 0;
+}
+```
+Normally, items like variables must be declared before being used, but this rule does not apply within a class definition. Ex: Above, SetRating() accesses rating, even though rating is declared a few lines after. This rule exception allows a class to have the desired form of a public region at the top and a private region at the bottom: A public inline member function can thus access a private data member even though that private data member is declared after the function.
+
+```Cpp
+class PickupTruck {
+   public:
+      void SetLength(double fullLength);
+      void SetWidth (double fullWidth) {
+         widthInches = fullWidth;
+      }
+   private:
+      double lengthInches;
+      double widthInches;
+};
+
+void PickupTruck::SetLength(double fullLength) {
+   lengthInches = fullLength;
+}
+```
+The program above is written to illustrate the different ways of defining member functions, but good style is to be consistent. Since both functions are very short, a consistent style would be to define both inline.
+
+
 
 
 
