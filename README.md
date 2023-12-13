@@ -7197,11 +7197,388 @@ The C++ vector class is a container that internally uses a dynamically allocated
 The ability to dynamically change the size of a vector makes vectors more powerful than arrays. Built-in constructs have also made vectors safer to use in terms of memory management.
 
 ### Inserting/erasing in vectors vs. linked lists
+A vector (or array) stores a list of items in contiguous memory locations, which enables immediate access to any element of a vector userGrades by using userGrades.at(i) (or userGrades[i]). However, inserting an item requires making room by shifting higher-indexed items. Similarly, erasing an item requires shifting higher-indexed items to fill the gap. Shifting each item requires a few operations. If a program has a vector with thousands of elements, a single call to insert() or erase() can require thousands of instructions and cause the program to run very slowly, often called the vector insert/erase performance problem.
 
+A programmer can use a linked list to make inserts or erases faster. A "linked list" consists of items that contain both data and a pointer—a link—to the next list item. Thus, inserting a new item B between existing items A and C just requires changing A to point to B's memory location, and B to point to C's location. No shifts occur.
 
+A vector is like people ordered by their seat in a theater row; if you want to insert yourself between two adjacent people, other people have to shift over to make room. A linked list is like people ordered by holding hands; if you want to insert yourself between two people, only those two people have to change hands, and nobody else is affected.
+![](./compareVector_LinkedList.png)
 
+### Pointers used to call class member functions
+When a class member function is called on an object, a pointer to the object is automatically passed to the member function as an implicit parameter called the this pointer. The this pointer enables access to an object's data members within the object's class member functions. A data member can be accessed using this and the member access operator for a pointer, ->,ex. this->sideLength. The this pointer clearly indicates that an object's data member is being accessed, which is needed if a member function's parameter has the same variable name as the data member. 
 
+## 8.2 Pointer basics
+### Pointer variables
+A pointer is a variable that holds a memory address, rather than holding data like most variables. A pointer has a data type, and the data type determines what type of address is held in the pointer. Ex: An integer pointer holds a memory address of an integer, and a double pointer holds an address of a double. A pointer is declared by including * before the pointer's name. Ex: int* maxItemPointer declares an integer pointer named maxItemPointer.
 
+Typically, a pointer is initialized with another variable's address. The reference operator (&) obtains a variable's address. Ex: &someVar returns the memory address of variable someVar. When a pointer is initialized with another variable's address, the pointer "points to" the variable.
+
+```Cpp
+int main() {
+   int someInt;
+   int* valPointer;
+
+   someInt = 5;
+   cout << "someInt address is " << &someInt << endl;
+
+   valPointer = &someInt;        
+   cout << "valPointer is " << valPointer << endl;
+
+   return 0;
+}
+```
+### Dereferencing a pointer
+The dereference operator (*) is prepended to a pointer variable's name to retrieve the data to which the pointer variable points. Ex: If valPointer points to a memory address containing the integer 123, then cout << *valPointer; dereferences valPointer and outputs 123.
+
+```Cpp
+int main() {
+   int someInt;
+   int* valPointer;  
+
+   someInt = 5;
+   cout << "someInt address is " << &someInt << endl; // 5
+
+   valPointer = &someInt;  // make valPointer points to someInt      
+   cout << "valPointer is " << valPointer << endl; // address of someInt
+
+   cout << "*valPointer is " << *valPointer << endl; // 5
+
+   *valPointer = 10;   // Changes someInt to 10
+
+   cout << "someInt is " << someInt << endl; // 10
+   cout << "*valPointer is " << *valPointer << endl; // 10
+
+   return 0;
+}
+```
+
+### Null pointer
+When a pointer is declared, the pointer variable holds an unknown address until the pointer is initialized. A programmer may wish to indicate that a pointer points to "nothing" by initializing a pointer to null. Null means "nothing". A pointer that is assigned with the keyword nullptr is said to be null. Ex: int *maxValPointer = nullptr; makes maxValPointer null.
+
+```Cpp
+void PrintValue(int* valuePointer) {
+   if (valuePointer == nullptr) {
+      cout << "Pointer is null" << endl;
+   }
+   else {
+      cout << *valuePointer << endl;
+   }
+}
+
+int main() {
+   int someInt = 5;
+   int* valPointer = nullptr;
+
+   PrintValue(valPointer);
+   valPointer = &someInt;        
+   PrintValue(valPointer);
+
+   return 0;
+}
+/*
+Pointer is null
+5
+*/
+```
+
+### Common pointer errors
+A number of common pointer errors result in syntax errors that are caught by the compiler or runtime errors that may result in the program crashing.
+
+Common syntax errors:
+- A common error is to use the dereference operator when initializing a pointer. Ex: For a variable declared int maxValue; and a pointer declared int* valPointer;, *valPointer = &maxValue; is a syntax error because *valPointer is referring to the value pointed to, not the pointer itself.
+- A common error when declaring multiple pointers on the same line is to forget the * before each pointer name. Ex: int* valPointer1, valPointer2; declares valPointer1 as a pointer, but valPointer2 is declared as an integer because no * exists before valPointer2. Good practice is to declare one pointer per line to avoid accidentally declaring a pointer incorrectly.
+
+Common runtime errors:
+- A common error is to use the dereference operator when a pointer has not been initialized. Ex: cout << *valPointer; may cause a program to crash if valPointer holds an unknown address or an address the program is not allowed to access.
+- A common error is to dereference a null pointer. Ex: If valPointer is null, then cout << *valPointer; causes the program to crash. A pointer should always hold a valid address before the pointer is dereferenced.
+
+## 8.3 Operators: new, delete, and ->
+### The new operator
+The new operator allocates memory for the given type and returns a pointer to the allocated memory. If the type is a class, the new operator calls the class's constructor after allocating memory for the class's member variables.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+class Point {
+public:
+   Point();
+
+   double X;
+   double Y;
+};
+
+Point::Point() {
+   cout << "In Point default constructor" << endl;
+
+   X = 0;
+   Y = 0;
+}
+
+int main() {
+   Point* sample = new Point;
+   cout << "Exiting main()" << endl;
+   return 0;
+}
+```
+
+### Constructor arguments
+The new operator can pass arguments to the constructor. The arguments must be in parentheses following the class name.
+```Cpp
+#include <iostream>
+using namespace std;
+
+class Point {
+public:
+   Point(double xValue = 0, double yValue = 0);
+   void Print();
+
+   double X;
+   double Y;
+};
+
+Point:: Point(double xValue, double yValue) {
+   X = xValue;
+   Y = yValue;
+}
+
+void Point::Print() {
+   cout << "(" << X << ", ";
+   cout << Y << ")" << endl;
+}
+
+int main() {
+   Point* point1 = new Point;
+   (*point1).Print();
+
+   Point* point2 = new Point(8, 9);
+   (*point2).Print();
+
+   return 0;
+}
+```
+### The member access operator
+When using a pointer to an object, the member access operator (->) allows access to the object's members with the syntax a->b instead of (*a).b. Ex: If myPoint is a pointer to a Point object, myPoint->Print() calls the Print() member function.
+
+![](./access_operator.png)
+
+### The delete operator
+```Cpp
+
+int main() {
+   Point* point1 = new Point(73, 19);
+   cout << "X = " << point1->X << endl;
+   cout << "Y = " << point1->Y << endl;
+
+   delete point1;
+
+   // Error: can't use point1 after deletion
+   point1->Print();
+}
+```
+The delete operator deallocates (or frees) a block of memory that was allocated with the new operator. The statement delete pointerVariable; deallocates a memory block pointed to by pointerVariable. If pointerVariable is null, delete has no effect.
+
+After the delete, the program should not attempt to dereference pointerVariable since pointerVariable points to a memory location that is no longer allocated for use by pointerVariable. Dereferencing a pointer whose memory has been deallocated is a common error and may cause strange program behavior that is difficult to debug. Ex: If pointerVariable points to deallocated memory that is later allocated to someVariable, changing *pointerVariable will mysteriously change someVariable. Calling delete with a pointer that wasn't previously set by the new operator has undefined behavior and is a logic error.
+
+### Allocating and deleting object arrays
+The new operator creates a dynamically allocated array of objects if the class name is followed by square brackets containing the array's length. A single, contiguous chunk of memory is allocated for the array, then the default constructor is called for each object in the array. A compiler error occurs if the class does not have a constructor that can take 0 arguments.
+
+The delete[] operator is used to free an array allocated with the new operator.
+
+```Cpp
+int main() {
+   // Allocate points
+   int pointCount = 4;
+   Point* manyPoints = new Point[pointCount];
+
+   // Display each point
+   for (int i = 0; i < pointCount; ++i)
+      manyPoints[i].Print();
+
+   // Free all points with one delete
+   delete[] manyPoints;
+
+   return 0;
+}
+```
+### 8.5 A first linked list
+
+A common use of pointers is to create a list of items such that an item can be efficiently inserted somewhere in the middle of the list, without the shifting of later items as required for a vector. The following program illustrates how such a list can be created. A class is defined to represent each list item, known as a list node. A node is comprised of the data to be stored in each list item, in this case just one int, and a pointer to the next node in the list. A special node named head is created to represent the front of the list, after which regular items can be inserted.
+
+```Cpp
+#include <iostream>
+using namespace std;
+
+class IntNode {
+public:
+   IntNode(int dataInit = 0, IntNode* nextLoc = nullptr);
+   void InsertAfter(IntNode* nodeLoc);
+   IntNode* GetNext();
+   void PrintNodeData();
+private:
+   int dataVal;
+   IntNode* nextNodePtr;
+};
+
+// Constructor
+IntNode::IntNode(int dataInit, IntNode* nextLoc) {
+   this->dataVal = dataInit;
+   this->nextNodePtr = nextLoc;
+}
+
+/* Insert node after this node.
+ * Before: this -- next
+ * After:  this -- node -- next
+ */
+void IntNode::InsertAfter(IntNode* nodeLoc) {
+   IntNode* tmpNext = nullptr;
+   
+   tmpNext = this->nextNodePtr;    // Remember next
+   this->nextNodePtr = nodeLoc;    // this -- node -- ?
+   nodeLoc->nextNodePtr = tmpNext; // this -- node -- next
+}
+
+// Print dataVal
+void IntNode::PrintNodeData() {
+   cout << this->dataVal << endl;
+}
+
+// Grab location pointed by nextNodePtr
+IntNode* IntNode::GetNext() {
+   return this->nextNodePtr;
+}
+
+int main() {
+   IntNode* headObj  = nullptr; // Create IntNode pointers
+   IntNode* nodeObj1 = nullptr;
+   IntNode* nodeObj2 = nullptr;
+   IntNode* nodeObj3 = nullptr;
+   IntNode* currObj  = nullptr;
+   
+   // Front of nodes list
+   headObj = new IntNode(-1);
+   
+   // Insert nodes
+   nodeObj1 = new IntNode(555);
+   headObj->InsertAfter(nodeObj1);
+   
+   nodeObj2 = new IntNode(999);
+   nodeObj1->InsertAfter(nodeObj2);
+   
+   nodeObj3 = new IntNode(777);
+   nodeObj2->InsertAfter(nodeObj3);
+   
+   // Print linked list
+   currObj = headObj;
+   while (currObj != nullptr) {
+      currObj->PrintNodeData();
+      currObj = currObj->GetNext();
+   }
+   
+   return 0;
+}
+/*
+-1
+555
+999
+777
+*/
+```
+
+In contrast to the above program that declares one variable for each item allocated by the new operator, a program commonly declares just one or a few variables to manage a large number of items allocated using the new operator. The following example replaces the above main() function, showing how just two pointer variables, currObj and lastObj, can manage 20 allocated items in the list.
+
+To run the following figure, #include <cstdlib> was added to access the rand() function.
+
+```Cpp
+#include <iostream>
+#include <cstdlib>
+using namespace std;
+
+class IntNode {
+public:
+   IntNode(int dataInit = 0, IntNode* nextLoc = nullptr);
+   void InsertAfter(IntNode* nodeLoc);
+   IntNode* GetNext();
+   void PrintNodeData();
+private:
+   int dataVal;
+   IntNode* nextNodePtr;
+};
+
+// Constructor
+IntNode::IntNode(int dataInit, IntNode* nextLoc) {
+   this->dataVal = dataInit;
+   this->nextNodePtr = nextLoc;
+}
+
+/* Insert node after this node.
+ * Before: this -- next
+ * After:  this -- node -- next
+ */
+void IntNode::InsertAfter(IntNode* nodeLoc) {
+   IntNode* tmpNext = nullptr;
+   
+   tmpNext = this->nextNodePtr;    // Remember next
+   this->nextNodePtr = nodeLoc;    // this -- node -- ?
+   nodeLoc->nextNodePtr = tmpNext; // this -- node -- next
+}
+
+// Print dataVal
+void IntNode::PrintNodeData() {
+   cout << this->dataVal << endl;
+}
+
+// Grab location pointed by nextNodePtr
+IntNode* IntNode::GetNext() {
+   return this->nextNodePtr;
+}
+
+int main() {
+   IntNode* headObj = nullptr; // Create IntNode pointers
+   IntNode* currObj = nullptr;
+   IntNode* lastObj = nullptr;
+   int i;                // Loop index
+   
+   headObj = new IntNode(-1);        // Front of nodes list
+   lastObj = headObj;
+   
+   for (i = 0; i < 20; ++i) {        // Append 20 rand nums
+      currObj = new IntNode(rand());
+      
+      lastObj->InsertAfter(currObj); // Append curr
+      lastObj = currObj;             // Curr is the new last item
+   }
+   
+   currObj = headObj;                // Print the list
+   
+   while (currObj != nullptr) {
+      currObj->PrintNodeData();
+      currObj = currObj->GetNext();
+   }
+   
+   return 0;
+}
+```
+# 9. Streams
+## 9.1 Output and input streams
+### The ostream and cout streams
+Programs need a way to output data to a screen, file, or elsewhere. An ostream, short for "output stream," is a class that supports output, available via #include <iostream> and in namespace "std". ostream provides the << operator, known as the insertion operator, for converting different types of data into a sequence of characters. That sequence is normally placed into a buffer, and the system then outputs the buffer at various times. The << operator returns a reference to the ostream that called the operator, and is evaluated from left to right like most operators, so << operators can appear in series.
+
+The << operator is overloaded with functions to support the various standard data types, such as int, bool, float, etc., each function converting that data type to a sequence of characters. The operator may be further overloaded by the string library from #include <string> or by the programmer for programmer-created classes.
+
+cout is a predefined ostream object (declared as ostream cout; in the iostream library) that is pre-associated with a system's standard output, usually a computer screen.
+
+Basic use of cout and the insertion operator were covered in an earlier section.
+
+### The istream and cin streams
+Programs need to receive input data, whether from a keyboard, touchscreen, or elsewhere. An istream, short for "input stream," is a class that supports input. Available via #include <iostream>, istream provides the >> operator, known as the extraction operator, to extract data from a data buffer and write the data into different types of variables.
+
+cin is a predefined istream pre-associated with a system's standard input, usually a computer keyboard. The system automatically puts the standard input into a data buffer associated with cin. The >> operator skips leading whitespace and extracts as many characters as possible consistent with the target variable's type. The operator then stops at the next whitespace, converts the extracted characters to the target variable's type, and stores the result into the variable.
+
+Basic use of cin and the extraction operator were covered in an earlier section.
+
+## 9.2 Output formatting
+### Floating-point manipulators
 
 
 
